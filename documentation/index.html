@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <!-- SITE META -->
+      <title></title>
+      <!-- BOOTSTRAP STYLES -->
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.min-4.css">
+      <!-- TEMPLATE STYLES -->
+      <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+      <!-- TEMPLATE STYLES -->
+      <link rel="stylesheet" type="text/css" href="css/style.css">
+   </head>
+   <body class="leftside">
+      <div id="loading">
+         <div id="loading-center">
+            <img src="images/loder.gif" alt="">
+         </div>
+      </div>
+      <!-- START SITE -->
+      <div id="wrapper">
+      <div class="row-offcanvas row-offcanvas-left">
+         <div id="sidebar-fix" class="sidebar-offcanvas">
+            <header id="vertical" class="header header-style-1">
+               <nav class="navbar navbar-default yamm p-0">
+                  <div class="container-f">
+                     <div class="navbar-header">
+                        <div class="site-logo text-center">
+                           <a class="navbar-brand" href="#">
+                           <img class="img-responsive p-4" src="images/logo-black.png" alt="">
+                           </a>
+                        </div>
+                     </div>
+                     <div id='cssmenu'>
+                        <ul>
+                            <li class='has-sub active'>
+                                <a href='#'><span>Getting Started</span></a>
+                                <ul>
+                                    <li><a href='#basic-installation'><span>Getting Started</span></a></li>
+                                    <li><a href='#dev-to-prod'><span>Development to Production</span></a></li>
+                                    <li><a href='#folder-structure'><span>Folder Structure</span></a></li>
+                                    <li><a href="#basic-favicon">For Favicon icon</a></li>
+                                    <li><a href="#basic-logo">For Logo</a></li>
+                                </ul>
+                            </li>
+                            <li class='has-sub'>
+                                <a href='#dep-plugins'><span>Dependency and Plugins</span></a>
+                            </li>
+                            <li><a href="#layout-usage"><span>Layout Usage</span></a></li>
+                            <li><a href="#basic-side-header"><span>SideBar & Header</span></a></li>
+                            <li class='has-sub'>
+                                <a href='#'><span>Custom Components</span></a>
+                                <ul>
+                                    <li><a href="#iq-card"><span>Custom Card</span></a></li>
+                                    <li><a href="#tab-pan"><span>Tab</span></a></li>
+                                    <li><a href="#time-line"><span>TimeLine</span></a></li>
+                                    <li><a href="#slick"><span>Slider</span></a></li>
+                                    <li><a href="#full-calender"><span>Full Calendar</span></a></li>
+                                    <li><a href="#lottie"><span>Lottie</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#bootstrap-vue"><span>Bootstrap Components</span></a></li>
+                           <li class='last'><a href='#basic-source'><span>Source & Credits</span></a></li>
+                        </ul>
+                     </div>
+                     <!--/.nav-collapse -->
+                  </div>
+                  <!--/.container-fluid -->
+               </nav>
+               <!-- end nav -->
+            </header>
+            <!-- end header -->
+         </div>
+         <!-- end sidebar -->
+         <div id="main">
+            <section class="intro-banner" style="background: url('images/bg/01.jpg'); background-size: cover; background-repeat: no-repeat;">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <a href="#"><img src="images/logo-inline.png" class="img-responsive" alt=""></a>
+                        <h1 class="text-white">USER GUIDE</h1>
+                        <p class="text-white">On behalf of iqonicthemes team, we would like to thank you for purchasing this item. Your support encourages us to build better items and continuously bring value to our products. This documentation file covers all the information needed to install and use this Template. You'll find everything you need to know to create a stunning and beautiful website in minutes.</p>
+                        <p class="text-white">Sofbox is a Vue template based on <b>Bootstrap 4 framework</b>. This documentation will give you an understanding of how Sofbox template is structured and guide you in performing common functions. If you require further assistance not covered in this documentation, please contact us in our Support Click here to contact us</p>
+                        <ul>
+                           <li>Created: 17 July 2020</li>
+                           <li>By: iQonicthemes</li>
+                           <li>Email: <a href="mailto:design@iqonicthemes.com">design@iqonicthemes.com</a></li>
+                           <li>HelpDesk: <a target="_blank" href="http://iqonicthemes.com/">http://iqonicthemes.com/contactus</a></li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </section>
+            <section id="basic-installation">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">Basic Installation</h2>
+                        <p>Steps to be followed for getting started with the template:</p>
+                        <p>There are followings basics packages you should install before going further.</p>
+                        <ol>
+                            <li>Open terminal or CMD and go the root directory of the template</li>
+                            <li>Run in terminal or CMD: <code>npm install</code></li>
+                            <li>To Run project on Local environment run: <code>npm run dev</code></li>
+                            <li>Then visit:  <code>http://localhost:8080</code></li>
+                        </ol>
+                     </div>
+                  </div>
+               </div>
+            </section>
+             <section id="dev-to-prod">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Development to production</h2>
+                             <p>Here is the <strong>steps of production:</strong></p>
+                             <ol>
+                                 <li>If you can deploy in subdirectory first you can copy and rename the following file .env.example to .env and set the production path by <code>VUE_BASE_URL=""</code> this key</li>
+                                 <li>To Deploy project on server create production build by running: <code> npm run build </code></li>
+                                 <li>This will generate <code>/dist</code> folder in project root directory you'll have to upload these file using a FTP on your server</li>
+                                 <li>Now that you have followed these steps your basic installation is complete and ready to flaunt your site to the world.</li>
+                             </ol>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-12">
+                         </div>
+                     </div>
+                 </div>
+             </section>
+            <section id="folder-structure">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">Folder Structure</h2>
+                        <p>Here is the <strong>general structure of the template:</strong></p>
+                     </div>
+                  </div>
+                   <div class="row">
+                       <div class="col-md-12">
+                           <pre class="prettyprint lang-html linenums">
+sofbox-vue
+| - public
+   | - img
+     - favicon.ico
+     - index.html
+
+| - src
+  | - assets
+    | - css
+    | - fonts
+    | - images
+    | - js
+    | - scss
+
+    | - components
+        | - sofbox
+
+    | - config
+        | - sofbox
+
+    | - FackApi
+        | - sofbox
+
+    | - layouts
+        | - AuthLayouts
+            | - AuthLayouts1.vue
+          - BlankLayout.vue
+          - Layout1.vue
+
+    | - plugins
+        | - bootstrap-vue.js
+    | - router
+    | - store
+    | - views
+      - App.vue
+      - main.js
+      - registerServiceWorker.js
+  - .browserslistrc
+  - .editorconfig
+  - .eslintrc.js
+  - .eslintignore.js
+  - .gitignore
+  - babel.config.js
+  - .env.example
+  - package.json
+  - README.md
+  - vue.config.js</pre>
+                       </div>
+                   </div>
+               </div>
+            </section>
+             <section id="sofbox-structure">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Sofbox custom components structure</h2>
+                             <p>Here is the general structure of the sofbox custom components:</p>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-12">
+                           <pre class="prettyprint lang-html linenums">
+&lt;!-- Sofbox components --&gt;
+
+| - components
+    | - sofbox
+        | - breadcrumbs
+            - BreadCrumbStyle1.vue
+        | - calendar
+            - FullCalendar.vue
+        | - cards
+            | - iq-card.vue
+        | - chart
+            | - AmChart.vue
+            | - ApexChart.vue
+            | - HighChart.vue
+            | - MapAmChart.vue
+            | - MorrisChart.vue
+        | - footer
+            | - FooterStyle1.vue
+        | - lottie
+            | - Lottie.vue
+        | - menus
+            | - ListStyle1.vue
+        | - navbars
+            | - NavBarStyle1.vue
+        | - rightsidebar
+            | - RightSideBarStyle1.vue
+        | - sidebar
+            | - SideBarStyle1.vue
+        | - slider
+            | - Slick.vue
+        | - tab
+            | - tab-nav.vue
+            | - tab-nav-item.vue
+            | - tab-content.vue
+            | - tab-content-item.vue
+       | - timeline
+            | - TimeLine.vue
+        | - loader
+            | - Loader.vue</pre>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+            <section id="basic-favicon">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">For Favicon icon</h2>
+                        <p>Set favicon for replace favicon.ico and restart server</p>
+                     </div>
+                  </div>
+               </div>
+            </section>
+            <section id="basic-logo">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">For Logo</h2>
+                        <p>Use the header style which is in <span class="atv">components -> sofbox -> Partials -> Header</span>. Replace <span class="atv">"logo.jpeg"</span> with your own logo image URL.</p>
+                        <pre class="prettyprint lang-html linenums">
+
+| - sofbox-vue
+    | - layouts
+        | - Layout1.vue
+
+&lt;SideBarStyle1 :items="sidebar" :logo="logo"&gt;&lt;/SideBarStyle1&gt;
+&lt;NavBarStyle1 title="Dashboard" :homeURL="{ name: 'dashboard1.home' }" :logo="logo"&gt;&lt;/NavBarStyle1&gt;
+&lt;script&gt;
+  import SideBarItems from '../FackApi/json/SideBar'
+  import logoImg from '../assets/logo.jpeg'
+    data () {
+        return {
+          sidebar: SideBarItems,
+          userProfile: profile,
+          logo: logo
+        }
+      }
+&lt;/script&gt;
+                        </pre>
+                     </div>
+                  </div>
+               </div>
+            </section>
+
+             <section id="dep-plugins">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Dependency & Plugins</h2>
+                             <p>Here is the <strong>which dependency is required for project</strong></p>
+                         </div>
+                         <div class="col-md-12">
+                             <pre class="prettyprint lang-html linenums">
+    "@amcharts/amcharts4": "^4.7.18",
+    "@amcharts/amcharts4-geodata": "^4.1.9",
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "@fullcalendar/core": "^4.3.1",
+    "@fullcalendar/daygrid": "^4.3.0",
+    "@fullcalendar/interaction": "^4.3.0",
+    "@fullcalendar/timegrid": "^4.3.0",
+    "@fullcalendar/vue": "^4.3.1",
+    "@guillaumebriday/vue-scroll-progress-bar": "^0.5.0",
+    "animate.css": "^3.7.2",
+    "apexcharts": "^3.10.1",
+    "bootstrap-vue": "^2.1.0"
+    "core-js": "^3.3.2",
+    "counterup2": "^1.0.4",
+    "highcharts": "^8.0.0",
+    "highcharts-vue": "^1.3.5",
+    "jquery": "^3.4.1",
+    "lodash": "latest",
+    "lottie-web": "^5.5.10",
+    "mapbox-gl": "^1.6.1",
+    "mapbox-gl-vue": "^2.0.4",
+    "moment": "^2.24.0",
+    "owl.carousel": "^2.3.4",
+    "smooth-scrollbar": "^8.5.1",
+    "vue-morris": "^1.1.0",
+    "vue-slick": "^1.1.15",
+    "vuejs-datatable": "^2.0.0-alpha.7",
+    "wowjs": "^1.1.3",
+    "@fullcalendar/list": "^4.3.0",
+    "bootstrap": "^4.3.1",
+    "popper.js": "^1.16.0",
+    "vue-cli-plugin-bootstrap-vue": "^0.6.0",
+
+                             </pre>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="layout-usage">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Layout Configure</h2>
+                             <p>Here is the <strong>layout and routing configure</strong></p>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-12">
+                           <pre class="prettyprint lang-html linenums">
+| - layouts
+    | - AuthLayouts
+        | - AuthLayouts1.vue
+      - BlankLayout.vue
+      - Layout1.vue
+| - router
+    | - index.js</pre>
+                         </div>
+                         <div class="col-md-12">
+                             <p>Router url configure</p>
+                             <pre class="prettyprint lang-html linenums">
+// Set Layout in this route
+const routes = [
+  {
+    path: '/pages',
+    name: 'pages',
+    component: Default,
+    children: pagesChildRoutes('default')
+  }
+]
+
+// Set View in this function
+const pagesChildRoutes = (prop) =&gt; [
+  {
+    path: 'maintenance',
+    name: prop + '.maintenance',
+    component: Maintenance
+  }
+]
+                             </pre>
+                             <p>route name is <code>pages.maintenance</code></p>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="basic-side-header">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Sidebar & Header</h2>
+                             <p>Here is the <strong>sidebar object example just you can copy and past and rename then title and icon.</strong></p>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-12">
+                           <pre class="prettyprint lang-html linenums">
+[
+  {
+    "title": "Dashboard",
+    "is_heading": false,
+    "is_active": true,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-home-4-line",
+    "children": [
+      {
+        "title": "Dashboard1",
+        "is_active": false,
+        "link": {
+          "name": "dashboard1.home"
+        },
+        "class_name": "",
+        "is_icon_class": false,
+        "icon": ""
+      }
+    ]
+  }
+]
+
+</pre>
+                         </div>
+                         <div class="col-md-12">
+                             <p>Sidebar based on json and check the file in spacific path ./src/FackApi/json/SideBar.json and import or add your array to sidebar key.</p>
+                             <pre class="prettyprint lang-html linenums">
+&lt;SideBarStyle1 :items="sidebar" :logo="logo" /&gt;
+
+&lt;NavBarStyle1 title="Dashboard" :homeURL="{ name: 'dashboard1.home' }" :logo="logo"&gt;
+    &lt;template v-slot:right&gt;
+        add your items
+    &lt;/template&gt;
+&lt;/NavBarStyle1&gt;
+
+ &lt;FooterStyle1&gt;
+  &lt;template v-slot:left&gt;
+    &lt;li class="list-inline-item"&gt;&lt;a href="#"&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="list-inline-item"&gt;&lt;a href="#"&gt;Terms of Use&lt;/a&gt;&lt;/li&gt;
+  &lt;/template&gt;
+  &lt;template v-slot:right&gt;
+    Copyright 2020 &lt;a href="#"&gt;Sofbox&lt;/a&gt; All Rights Reserved.
+  &lt;/template&gt;
+&lt;/FooterStyle1&gt;
+                             </pre>
+
+                             <pre class="prettyprint lang-html linenums">
+import SideBarItems from '../FackApi/json/SideBar'
+
+data () {
+    return {
+      sidebar: SideBarItems
+    }
+}
+                             </pre>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+            <section id="iq-card">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2 class="heading-title">Custom Card</h2>
+                            <p>We have build different types of custom card components. And these are the some prop and slots</p>
+                            <pre class="prettyprint lang-html linenums">
+&lt;iq-card body-class="border text-center" class="bg-primary text-white"&gt;
+ &lt;template v-slot:headerTitle&gt;
+      &lt;h4&gt;Card Title&lt;/h4&gt;
+  &lt;/template&gt;
+  &lt;template v-slot:body&gt;
+    &lt;p &gt;lorium ipsum&lt;/b-button&gt;
+  &lt;/template&gt;
+  &lt;template v-slot:footer&gt;
+    &lt;b-button variant="danger"&gt;Button&lt;/b-button&gt;
+  &lt;/template&gt;
+&lt;/iq-card&gt;
+                        </pre>
+                        </div>
+                        <div class="col-sm-12">
+                            <h4 class="heading-title">Prop</h4>
+                            <p>Prop is set the attriblute for the component.</p>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>headerClass</td>
+                                        <td>Class added in card header div</td>
+                                    </tr>
+                                    <tr>
+                                        <td>bodyClass</td>
+                                        <td>Class added in card body div</td>
+                                    </tr>
+                                    <tr>
+                                        <td>footerClass</td>
+                                        <td>Class added in card footer div</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12">
+                            <h4 class="heading-title">Slots</h4>
+                            <p>Slot is set of the content between opening and closing tag.</p>
+                            <table class="table table-bordered ">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Detail</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>headerTitle</td>
+                                    <td>For card top left icon or title</td>
+                                </tr>
+                                <tr>
+                                    <td>headerAction</td>
+                                    <td>For card top right icon or title</td>
+                                </tr>
+                                <tr>
+                                    <td>body</td>
+                                    <td>For card body to add with padding</td>
+                                </tr>
+                                <tr>
+                                    <td>default</td>
+                                    <td>For without padding added content</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section id="charts">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Charts</h2>
+                             <p>We have build custom chart components. And these are the some prop and slots</p>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Am Chart</h4>
+                             <pre class="prettyprint lang-html linenums">
+&lt;AmChart :element="item.type" :type="item.type" :option="item.bodyData"/&gt;</pre>
+                         </div>
+                         <div class="col-sm-8">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>element</td>
+                                     <td>String</td>
+                                     <td>element is identify the unique div element like id</td>
+                                 </tr>
+                                 <tr>
+                                     <td>type</td>
+                                     <td>String</td>
+                                     <td>Difftrent type of chart set by type</td>
+                                 </tr>
+                                 <tr>
+                                     <td>option</td>
+                                     <td>Object</td>
+                                     <td>Chart data and setting by option object</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-md-4">
+                             <h6 class="heading-title">Types</h6>
+                             <p>Types of Am Chart</p>
+                             <ol style="column-count: 2">
+                                 <li>line</li>
+                                 <li>column</li>
+                                 <li>mixes-column</li>
+                                 <li>stacked</li>
+                                 <li>bar-line</li>
+                                 <li>data-based</li>
+                                 <li>line-zoom-h</li>
+                                 <li>line-zoom-v</li>
+                                 <li>radar</li>
+                                 <li>polar-scatter</li>
+                                 <li>polar</li>
+                                 <li>pie</li>
+                             </ol>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Apex Chart</h4>
+                             <pre class="prettyprint lang-html linenums">
+&lt;ApexChart element="chart" :chartOption="option"/&gt;</pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>element</td>
+                                     <td>String</td>
+                                     <td>element is identify the unique div element like id</td>
+                                 </tr>
+                                 <tr>
+                                     <td>chartOption</td>
+                                     <td>Object</td>
+                                     <td>Set Chart option</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Morris Chart</h4>
+                             <pre class="prettyprint lang-html linenums">
+&lt;MorrisChart :element="item.type+index" :type="item.type" :xKeys="item.xKeys" :data="item.bodyData" :colors="item.colors" :yKeys="item.yKeys" :labels="item.labels"/&gt;</pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>element</td>
+                                     <td>String</td>
+                                     <td>element is identify the unique div element like id</td>
+                                 </tr>
+                                 <tr>
+                                     <td>data</td>
+                                     <td>Object</td>
+                                     <td>Set Chart data</td>
+                                 </tr>
+                                 <tr>
+                                     <td>xKeys</td>
+                                     <td>Array</td>
+                                     <td> X axis keys </td>
+                                 </tr>
+                                 <tr>
+                                     <td>yKeys</td>
+                                     <td>Array</td>
+                                     <td> Y Axis keys </td>
+                                 </tr>
+                                 <tr>
+                                     <td>labels</td>
+                                     <td>Array</td>
+                                     <td> - </td>
+                                 </tr>
+                                 <tr>
+                                     <td>colors</td>
+                                     <td>Array</td>
+                                     <td> - </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">High chart</h4>
+                             <pre class="prettyprint lang-html linenums">
+&lt;HighChart :ref="item.type" :option="item.bodyData"/&gt;</pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>ref</td>
+                                     <td>String</td>
+                                     <td>element is identify the unique div element like id</td>
+                                 </tr>
+                                 <tr>
+                                     <td>option</td>
+                                     <td>Object</td>
+                                     <td>Set Chart option</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="tab-pan">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Tab</h2>
+                             <p>We have build custom tab components. And these are the some prop and slots</p>
+                             <pre class="prettyprint lang-html linenums">
+&lt;tab-nav :tabs="true" id="myTab-1"&gt;
+  &lt;tab-nav-items :active="true" id="home-tab" ariaControls="home" role="tab" :ariaSelected="true" title="Home" /&gt;
+  &lt;tab-nav-items :active="false" id="profile-tab" ariaControls="profile" role="tab" :ariaSelected="false" title="Profile" /&gt;
+  &lt;tab-nav-items :active="false" id="contact-tab" ariaControls="contact" role="tab" :ariaSelected="false" title="Contact" /&gt;
+&lt;/tab-nav&gt;
+&lt;tab-content id="myTabContent"&gt;
+  &lt;tab-content-item :active="true" id="home" aria-labelled-by="home-tab"&gt;
+    &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.&lt;/p&gt;
+  &lt;/tab-content-item&gt;
+  &lt;tab-content-item :active="false" id="profile" aria-labelled-by="profile-tab"&gt;
+    &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.&lt;/p&gt;
+  &lt;/tab-content-item&gt;
+  &lt;tab-content-item :active="false" id="contact" aria-labelled-by="contact-tab"&gt;
+    &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.&lt;/p&gt;
+  &lt;/tab-content-item&gt;
+&lt;/tab-content&gt;
+                        </pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Tab Nav</h4>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>id</td>
+                                     <td>String</td>
+                                     <td>-</td>
+                                 </tr>
+                                 <tr>
+                                     <td>pills</td>
+                                     <td>Boolean</td>
+                                     <td>pills is style of nav tab and pass the boolean value</td>
+                                 </tr>
+                                 <tr>
+                                     <td>tabs</td>
+                                     <td>Boolean</td>
+                                     <td>tabs is style of nav tab and pass the boolean value</td>
+                                 </tr>
+                                 <tr>
+                                     <td>vertical</td>
+                                     <td>Boolean</td>
+                                     <td>vertical is list style of nav tab and pass the boolean value</td>
+                                 </tr>
+                                 <tr>
+                                     <td>align</td>
+                                     <td>String</td>
+                                     <td>align nav tabs right, left and center</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Events</h6>
+                             <p>Events is any functionality want any change of tab</p>
+                             <table class="table table-bordered ">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>change</td>
+                                     <td>on tab change call this event</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Tab Item</h4>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>id</td>
+                                     <td>String</td>
+                                     <td>identify the tab content for navigate</td>
+                                 </tr>
+                                 <tr>
+                                     <td>active</td>
+                                     <td>Boolean</td>
+                                     <td>CSS class (or classes) to apply to the currently active tab</td>
+                                 </tr>
+                                 <tr>
+                                     <td>ariaControls</td>
+                                     <td>String</td>
+                                     <td>The aria-controls attribute creates a cause and effect relationship</td>
+                                 </tr>
+                                 <tr>
+                                     <td>ariaSelected</td>
+                                     <td>Boolean</td>
+                                     <td>This attribute is used with single-selection and multiple-selection widgets</td>
+                                 </tr>
+                                 <tr>
+                                     <td>dataToggle</td>
+                                     <td>String</td>
+                                     <td>The toggle tells Bootstrap what to do and the target tells</td>
+                                 </tr>
+                                 <tr>
+                                     <td>href</td>
+                                     <td>String</td>
+                                     <td>Set navigation link</td>
+                                 </tr>
+                                 <tr>
+                                     <td>title</td>
+                                     <td>String</td>
+                                     <td>Pass Title as a string or set html content via slot</td>
+                                 </tr>
+                                 <tr>
+                                     <td>liClass</td>
+                                     <td>String</td>
+                                     <td> - </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Slots</h6>
+                             <p>Slot is set of the content between opening and closing tag.</p>
+                             <table class="table table-bordered ">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>title</td>
+                                     <td>For tab nav item content any html content or image by using slot</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Tab Content</h4>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>id</td>
+                                     <td>String</td>
+                                     <td>id for identify the tab content to nav tab</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Tab Content Item</h4>
+                         </div>
+                         <div class="col-sm-12">
+                             <h6 class="heading-title">Prop</h6>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td>id</td>
+                                         <td>String</td>
+                                         <td>identify the tab content for navigate</td>
+                                     </tr>
+                                     <tr>
+                                         <td>active</td>
+                                         <td>Boolean</td>
+                                         <td>CSS class (or classes) to apply to the currently active tab</td>
+                                     </tr>
+                                     <tr>
+                                         <td>ariaLabelledBy</td>
+                                         <td>String</td>
+                                         <td>Identifies the element (or elements) that labels the current element.</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="time-line">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">TimeLine</h2>
+                             <p>We have build timeline components. And these are the some prop</p>
+                             <pre class="prettyprint lang-html linenums">
+timelineItems: [
+    {
+      color: 'danger',
+      title: 'Dev Meetup',
+      right: '20 November 2019',
+      description: 'Bonbon macaroon jelly &lt;a href=""&gt;beans gummi&lt;/a&gt; bears jelly lollipop apple',
+      child: {
+        type: 'img',
+        items: [
+          require('../../assets/images/user/05.jpg'),
+          require('../../assets/images/user/06.jpg'),
+          require('../../assets/images/user/07.jpg'),
+          require('../../assets/images/user/08.jpg'),
+          require('../../assets/images/user/09.jpg'),
+          require('../../assets/images/user/10.jpg')
+        ]
+      }
+    }
+  ]
+
+&lt;TimeLine :items="timelineItems" /&gt;
+                        </pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Prop</h4>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>items</td>
+                                     <td>Array</td>
+                                     <td>Pass Array of Object to create time line</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="slick">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Slick</h2>
+                             <p>We have build timeline components. And these are the some prop and slots</p>
+                             <pre class="prettyprint lang-html linenums">
+&lt;Slick&gt;
+  &lt;div&gt;
+    &lt;a href="javascript:void(0)" class="iq-booking-date"&gt;
+      &lt;div class="iq-booking-dot"&gt;&lt;/div&gt;
+        &lt;h3&gt;Slider Item&lt;/h3&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;/Slick&gt;
+                        </pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Prop</h4>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>sliderOption</td>
+                                     <td>Object</td>
+                                     <td>this prop has pass the slider setting object</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Slots</h4>
+                             <p>Slot is set of the content between opening and closing tag.</p>
+                             <table class="table table-bordered ">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>default</td>
+                                     <td>Pass slider item in default slot</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="full-calender">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Full Calender</h2>
+                             <p>We have build fullcalender components. And these are the some props</p>
+                             <pre class="prettyprint lang-html linenums">
+&lt;FullCalendar :calendarEvents="events" /&gt;</pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Prop</h4>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>header</td>
+                                     <td>Object</td>
+                                     <td>header prop has pass the left top center action button</td>
+                                 </tr>
+                                 <tr>
+                                     <td>events</td>
+                                     <td>Array</td>
+                                     <td>Events prop has just pass the array of events toh show the list of events and also set the color & dateTime/td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="lottie">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Lottie</h2>
+                             <p>We have build lottie components. And these are the some prop</p>
+                             <pre class="prettyprint lang-html linenums">
+&lt;lottie :option="require('../../assets/images/small/data')"&gt;&lt;/lottie&gt;
+                        </pre>
+                         </div>
+                         <div class="col-sm-12">
+                             <h4 class="heading-title">Prop</h4>
+                             <p>Prop is set the attriblute for the component.</p>
+                             <table class="table table-bordered">
+                                 <thead>
+                                 <tr>
+                                     <th>Name</th>
+                                     <th>Type</th>
+                                     <th>Detail</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td>option</td>
+                                     <td>Object</td>
+                                     <td>Option pass the lottie animation json file to execute the svg image.</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+             <section id="bootstrap-vue">
+                 <div class="container">
+                     <div class="row">
+                         <div class="col-sm-12">
+                             <h2 class="heading-title">Bootstrap Components</h2>
+                             <p>
+                                 Bootstrap has wonderfull documentation on the following components::
+                             </p>
+                             <ul>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/layout/#alignment" target="black">Row Alignments</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/alert" target="black">Alerts</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/badge" target="black">Badges</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/carousel/#carousel" target="black">Carousel</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/layout/#columns-b-col">Columns</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/table/#tables">Tables</a>
+                                 </li>
+                                 <li>
+                                     <a href="https://bootstrap-vue.js.org/docs/components/button" target="black">Buttons</a>
+                                 </li>
+                             </ul>
+                             <p>Vue Bootstrap for extra component <a href="https://bootstrap-vue.js.org/docs/components">https://bootstrap-vue.js.org/docs/components</a> </p>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+
+            <section id="basic-support">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">Browser Support</h2>
+                        <p>Supports all major Browsers like Google Chrome, Mozilla Firefox, Safari, Opera, Internet Explorer 9 and above.</p>
+                     </div>
+                  </div>
+               </div>
+            </section>
+            <section id="basic-log">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">Change Log</h2>
+                        <h4>Version 1.0</h4>
+                        <p>- Initial Release</p>
+                     </div>
+                  </div>
+               </div>
+            </section>
+            <section id="basic-source">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h2 class="heading-title">Source & Credits</h2>
+                        <p>All images and videos are for preview purposes only and are not included in the download files. Images are of copyrights under Creative Commons CC0.</p>
+                        <br>
+                        <h4>Images</h4>
+                        <ul>
+                           <li>bigstockphoto <a href="https://www.bigstockphoto.com/">bigstockphoto</a></li>
+                           <li>Pexels <a href="https://www.pexels.com/">Pexels</a></li>
+                           <li>freepik <a href="http://www.freepik.com/">freepik</a></li>
+                           <li>pixabay <a href="https://pixabay.com/">pixabay</a></li>
+                        </ul>
+                        <br>
+                        <br>
+                        <h4>Plugins</h4>
+                        <ul>
+                           <li><a href="https://vuejs.org">Vue JS</a></li>
+                            <li><a href="https://bootstrap-vue.js.org/">Vue Bootstrap</a></li>
+                           <li><a href="https://www.npmjs.com/package/jarallax">Parallax</a></li>
+                            <li><a href="https://jquery.com/">Jquery</a></li>
+                           <li><a href="https://github.com/bas2k/jquery.appear/">Jquery appear</a></li>
+                           <li><a href="https://github.com/glix/jQuery-Plugins/tree/master/Modern-Circular-jQuery-Countdown-Timer-Plugin-Final-Countdown">Countdown</a></li>
+                            <li><a href="https://fullcalendar.io/docs/vue">Full Calendar</a></li>
+                            <li><a href="https://www.amcharts.com/docs/v4/getting-started/integrations/using-vue-js/">AmChart</a></li>
+                            <li><a href="https://apexcharts.com/docs/vue-charts/">ApexChart</a></li>
+                            <li><a href="https://github.com/bbonnin/vue-morris">Vue Morris</a></li>
+                            <li><a href="https://github.com/guillaumebriday/vue-scroll-progress-bar">Page Scroll Progress</a></li>
+                            <li><a href="https://www.npmjs.com/package/mapbox-gl-vue">Mapbox Gl vue</a></li>
+                            <li><a href="https://www.npmjs.com/package/vue-slick">Vue Slick Slider</a></li>
+                            <li><a href="https://www.npmjs.com/package/vuejs-datatable">Vue Datatable</a></li>
+                            <li><a href="https://airbnb.io/lottie/#/">Lottie</a></li>
+                        </ul>
+                        <br>
+                        <br>
+                        <h4>CSS & Fonts</h4>
+                        <ul>
+                           <li><a href="https://bootstrap-vue.js.org/">Bootstrap Vue</a></li>
+                           <li><a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a></li>
+                           <li><a href="http://ionicons.com/#cdn">ionicons</a></li>
+                           <li><a href="https://remixicon.com/">remixicon</a></li>
+                           <li><a href="https://www.google.com/fonts">Google Fonts</a></li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </section>
+            <footer class="footer">
+            <div class="container">
+            <div class="row">
+            <div class="col-sm-12">
+            <p>Designed and built with love by <a href="http://iqonic.design">Iqonic Design</a></p>
+            </div>
+            </div>
+            </div>
+            </footer>
+            </div>
+         </div>
+         <!-- end main -->
+      </div>
+      <!-- end wrapper -->
+      <!-- END SITE -->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/prettify.js"></script>
+      <script src="js/plugins.js"></script>
+   </body>
+</html>

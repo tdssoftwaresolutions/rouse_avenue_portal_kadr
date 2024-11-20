@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Home",
+    "name": "sidebar.dashboard1",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "dashboard1.home"
+    },
+    "class_name": "",
+    "is_icon_class": false,
+    "icon": "ri-home-4-line"
+  },
+  {
+    "title": "My Calendar",
+    "name": "app.calendar2",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "app.calendar2"
+    },
+    "class_name": "",
+    "is_icon_class": false,
+    "icon": "ri-home-4-line"
+  },
+  {
+    "title": "My Documents",
+    "name": "app.e-commerce.index",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "app.e-commerce.index"
+    },
+    "class_name": "",
+    "is_icon_class": false,
+    "icon": "ri-home-4-line"
+  },
+  {
+    "title": "Past Mediations",
+    "name": "sidebar.userList",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "user.list"
+    },
+    "class_name": "",
+    "is_icon_class": false,
+    "icon": "ri-home-4-line"
+  }
+]
