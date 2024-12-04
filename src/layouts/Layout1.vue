@@ -102,7 +102,7 @@
       <!-- TOP Nav Bar END -->
       <div id="content-page" class="content-page">
         <transition name="router-anim">
-          <router-view/>
+          <router-view :userType="userType"/>
         </transition>
       </div>
     </div>
@@ -123,23 +123,43 @@ import SideBarStyle1 from '../components/sofbox/sidebars/SideBarStyle1'
 import NavBarStyle1 from '../components/sofbox/navbars/NavBarStyle1'
 import SideBarItems from '../FackApi/json/SideBar'
 import SideBarItemsMediator from '../FackApi/json/SideBarMediator'
+import SideBarItemAdmin from '../FackApi/json/SideBarAdmin'
 import profile from '../assets/images/user/1.jpeg'
 import logo from '../assets/images/logo.png'
 import { sofbox } from '../config/pluginInit'
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 
 export default {
   name: 'Layout1',
   components: {
     Loader, SideBarStyle1, NavBarStyle1
   },
-  mounted () {
-    const userType = this.$cookies.get('type')
-    if (userType === 'MEDIATOR') {
-      this.sidebar = SideBarItemsMediator
-    } else if (userType === 'USER') {
-      this.sidebar = SideBarItems
+  created () {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     }
+    axios
+      .get('/api/getUserData', {
+        headers: headers
+      })
+      .then((response) => {
+        if (response.data.error) {
+          this.$bvToast.toast(response.data.error, {
+            title: 'Error',
+            variant: 'error',
+            solid: true
+          })
+        } else {
+          this.validateData(headers, response.data)
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+  },
+  mounted () {
     sofbox.mainIndex()
   },
   computed: {
@@ -155,10 +175,33 @@ export default {
     return {
       sidebar: SideBarItems,
       userProfile: profile,
-      logo: logo
+      logo: logo,
+      userType: ''
     }
   },
   methods: {
+    validateData (headers, data) {
+      axios
+        .post('/api/verify-signature', data, {
+          headers: headers
+        })
+        .then((response) => {
+          if (response.data.valid === true) {
+            const userType = data.userData.type
+            if (userType === 'MEDIATOR') {
+              this.sidebar = SideBarItemsMediator
+            } else if (userType === 'CLIENT') {
+              this.sidebar = SideBarItems
+            } else if (userType === 'ADMIN') {
+              this.sidebar = SideBarItemAdmin
+            }
+            this.userType = userType
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    },
     handleComplete () {},
     rightSideBar () {
       if (this.numberOfTicket > 0) {
@@ -166,8 +209,7 @@ export default {
       }
     },
     onClickSignOut () {
-      this.$cookies.remove('type')
-      this.$cookies.remove('hasSession')
+      localStorage.removeItem('accessToken')
       this.$router.push({ path: '/auth/sign-in' })
     }
   }
