@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid p-0">
     <div class="row no-gutters">
-      <div class="col-sm-12 text-center">
+      <div class="col-12 text-center">
         <div class="iq-error">
           <h1>{{ this.$route.params.code }}</h1>
           <h4 class="mb-0">Oops! This Page is Not Found.</h4>

@@ -37,7 +37,7 @@ export default {
     getNewSeries (baseval, yrange) {
       let newDate = baseval + this.TICKINTERVAL
       this.lastDate = newDate
-      for (var i = 0; i < this.data.length - 10; i++) {
+      for (let i = 0; i < this.data.length - 10; i++) {
         this.data[i].x = newDate - this.XAXISRANGE - this.TICKINTERVAL
         this.data[i].y = 0
       }

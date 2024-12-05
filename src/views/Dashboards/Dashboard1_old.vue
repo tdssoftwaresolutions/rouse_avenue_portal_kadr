@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-3">
         <div class="card">
           <div class="card-body">
             <div class="rounded-circle iq-card-icon"><i class="ri-message-line"></i></div>
@@ -9,13 +9,13 @@
             <div class="clearfix"></div>
             <div class="pt-4 pb-0 text-center">
               <h2 class="mb-0"><span class="counter">15</span><span>M</span></h2>
-              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success mr-1 float-left font-size-18"></i><span class="text-success">10%</span> Increased</p>
+              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success ms-1 float-left font-size-18"></i><span class="text-success">10%</span> Increased</p>
             </div>
           </div>
           <Chart element="chart-1" :chartOption="chart1"/>
         </div>
       </div>
-      <div class="col-lg-3">
+      <div class="col-3">
         <div class="card card-warning">
           <div class="card-body">
             <div class="rounded-circle iq-card-icon"><i class="ri-heart-line text-warning"></i></div>
@@ -23,14 +23,14 @@
             <div class="clearfix"></div>
             <div class="pt-4 pb-0 text-center">
               <h2 class="mb-0"><span>$</span><span class="counter">450</span></h2>
-              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success mr-1 float-left font-size-18"></i><span class="text-success">20%</span> Increased</p>
+              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success ms-1 float-left font-size-18"></i><span class="text-success">20%</span> Increased</p>
             </div>
           </div>
           <Chart element="chart-2" :chartOption="chart2"/>
         </div>
       </div>
 
-      <div class="col-lg-3">
+      <div class="col-3">
         <div class="card card-success">
           <div class="card-body">
             <div class="rounded-circle iq-card-icon text-success"><i class="ri-group-line text-success"></i></div>
@@ -38,14 +38,14 @@
             <div class="clearfix"></div>
             <div class="pt-4 pb-0 text-center">
               <h2 class="mb-0"><span class="counter">96.6</span><span>k</span></h2>
-              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success mr-1 float-left font-size-18"></i><span class="text-success">4%</span> Increased</p>
+              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-success ms-1 float-left font-size-18"></i><span class="text-success">4%</span> Increased</p>
             </div>
           </div>
           <Chart element="chart-3" :chartOption="chart3"/>
         </div>
       </div>
 
-      <div class="col-lg-3">
+      <div class="col-3">
         <div class="card card-danger">
           <div class="card-body">
             <div class="rounded-circle iq-card-icon"><i class="ri-shopping-cart-line text-danger"></i></div>
@@ -53,13 +53,13 @@
             <div class="clearfix"></div>
             <div class="pt-4 pb-0 text-center">
               <h2 class="mb-0"><span class="counter">15.5</span><span>K</span></h2>
-              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-danger mr-1 float-left font-size-18"></i><span class="text-danger">5%</span> Less</p>
+              <p class="Secondary d-inline-block mb-0 line-height text-secondary"><i class="ri-funds-line text-danger ms-1 float-left font-size-18"></i><span class="text-danger">5%</span> Less</p>
             </div>
           </div>
           <Chart element="chart-4" :chartOption="chart4"/>
         </div>
       </div>
-      <div class="col-lg-12">
+      <div class="col-12">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title mb-0">Card title</h5>
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="card card-danger">
           <div class="card-body">
             <h5>Product Orders</h5>
@@ -76,7 +76,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="card card-danger">
           <div class="card-body">
             <h5>Product Orders</h5>
@@ -84,7 +84,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="iq-card">
           <div class="iq-card-header d-flex justify-content-between">
             <div class="iq-header-title">
@@ -145,7 +145,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="col-lg-4">
+      <!-- <div class="col-4">
          <div class="iq-card">
          <div class="iq-card-header d-flex justify-content-between">
          <div class="iq-header-title">
@@ -168,7 +168,7 @@
          </div>
          </div>
          </div> -->
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="iq-card">
           <div class="iq-card-header d-flex justify-content-between">
             <div class="iq-header-title">
@@ -188,29 +188,29 @@
             </div>
           </div>
           <div class="iq-card-body">
-            <div class="media mb-3">
-              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center mr-3" alt="#">
+            <div class="d-flex mb-3">
+              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center ms-3" alt="#">
               <div class="media-body">
                 <h6 class="mt-2 mb-0 font-size-14">Center-aligned media</h6>
                 <small>Updated 5hr ago</small>
               </div>
             </div>
-            <div class="media mb-3">
-              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center mr-3" alt="#">
+            <div class="d-flex mb-3">
+              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center ms-3" alt="#">
               <div class="media-body">
                 <h6 class="mt-2 mb-0 font-size-14">Center-aligned media</h6>
                 <small>Updated 5hr ago</small>
               </div>
             </div>
-            <div class="media mb-3">
-              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center mr-3" alt="#">
+            <div class="d-flex mb-3">
+              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center ms-3" alt="#">
               <div class="media-body">
                 <h6 class="mt-2 mb-0 font-size-14">Center-aligned media</h6>
                 <small>Updated 5hr ago</small>
               </div>
             </div>
-            <div class="media">
-              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center mr-3" alt="#">
+            <div class="d-flex">
+              <img src="https://dummyimage.com/80x60/000/fff" class="align-self-center ms-3" alt="#">
               <div class="media-body">
                 <h6 class="mt-2 mb-0 font-size-14">Center-aligned media</h6>
                 <small>Updated 5hr ago</small>
@@ -219,7 +219,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="iq-card">
           <div class="iq-card-header d-flex justify-content-between">
             <div class="iq-header-title">
@@ -241,7 +241,7 @@
           <div class="iq-card-body">
             <div class="media-support">
               <div class="media-support-header mb-2">
-                <div class="media-support-user-img mr-3">
+                <div class="media-support-user-img ms-3">
                   <img class="rounded-circle" src="https://dummyimage.com/60x60/ccc/fff" alt="">
                 </div>
                 <div class="media-support-info mt-2">
@@ -259,7 +259,7 @@
             <hr class="mt-4 mb-4">
             <div class="media-support">
               <div class="media-support-header mb-2">
-                <div class="media-support-user-img mr-3">
+                <div class="media-support-user-img ms-3">
                   <img class="rounded-circle" src="https://dummyimage.com/60x60/ccc/fff" alt="">
                 </div>
                 <div class="media-support-info mt-2">
@@ -277,7 +277,7 @@
             <hr class="mt-4 mb-4">
             <div class="media-support">
               <div class="media-support-header mb-2">
-                <div class="media-support-user-img mr-3">
+                <div class="media-support-user-img ms-3">
                   <img class="rounded-circle" src="https://dummyimage.com/60x60/ccc/fff" alt="">
                 </div>
                 <div class="media-support-info mt-2">
@@ -295,7 +295,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-4">
         <div class="iq-card">
           <div class="iq-card-header d-flex justify-content-between">
             <div class="iq-header-title">
@@ -323,7 +323,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -332,7 +332,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -341,7 +341,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -350,7 +350,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -359,7 +359,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -368,7 +368,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -377,7 +377,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -386,7 +386,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -397,7 +397,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -406,7 +406,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -417,7 +417,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -426,7 +426,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>
@@ -435,7 +435,7 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">You should check in on some of  below.</label>
                   </div>
-                  <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                  <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                     <i class="ri-close-line"></i>
                   </button>
                 </div>

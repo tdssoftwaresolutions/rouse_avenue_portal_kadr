@@ -15,14 +15,14 @@
                   <div class="profile-info p-4">
                     <b-row>
                       <b-col md="6" sm="12" >
-                        <div class="user-detail pl-5">
+                        <div class="user-detail ps-5">
                           <div class="d-flex flex-wrap align-items-center">
-                            <div class="profile-img pr-4">
+                            <div class="profile-img pe-4">
                               <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130" />
                             </div>
                             <div class="profile-detail d-flex align-items-center">
                               <h3>Karan VJ</h3>
-                              <p class="m-0 pl-3"> - Senior Mediator (kADR) </p>
+                              <p class="m-0 ps-3"> - Senior Mediator (kADR) </p>
                             </div>
                           </div>
                         </div>
@@ -65,7 +65,7 @@
                         <div class="user-img img-fluid">
                           <b-img :src="selectedUser.image" alt="story-img" rounded="circle" class="avatar-40" />
                         </div>
-                        <div class="media-support-info ml-3">
+                        <div class="media-support-info ms-3">
                           <h6>{{ selectedUser.name }}</h6>
                           <p class="mb-0">Case ID:{{ selectedUser.caseId }}</p>
                         </div>
@@ -75,7 +75,7 @@
                         <div class="user-img img-fluid">
                           <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
                         </div>
-                        <div class="media-support-info ml-3">
+                        <div class="media-support-info ms-3">
                           <h6>{{ item.name }}</h6>
                           <p class="mb-0">{{ item.mutual_friend }}</p>
                         </div>
@@ -114,7 +114,7 @@
                     <div class="clearfix"></div>
                     <div class="text-center">
                       <h2 class="mb-0"><span class="counter">Rs.</span><span>65k</span></h2>
-                      <p class="mb-0 text-secondary line-height"><i class="ri-arrow-up-line text-success mr-1"></i><span class="text-success">10%</span> Increased</p>
+                      <p class="mb-0 text-secondary line-height"><i class="ri-arrow-up-line text-success ms-1"></i><span class="text-success">10%</span> Increased</p>
                     </div>
                   </template>
                   <ApexChart element="chart-1" :chartOption="chart1"/>
@@ -126,7 +126,7 @@
                     <div class="clearfix"></div>
                     <div class="text-center">
                       <h2 class="mb-0"><span class="counter">30</span><span></span></h2>
-                      <p class="mb-0 text-secondary line-height"><i class="ri-arrow-down-line text-danger mr-1"></i><span class="text-danger">10%</span> Increased</p>
+                      <p class="mb-0 text-secondary line-height"><i class="ri-arrow-down-line text-danger ms-1"></i><span class="text-danger">10%</span> Increased</p>
                     </div>
                   </template>
                   <ApexChart element="chart-4" :chartOption="chart4"/>

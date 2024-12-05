@@ -1,6 +1,6 @@
 <template>
   <ul :class="className" :id="id">
-    <li v-for="(item,index) in items" :key="index" class="product_item col-xs-12 col-sm-6 col-md-6 col-lg-4">
+    <li v-for="(item,index) in items" :key="index" class="product_item col-12 col-6 col-6 col-4">
       <div class="product-miniature">
         <div class="thumbnail-container">
           <a href="#"><img :src="item.image" alt="product-image" class="img-fluid"></a>

@@ -6,10 +6,10 @@
           <template v-slot:body>
             <div class="iq-edit-list">
               <tab-nav :pills="true" class="iq-edit-profile d-flex">
-                <tab-nav-items class="col-md-3 p-0" :active="true" href="#personal-information" title="Personal Information" />
-                <tab-nav-items class="col-md-3 p-0" :active="false" href="#chang-pwd" title=" Change Password" />
-                <tab-nav-items class="col-md-3 p-0" :active="false" href="#emailandsms" title="Email and SMS" />
-                <tab-nav-items class="col-md-3 p-0" :active="false" href="#manage-contact" title="Manage Contact" />
+                <tab-nav-items class="col-3 p-0" :active="true" href="#personal-information" title="Personal Information" />
+                <tab-nav-items class="col-3 p-0" :active="false" href="#chang-pwd" title=" Change Password" />
+                <tab-nav-items class="col-3 p-0" :active="false" href="#emailandsms" title="Email and SMS" />
+                <tab-nav-items class="col-3 p-0" :active="false" href="#manage-contact" title="Manage Contact" />
               </tab-nav>
             </div>
           </template>
@@ -40,68 +40,68 @@
                       </b-col>
                     </b-form-group>
                     <b-row align-v="center">
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label="First Name:"
                         label-for="fname"
                       >
                         <b-form-input id="fname" placeholder="Nik"></b-form-input>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label="Last Name:"
                         label-for="lname"
                       >
                         <b-form-input id="lname" placeholder="Jhon"></b-form-input>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label="User Name:"
                         label-for="uname"
                       >
                         <b-form-input id="uname" placeholder="Nik@01"></b-form-input>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label="City:"
                         label-for="cname"
                       >
                         <b-form-input id="cname" placeholder="Atlanta"></b-form-input>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label="Gender:"
                         label-class="d-block"
                       >
                         <b-form-radio inline v-model="radio1" name="customRadio1">Male</b-form-radio>
                         <b-form-radio inline v-model="radio2" name="customRadio1">Female</b-form-radio>
                       </b-form-group>
-                       <b-form-group class="col-sm-6"
+                       <b-form-group class="col-6"
                         label="Date Of Birth:"
                         label-for="dob"
                       >
                         <b-form-input type="date" id="dob" value="1984-01-24"></b-form-input>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label-for="exampleFormControlSelect1"
                         label="Marital Status:">
                         <b-form-select plain v-model="selectedStatus" :options="options1" id="exampleFormControlSelect1">
                         </b-form-select>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label-for="exampleFormControlSelect2"
                         label="Age:">
                         <b-form-select plain v-model="selectedAge" :options="options2" id="exampleFormControlSelect2">
                         </b-form-select>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label-for="exampleFormControlSelect3"
                         label="Country:">
                         <b-form-select plain v-model="selectedCountry" :options="options3" id="exampleFormControlSelect3">
                         </b-form-select>
                       </b-form-group>
-                      <b-form-group class="col-sm-6"
+                      <b-form-group class="col-6"
                         label-for="exampleFormControlSelect4"
                         label="State:">
                         <b-form-select plain v-model="selectedState" :options="options4" id="exampleFormControlSelect4">
                         </b-form-select>
                       </b-form-group>
-                      <b-form-group class="col-sm-12"
+                      <b-form-group class="col-12"
                         label="Address:">
                         <b-form-textarea name="address" style="line-height: 22px;" rows="5" value="37 Cardinal Lane
 Petersburg, VA 23803
@@ -110,7 +110,7 @@ Zip Code: 85001">
                         </b-form-textarea>
                       </b-form-group>
                     </b-row>
-                    <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
+                    <b-button type="submit" variant="primary" class="ms-2">Submit</b-button>
                     <b-button type="reset" variant="none" class="iq-bg-danger">Cancle</b-button>
                   </b-form>
                 </template>
@@ -136,7 +136,7 @@ Zip Code: 85001">
                       <label for="vpass">Verify Password:</label>
                       <b-form-input type="password" id="vpass"></b-form-input>
                     </b-form-group>
-                    <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
+                    <b-button type="submit" variant="primary" class="ms-2">Submit</b-button>
                     <b-button type="reset" variant="none" class="iq-bg-danger">Cancle</b-button>
                   </b-form>
                 </template>
@@ -149,55 +149,55 @@ Zip Code: 85001">
                 </template>
                 <template v-slot:body>
                   <b-form>
-                    <div class="form-group row align-items-center">
-                      <label class="col-md-3" for="emailnotification">Email Notification:</label>
-                      <div class="col-md-9 custom-control custom-switch">
+                    <div class="mb-3 row align-items-center">
+                      <label class="col-3" for="emailnotification">Email Notification:</label>
+                      <div class="col-9 form-check custom-switch">
                         <input type="checkbox" class="custom-control-input" id="emailnotification" checked="">
                         <label class="custom-control-label" for="emailnotification"></label>
                     </div>
                       </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="smsnotification">SMS Notification:</label>
-                        <div class="col-md-9 custom-control custom-switch">
+                      <div class="mb-3 row align-items-center">
+                        <label class="col-3" for="smsnotification">SMS Notification:</label>
+                        <div class="col-9 form-check custom-switch">
                           <input type="checkbox" class="custom-control-input" id="smsnotification" checked="">
                           <label class="custom-control-label" for="smsnotification"></label>
                         </div>
                       </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="npass">When To Email</label>
-                        <div class="col-md-9">
-                          <div class="custom-control custom-checkbox">
+                      <div class="mb-3 row align-items-center">
+                        <label class="col-3" for="npass">When To Email</label>
+                        <div class="col-9">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email01">
                             <label class="custom-control-label" for="email01">You have new notifications.</label>
                           </div>
-                          <div class="custom-control custom-checkbox">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email02">
                             <label class="custom-control-label" for="email02">You're sent a direct message</label>
                           </div>
-                          <div class="custom-control custom-checkbox">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email03" checked="">
                             <label class="custom-control-label" for="email03">Someone adds you as a connection</label>
                           </div>
                         </div>
                       </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="npass">When To Escalate Emails</label>
-                        <div class="col-md-9">
-                          <div class="custom-control custom-checkbox">
+                      <div class="mb-3 row align-items-center">
+                        <label class="col-3" for="npass">When To Escalate Emails</label>
+                        <div class="col-9">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email04">
                             <label class="custom-control-label" for="email04"> Upon new order.</label>
                           </div>
-                          <div class="custom-control custom-checkbox">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email05">
                             <label class="custom-control-label" for="email05"> New membership approval</label>
                           </div>
-                          <div class="custom-control custom-checkbox">
+                          <div class="form-check custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="email06" checked="">
                             <label class="custom-control-label" for="email06"> Member registration</label>
                           </div>
                         </div>
                       </div>
-                    <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
+                    <b-button type="submit" variant="primary" class="ms-2">Submit</b-button>
                     <b-button type="reset" variant="none" class="iq-bg-danger">Cancle</b-button>
                   </b-form>
                 </template>
@@ -222,7 +222,7 @@ Zip Code: 85001">
                       <label for="vpass">Url:</label>
                       <b-form-input type="text" id="url" value="https://getbootstrap.com"></b-form-input>
                     </b-form-group>
-                    <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
+                    <b-button type="submit" variant="primary" class="ms-2">Submit</b-button>
                     <b-button type="reset" variant="none" class="iq-bg-danger">Cancle</b-button>
                   </b-form>
                 </template>

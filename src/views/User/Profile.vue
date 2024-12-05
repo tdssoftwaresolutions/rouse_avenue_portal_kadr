@@ -15,14 +15,14 @@
               <div class="profile-info p-4">
                 <b-row>
                   <b-col md="6" sm="12">
-                    <div class="user-detail pl-5">
+                    <div class="user-detail ps-5">
                       <div class="d-flex flex-wrap align-items-center">
-                        <div class="profile-img pr-4">
+                        <div class="profile-img pe-4">
                           <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130" />
                         </div>
                         <div class="profile-detail d-flex align-items-center">
                           <h3>Nik Jone</h3>
-                          <p class="m-0 pl-3"> - Web designer</p>
+                          <p class="m-0 ps-3"> - Web designer</p>
                         </div>
                       </div>
                     </div>
@@ -74,7 +74,7 @@
               </template>
               <template v-slot:body>
                 <ul class="profile-img-gallary d-flex flex-wrap p-0 m-0">
-                  <li v-for="(item,index) in galary" :key="index" class="col-md-4 col-6 pl-1 pr-0 pb-1">
+                  <li v-for="(item,index) in galary" :key="index" class="col-4 col-6 ps-1 pe-0 pb-1">
                     <b-link :href="item.href">
                     <b-img :src="item.image" alt="gallary-image" fluid /></b-link>
                   </li>
@@ -88,7 +88,7 @@
               <template v-slot:body>
                 <div class="twit-feed" v-for="(feed,index) in twitterFeed" :key="index">
                   <div class="media-support-header" :class="{ 'mb-2': index !== twitterFeed.length-1 }" >
-                    <div class="media-support-user-img mr-3">
+                    <div class="media-support-user-img ms-3">
                       <b-img rounded="circle" fluid :src="feed.image" alt="" />
                     </div>
                     <div class="media-support-info">
@@ -99,7 +99,7 @@
                   <div class="media-support-body">
                     <p class="mb-0">{{ feed.description }}</p>
                     <div class="d-flex flex-wrap">
-                      <b-link v-for="(tag,index1) in feed.tags" :key="index1" class="twit-meta-tag pr-2" :href="tag.link" >#{{ tag.text }} </b-link>
+                      <b-link v-for="(tag,index1) in feed.tags" :key="index1" class="twit-meta-tag pe-2" :href="tag.link" >#{{ tag.text }} </b-link>
                     </div>
                     <div class="twit-date"><a href="#">{{ feed.date }}</a></div>
                   </div>
@@ -115,7 +115,7 @@
                   <template v-slot:body>
                     <div class="user-post-data p-3">
                       <div class="d-flex flex-wrap">
-                        <div class="media-support-user-img mr-3">
+                        <div class="media-support-user-img ms-3">
                           <b-img  rounded="circle" fluid :src="require('../../assets/images/user/01.jpg')" alt=""/>
                         </div>
                         <div class="media-support-info mt-2">
@@ -125,11 +125,11 @@
                         <div class="iq-card-header-toolbar d-flex align-items-center">
                           <b-dropdown id="dropdownMenuButton40" right variant="none" menu-class="p-0">
                             <template v-slot:button-content>
-                              <b-link href="#" class="text-secondary">29 mins <i class="ri-more-2-line ml-3"></i></b-link>
+                              <b-link href="#" class="text-secondary">29 mins <i class="ri-more-2-line ms-3"></i></b-link>
                             </template>
-                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line mr-2"></i>Unfollow</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-share-forward-line mr-2"></i>Share</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-file-copy-line mr-2"></i>Copy Link</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line ms-2"></i>Unfollow</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-share-forward-line ms-2"></i>Share</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-file-copy-line ms-2"></i>Copy Link</b-dropdown-item>
                           </b-dropdown>
                         </div>
                       </div>
@@ -141,13 +141,13 @@
                   <div class="comment-area p-3">
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="d-flex align-items-center">
-                        <div class="d-flex align-items-center feather-icon mr-3">
+                        <div class="d-flex align-items-center feather-icon ms-3">
                           <b-link href="javascript:void();"><i class="ri-heart-line"></i></b-link>
-                          <span class="ml-1">140</span>
+                          <span class="ms-1">140</span>
                         </div>
                         <div class="d-flex align-items-center message-icon">
                           <b-link href="javascript:void();"><i class="ri-chat-4-line"></i></b-link>
-                          <span class="ml-1">140</span>
+                          <span class="ms-1">140</span>
                         </div>
                       </div>
                       <div class="d-flex align-items-center">
@@ -168,7 +168,7 @@
                             <b-img class="avatar-40"  rounded="circle" fluid :src="require('../../assets/images/user/09.jpg')" alt="" />
                           </b-link>
                         </div>
-                        <span class="ml-2">+140 more</span>
+                        <span class="ms-2">+140 more</span>
                       </div>
                     </div>
                     <hr>
@@ -180,7 +180,7 @@
                           <div class="user-img">
                             <b-img :src="require('../../assets/images/user/02.jpg')" alt="userimg" class="avatar-35"  rounded="circle" fluid />
                           </div>
-                          <div class="comment-data-block ml-3">
+                          <div class="comment-data-block ms-3">
                             <h6>Monty Carlo</h6>
                             <p class="mb-0">Lorem ipsum dolor sit amet</p>
                             <div class="d-flex flex-wrap align-items-center comment-activity">
@@ -197,7 +197,7 @@
                           <div class="user-img">
                             <b-img :src="require('../../assets/images/user/03.jpg')" alt="userimg" class="avatar-35"  rounded="circle" fluid />
                           </div>
-                          <div class="comment-data-block ml-3">
+                          <div class="comment-data-block ms-3">
                             <h6>Paul Molive</h6>
                             <p class="mb-0">Lorem ipsum dolor sit amet</p>
                             <div class="d-flex flex-wrap align-items-center comment-activity">
@@ -213,8 +213,8 @@
                     <b-form class="comment-text d-flex align-items-center mt-3" action="javascript:void(0);">
                       <b-form-input type="text" class="rounded" placeholder="Lovely!" />
                       <div class="comment-attagement d-flex">
-                        <b-link href="javascript:void();"><i class="ri-user-smile-line mr-2"></i></b-link>
-                        <b-link href="javascript:void();"><i class="ri-camera-line mr-2"></i></b-link>
+                        <b-link href="javascript:void();"><i class="ri-user-smile-line ms-2"></i></b-link>
+                        <b-link href="javascript:void();"><i class="ri-camera-line ms-2"></i></b-link>
                       </div>
                     </b-form>
                   </div>
@@ -223,7 +223,7 @@
                   <template v-slot:body>
                     <div class="user-post-data p-3">
                       <div class="d-flex flex-wrap">
-                        <div class="media-support-user-img mr-3">
+                        <div class="media-support-user-img ms-3">
                           <b-img rounded="circle" fluid :src="require('../../assets/images/user/02.jpg')" alt="" />
                         </div>
                         <div class="media-support-info mt-2">
@@ -233,11 +233,11 @@
                         <div class="iq-card-header-toolbar d-flex align-items-center">
                           <b-dropdown id="dropdownMenuButton40" right variant="none" menu-class="p-0">
                             <template v-slot:button-content>
-                              <b-link href="#" class="text-secondary">1 hr <i class="ri-more-2-line ml-3"></i></b-link>
+                              <b-link href="#" class="text-secondary">1 hr <i class="ri-more-2-line ms-3"></i></b-link>
                             </template>
-                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line mr-2"></i>Unfollow</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-share-forward-line mr-2"></i>Share</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-file-copy-line mr-2"></i>Copy Link</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line ms-2"></i>Unfollow</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-share-forward-line ms-2"></i>Share</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-file-copy-line ms-2"></i>Copy Link</b-dropdown-item>
                           </b-dropdown>
                         </div>
                       </div>
@@ -248,13 +248,13 @@
                       <hr class="mt-0">
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
-                          <div class="d-flex align-items-center feather-icon mr-3">
+                          <div class="d-flex align-items-center feather-icon ms-3">
                             <b-link id="clickme" href="javascript:void();"><i class="ri-heart-line"></i></b-link>
-                            <span class="ml-1">140</span>
+                            <span class="ms-1">140</span>
                           </div>
                           <div class="d-flex align-items-center message-icon">
                             <b-link href="javascript:void();"><i class="ri-chat-4-line"></i></b-link>
-                            <span class="ml-1">140</span>
+                            <span class="ms-1">140</span>
                           </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -275,14 +275,14 @@
                               <b-img class="avatar-40" rounded="circle" fluid :src="require('../../assets/images/user/09.jpg')" alt="" />
                             </b-link>
                           </div>
-                          <span class="ml-2">+140 more</span>
+                          <span class="ms-2">+140 more</span>
                         </div>
                       </div>
                       <b-form class="comment-text d-flex align-items-center mt-3" action="javascript:void(0);">
                         <b-form-input type="text" class="rounded" placeholder="Lovely!" />
                         <div class="comment-attagement d-flex">
-                          <b-link href="javascript:void();"><i class="ri-user-smile-line mr-2"></i></b-link>
-                          <b-link href="javascript:void();"><i class="ri-camera-line mr-2"></i></b-link>
+                          <b-link href="javascript:void();"><i class="ri-user-smile-line ms-2"></i></b-link>
+                          <b-link href="javascript:void();"><i class="ri-camera-line ms-2"></i></b-link>
                         </div>
                       </b-form>
                     </div>
@@ -299,11 +299,11 @@
                       <template v-slot:button-content>
                         <span class="text-primary">View All</span>
                       </template>
-                      <b-dropdown-item href="#"><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-                      <b-dropdown-item href="#"><i class="ri-close-circle-line mr-2"></i>Delete</b-dropdown-item>
-                      <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-                      <b-dropdown-item href="#"><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-                      <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+                      <b-dropdown-item href="#"><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+                      <b-dropdown-item href="#"><i class="ri-close-circle-line ms-2"></i>Delete</b-dropdown-item>
+                      <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+                      <b-dropdown-item href="#"><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+                      <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
                     </b-dropdown>
                   </template>
                   <template v-slot:body>
@@ -322,7 +322,7 @@
                         <div class="user-img img-fluid">
                           <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
                         </div>
-                        <div class="media-support-info ml-3">
+                        <div class="media-support-info ms-3">
                           <h6>{{ item.name }}</h6>
                           <p class="mb-0">{{ item.role }}</p>
                         </div>
@@ -331,9 +331,9 @@
                             <template v-slot:button-content>
                               <i class="ri-more-2-line"></i>
                             </template>
-                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line mr-2"></i>Unfollow</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-share-forward-line mr-2"></i>Share</b-dropdown-item>
-                            <b-dropdown-item href="#"><i class="ri-file-copy-line mr-2"></i>Copy Link</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-user-unfollow-line ms-2"></i>Unfollow</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-share-forward-line ms-2"></i>Share</b-dropdown-item>
+                            <b-dropdown-item href="#"><i class="ri-file-copy-line ms-2"></i>Copy Link</b-dropdown-item>
                           </b-dropdown>
                         </div>
                       </li>
@@ -354,7 +354,7 @@
                       </div>
                       <div class="profile-detail mt-3">
                         <h3 class="d-inline-block">Nik Jone</h3>
-                        <p class="d-inline-block pl-3"> - Web designer</p>
+                        <p class="d-inline-block ps-3"> - Web designer</p>
                         <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 500s</p>
                       </div>
                     </div>
@@ -404,7 +404,7 @@
                 <ul class="media-story m-0 p-0">
                   <li v-for="(item,index) in story" :key="index" class="d-flex align-items-center" :class="item.isActive +' '+ item.class">
                     <b-img :src="item.image" alt="story-img" rounded="circle" fluid />
-                    <div class="stories-data ml-3">
+                    <div class="stories-data ms-3">
                       <h5>{{ item.title }}</h5>
                       <p class="mb-0">{{ item.time }}</p>
                     </div>
@@ -425,7 +425,7 @@
                     <div class="user-img img-fluid">
                       <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
                     </div>
-                    <div class="media-support-info ml-3">
+                    <div class="media-support-info ms-3">
                       <h6>{{ item.name }}</h6>
                       <p class="mb-0">{{ item.mutual_friend }}</p>
                     </div>

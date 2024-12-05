@@ -131,9 +131,9 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button v-b-modal.modal-3 variant="primary" class="mr-1">Extra large modal</b-button>
-            <b-button v-b-modal.modal-4 variant="primary" class="mr-1">Large modal</b-button>
-            <b-button v-b-modal.modal-5 variant="primary" class="mr-1">Small modal</b-button>
+            <b-button v-b-modal.modal-3 variant="primary" class="ms-1">Extra large modal</b-button>
+            <b-button v-b-modal.modal-4 variant="primary" class="ms-1">Large modal</b-button>
+            <b-button v-b-modal.modal-5 variant="primary" class="ms-1">Small modal</b-button>
             <b-modal id="modal-3" size="xl" title="Modal title" ok-title="Save Changes" cancel-title="Close">
               <p>Modal body text goes here.</p>
             </b-modal>
@@ -243,8 +243,8 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button v-b-modal.modal-7 variant="primary" class="mr-1">Launch demo modal</b-button>
-            <b-button v-b-modal.modal-8 variant="primary" class="mr-1">Vertically centered scrollable modal</b-button>
+            <b-button v-b-modal.modal-7 variant="primary" class="ms-1">Launch demo modal</b-button>
+            <b-button v-b-modal.modal-8 variant="primary" class="ms-1">Vertically centered scrollable modal</b-button>
             <b-modal id="modal-7" centered title="Modal title" ok-title="Save Changes" cancel-title="Close">
               ...
             </b-modal>
@@ -281,16 +281,16 @@
         &lt;b-col md="4"&gt;
           md="4"
         &lt;/b-col&gt;
-        &lt;b-col md="4" class="ml-auto"&gt;
-          md="4" .ml-auto
+        &lt;b-col md="4" class="ms-auto"&gt;
+          md="4" .ms-auto
         &lt;/b-col&gt;
       &lt;/b-row&gt;
       &lt;b-row class="mb-3"&gt;
-        &lt;b-col md="3" class="ml-auto"&gt;md="3" .ml-auto&lt;/b-col&gt;
-        &lt;b-col md="2" class="ml-auto"&gt;md="2" .ml-auto&lt;/b-col&gt;
+        &lt;b-col md="3" class="ms-auto"&gt;md="3" .ms-auto&lt;/b-col&gt;
+        &lt;b-col md="2" class="ms-auto"&gt;md="2" .ms-auto&lt;/b-col&gt;
       &lt;/b-row&gt;
       &lt;b-row class="mb-3"&gt;
-        &lt;b-col md="6" class="ml-auto"&gt;md="6" .ml-auto&lt;/b-col&gt;
+        &lt;b-col md="6" class="ms-auto"&gt;md="6" .ms-auto&lt;/b-col&gt;
       &lt;/b-row&gt;
       &lt;b-row&gt;
         &lt;b-col sm="9"&gt;
@@ -316,16 +316,16 @@
                     <b-col md="4">
                       md="4"
                     </b-col>
-                    <b-col md="4 ml-auto">
-                      md="4" .ml-auto
+                    <b-col md="4 ms-auto">
+                      md="4" .ms-auto
                     </b-col>
                   </b-row>
                   <b-row class="mb-3">
-                    <b-col md="3 ml-auto">md="3" .ml-auto</b-col>
-                    <b-col md="2 ml-auto">md="2" .ml-auto</b-col>
+                    <b-col md="3 ms-auto">md="3" .ms-auto</b-col>
+                    <b-col md="2 ms-auto">md="2" .ms-auto</b-col>
                   </b-row>
                   <b-row class="mb-3">
-                    <b-col md="6 ml-auto">md="6" .ml-auto</b-col>
+                    <b-col md="6 ms-auto">md="6" .ms-auto</b-col>
                   </b-row>
                   <b-row>
                     <b-col sm="9">

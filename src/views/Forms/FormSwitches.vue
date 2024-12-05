@@ -24,7 +24,7 @@
           <template v-slot:body>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
             <template v-for="(item,index) in text">
-              <div class="custom-control custom-switch custom-switch-text custom-control-inline custom-switch-color" :key="index">
+              <div class="form-check custom-switch custom-switch-text custom-control-inline custom-switch-color" :key="index">
                 <div class="custom-switch-inner">
                   <p class="mb-0"> {{ item.label }} </p>
                   <input type="checkbox" class="custom-control-input" :class="'bg-'+item.class" :id="'customSwitch-11'+index" v-model="item.checked">
@@ -59,7 +59,7 @@
           <template v-slot:body>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
             <template v-for="(item,index) in icon">
-              <div class="custom-control custom-switch custom-switch-icon custom-switch-color custom-control-inline" :key="index">
+              <div class="form-check custom-switch custom-switch-icon custom-switch-color custom-control-inline" :key="index">
                 <div class="custom-switch-inner">
                   <p class="mb-0"> Primary </p>
                   <input type="checkbox" class="custom-control-input" :class="`bg-${item.color}`" :id="`customSwitch-1-${index}`" v-model="item.checked">

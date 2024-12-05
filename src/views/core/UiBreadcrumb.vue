@@ -96,13 +96,13 @@ export default {
     return {
       itemsIcon1: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           active: true
         }
       ],
       itemsIcon2: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -112,7 +112,7 @@ export default {
       ],
       itemsIcon3: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -234,13 +234,13 @@ export default {
     return {
       itemsIcon1: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           active: true
         }
       ],
       itemsIcon2: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -250,7 +250,7 @@ export default {
       ],
       itemsIcon3: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -304,13 +304,13 @@ export default {
     return {
       itemsIcon1: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           active: true
         }
       ],
       itemsIcon2: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -320,7 +320,7 @@ export default {
       ],
       itemsIcon3: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -372,13 +372,13 @@ export default {
     return {
       itemsIcon1: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           active: true
         }
       ],
       itemsIcon2: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -388,7 +388,7 @@ export default {
       ],
       itemsIcon3: [
         {
-          html: '&lt;i class="ri-home-4-line mr-1 float-left"&gt;&lt;/i&gt;Home',
+          html: '&lt;i class="ri-home-4-line ms-1 float-left"&gt;&lt;/i&gt;Home',
           href: '#'
         },
         {
@@ -458,13 +458,13 @@ export default {
       ],
       itemsIcon1: [
         {
-          html: '<i class="ri-home-4-line mr-1 float-left"></i>Home',
+          html: '<i class="ri-home-4-line ms-1 float-left"></i>Home',
           active: true
         }
       ],
       itemsIcon2: [
         {
-          html: '<i class="ri-home-4-line mr-1 float-left"></i>Home',
+          html: '<i class="ri-home-4-line ms-1 float-left"></i>Home',
           href: '#'
         },
         {
@@ -474,7 +474,7 @@ export default {
       ],
       itemsIcon3: [
         {
-          html: '<i class="ri-home-4-line mr-1 float-left"></i>Home',
+          html: '<i class="ri-home-4-line ms-1 float-left"></i>Home',
           href: '#'
         },
         {

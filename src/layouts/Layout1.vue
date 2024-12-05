@@ -8,7 +8,7 @@
       <!-- TOP Nav Bar -->
       <NavBarStyle1 title="Dashboard" :homeURL="{ name: 'dashboard1.home' }" :logo="logo">
         <template slot="responsiveRight">
-          <ul class="navbar-nav ml-auto navbar-list">
+          <ul class="navbar-nav ms-auto navbar-list">
             <li class="nav-item">
               <a href="#" class="search-toggle iq-waves-effect"><i class="ri-notification-2-line"></i></a>
               <div class="iq-sub-dropdown">
@@ -18,8 +18,8 @@
                       <h5 class="mb-0 text-white">All Notifications<small class="badge  badge-light float-right pt-1">4</small></h5>
                     </div>
                     <a href="#" class="iq-sub-card" >
-                      <div class="media align-items-center">
-                        <div class="media-body ml-3">
+                      <div class="d-flex align-items-center">
+                        <div class="media-body ms-3">
                           <h6 class="mb-0 ">Mediator Assigned</h6>
                           <small class="float-right font-size-12">23 hrs ago</small>
                         </div>
@@ -46,51 +46,51 @@
                       <span class="text-white font-size-12">Available</span>
                     </div>
                     <a href="#" class="iq-sub-card iq-bg-primary-hover">
-                      <div class="media align-items-center">
+                      <div class="d-flex align-items-center">
                         <div class="rounded iq-card-icon iq-bg-primary">
                           <i class="ri-file-user-line"></i>
                         </div>
-                        <div class="media-body ml-3">
+                        <div class="media-body ms-3">
                           <h6 class="mb-0 ">My Profile</h6>
                           <p class="mb-0 font-size-12">View personal profile details.</p>
                         </div>
                       </div>
                     </a>
                     <a href="#" class="iq-sub-card iq-bg-primary-success-hover">
-                      <div class="media align-items-center">
+                      <div class="d-flex align-items-center">
                         <div class="rounded iq-card-icon iq-bg-success">
                           <i class="ri-profile-line"></i>
                         </div>
-                        <div class="media-body ml-3">
+                        <div class="media-body ms-3">
                           <h6 class="mb-0 ">Edit Profile</h6>
                           <p class="mb-0 font-size-12">Modify your personal details.</p>
                         </div>
                       </div>
                     </a>
                     <a href="#" class="iq-sub-card iq-bg-primary-danger-hover">
-                      <div class="media align-items-center">
+                      <div class="d-flex align-items-center">
                         <div class="rounded iq-card-icon iq-bg-danger">
                           <i class="ri-account-box-line"></i>
                         </div>
-                        <div class="media-body ml-3">
+                        <div class="media-body ms-3">
                           <h6 class="mb-0 ">Account settings</h6>
                           <p class="mb-0 font-size-12">Manage your account parameters.</p>
                         </div>
                       </div>
                     </a>
                     <a href="#" class="iq-sub-card iq-bg-primary-secondary-hover">
-                      <div class="media align-items-center">
+                      <div class="d-flex align-items-center">
                         <div class="rounded iq-card-icon iq-bg-secondary">
                           <i class="ri-lock-line"></i>
                         </div>
-                        <div class="media-body ml-3">
+                        <div class="media-body ms-3">
                           <h6 class="mb-0 ">Privacy Settings</h6>
                           <p class="mb-0 font-size-12">Control your privacy parameters.</p>
                         </div>
                       </div>
                     </a>
                     <div class="d-inline-block w-100 text-center p-3">
-                      <a class="iq-bg-danger iq-sign-btn" v-on:click="onClickSignOut" role="button">Sign out<i class="ri-login-box-line ml-2"></i></a>
+                      <a class="iq-bg-danger iq-sign-btn" v-on:click="onClickSignOut" role="button">Sign out<i class="ri-login-box-line ms-2"></i></a>
                     </div>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ import { mapGetters } from 'vuex'
 import axios from 'axios'
 
 export default {
-  name: 'Layout1',
+  name: 'Layout1 Component',
   components: {
     Loader, SideBarStyle1, NavBarStyle1
   },
@@ -142,7 +142,7 @@ export default {
     }
     axios
       .get('/api/getUserData', {
-        headers: headers
+        headers
       })
       .then((response) => {
         if (response.data.error) {
@@ -175,7 +175,7 @@ export default {
     return {
       sidebar: SideBarItems,
       userProfile: profile,
-      logo: logo,
+      logo,
       userType: ''
     }
   },
@@ -183,7 +183,7 @@ export default {
     validateData (headers, data) {
       axios
         .post('/api/verify-signature', data, {
-          headers: headers
+          headers
         })
         .then((response) => {
           if (response.data.valid === true) {

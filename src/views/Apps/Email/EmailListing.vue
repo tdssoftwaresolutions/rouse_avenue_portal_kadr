@@ -5,11 +5,11 @@
         <iq-card>
           <template v-slot:body>
             <div class="iq-email-list">
-              <b-button variant="primary" size="lg" class="font-size-16 p-3 mb-3" block v-b-modal.compose-email-popup><i class="ri-send-plane-line mr-2"></i>New Message</b-button>
+              <b-button variant="primary" size="lg" class="font-size-16 p-3 mb-3" block v-b-modal.compose-email-popup><i class="ri-send-plane-line ms-2"></i>New Message</b-button>
               <tab-nav :pills="true" vertical id="myTab" class="iq-email-ui" @change="updateTab">
                 <tab-nav-items li-class="nav-link p-0" :active="true" id="mail-inbox-tab" ariaControls="mail-inbox" role="tab" :ariaSelected="true" >
                   <template v-slot:title>
-                    <i class="ri-mail-line" />Inbox<span class="badge badge-primary ml-2">4</span>
+                    <i class="ri-mail-line" />Inbox<span class="badge badge-primary ms-2">4</span>
                   </template>
                 </tab-nav-items>
                 <tab-nav-items li-class="nav-link p-0" :active="false" id="mail-starred-tab" ariaControls="mail-starred" role="tab" :ariaSelected="true">
@@ -89,21 +89,21 @@
                 <li v-b-tooltip.top title="Zoom"><a href="#"><i class="ri-drag-move-2-line"></i></a></li>
               </ul>
               <div class="iq-email-search d-flex">
-                <form class="mr-3 position-relative">
-                  <div class="form-group mb-0">
+                <form class="ms-3 position-relative">
+                  <div class="mb-3 mb-0">
                     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search">
                     <a class="search-link" href="#"><i class="ri-search-line" /></a>
                   </div>
                 </form>
                 <ul>
-                  <li class="mr-3">
+                  <li class="ms-3">
                     <a class="font-size-14" href="javascript:void(0)">
                       1 - 50 of 505
                     </a>
                   </li>
                   <li v-b-tooltip.top title="Previous"><a href="#"><i class="ri-arrow-left-s-line"></i></a></li>
                   <li v-b-tooltip.top title="Next"><a href="#"><i class="ri-arrow-right-s-line"></i></a></li>
-                  <li class="mr-0" v-b-tooltip.top title="Setting"><a href="#"><i class="ri-list-settings-line"></i></a></li>
+                  <li class="ms-0" v-b-tooltip.top title="Setting"><a href="#"><i class="ri-list-settings-line"></i></a></li>
                 </ul>
               </div>
             </div>

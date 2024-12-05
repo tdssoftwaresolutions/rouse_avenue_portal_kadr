@@ -5,7 +5,7 @@
     <p>Enter your password to access the admin.</p>
     <form class="mt-4">
 
-      <div class="form-group">
+      <div class="mb-3">
         <label for="exampleInputEmail1">Password</label>
         <input type="Password" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Password">
       </div>

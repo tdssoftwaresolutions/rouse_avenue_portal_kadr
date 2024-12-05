@@ -9,7 +9,7 @@
         <slot name="title" />
       </div>
       <hr>
-      <div class="user-detail mt-4 pl-4 pr-4" :class="center ? ' text-center '+bodyClass : bodyClass">
+      <div class="user-detail mt-4 ps-4 pe-4" :class="center ? ' text-center '+bodyClass : bodyClass">
         <slot name="body" />
       </div>
     </div>

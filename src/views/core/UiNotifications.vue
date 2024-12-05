@@ -20,12 +20,12 @@
                     <code>
 &lt;b-toast visible static no-auto-hide no-close-button&gt;
   &lt;template v-slot:toast-title&gt;
-    &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+    &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
       &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
     &lt;/svg&gt;
-    &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+    &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
     &lt;small&gt;11 mins ago&lt;/small&gt;
-    &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+    &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
       &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
     &lt;/button&gt;
   &lt;/template&gt;
@@ -37,12 +37,12 @@
             </b-collapse>
             <b-toast visible static no-auto-hide no-close-button>
               <template v-slot:toast-title>
-                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                   <rect width="100%" height="100%" fill="#007aff"></rect>
                 </svg>
-                <strong class="mr-auto">Bootstrap</strong>
+                <strong class="ms-auto">Bootstrap</strong>
                 <small>11 mins ago</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </template>
@@ -68,12 +68,12 @@
                     <code>
 &lt;b-toast visible static no-auto-hide no-close-button&gt;
   &lt;template v-slot:toast-title&gt;
-    &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+    &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
       &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
     &lt;/svg&gt;
-    &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+    &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
     &lt;small class="text-muted"&gt;just now&lt;/small&gt;
-    &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+    &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
       &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
     &lt;/button&gt;
   &lt;/template&gt;
@@ -81,12 +81,12 @@
 &lt;/b-toast&gt;
 &lt;b-toast visible static no-auto-hide no-close-button&gt;
   &lt;template v-slot:toast-title&gt;
-    &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+    &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
       &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
     &lt;/svg&gt;
-    &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+    &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
     &lt;small class="text-muted"&gt;2 seconds ago&lt;/small&gt;
-    &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+    &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
       &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
     &lt;/button&gt;
   &lt;/template&gt;
@@ -98,12 +98,12 @@
             </b-collapse>
             <b-toast visible static no-auto-hide no-close-button>
               <template v-slot:toast-title>
-                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                   <rect width="100%" height="100%" fill="#007aff"></rect>
                 </svg>
-                <strong class="mr-auto">Bootstrap</strong>
+                <strong class="ms-auto">Bootstrap</strong>
                 <small class="text-muted">just now</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </template>
@@ -111,12 +111,12 @@
             </b-toast>
             <b-toast visible static no-auto-hide no-close-button>
               <template v-slot:toast-title>
-                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                   <rect width="100%" height="100%" fill="#007aff"></rect>
                 </svg>
-                <strong class="mr-auto">Bootstrap</strong>
+                <strong class="ms-auto">Bootstrap</strong>
                 <small class="text-muted">2 seconds ago</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </template>
@@ -144,12 +144,12 @@
   &lt;div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: 200px;"&gt;
     &lt;b-toast visible static no-auto-hide no-close-button&gt;
       &lt;template v-slot:toast-title&gt;
-        &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+        &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
           &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
         &lt;/svg&gt;
-        &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+        &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
         &lt;small&gt;11 mins ago&lt;/small&gt;
-        &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+        &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
           &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
         &lt;/button&gt;
       &lt;/template&gt;
@@ -165,12 +165,12 @@
               <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
                 <b-toast visible static no-auto-hide no-close-button>
                   <template v-slot:toast-title>
-                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                    <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect width="100%" height="100%" fill="#007aff"></rect>
                     </svg>
-                    <strong class="mr-auto">Bootstrap</strong>
+                    <strong class="ms-auto">Bootstrap</strong>
                     <small>11 mins ago</small>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                       <span aria-hidden="true">×</span>
                     </button>
                   </template>
@@ -201,12 +201,12 @@
 &lt;div class="p-3 bg-dark"&gt;
   &lt;b-toast visible static no-auto-hide no-close-button&gt;
     &lt;template v-slot:toast-title&gt;
-      &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+      &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
         &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
       &lt;/svg&gt;
-      &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+      &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
       &lt;small&gt;11 mins ago&lt;/small&gt;
-      &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+      &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
         &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
       &lt;/button&gt;
     &lt;/template&gt;
@@ -220,12 +220,12 @@
               <div class="p-3 bg-dark">
                 <b-toast visible static no-auto-hide no-close-button>
                   <template v-slot:toast-title>
-                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                    <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect width="100%" height="100%" fill="#007aff"></rect>
                     </svg>
-                    <strong class="mr-auto">Bootstrap</strong>
+                    <strong class="ms-auto">Bootstrap</strong>
                     <small>11 mins ago</small>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                       <span aria-hidden="true">×</span>
                     </button>
                   </template>
@@ -254,12 +254,12 @@
   &lt;div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"&gt;
     &lt;b-toast visible static no-auto-hide no-close-button toast-class="position-absolute"&gt;
       &lt;template v-slot:toast-title&gt;
-        &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+        &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
           &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
         &lt;/svg&gt;
-        &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+        &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
         &lt;small&gt;11 mins ago&lt;/small&gt;
-        &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+        &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
           &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
         &lt;/button&gt;
       &lt;/template&gt;
@@ -273,12 +273,12 @@
     &lt;div style="position: absolute; top: 0; right: 0;"&gt;
     &lt;b-toast visible static no-auto-hide no-close-button&gt;
       &lt;template v-slot:toast-title&gt;
-        &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+        &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
           &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
         &lt;/svg&gt;
-        &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+        &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
         &lt;small class="text-muted"&gt;just now&lt;/small&gt;
-        &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+        &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
           &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
         &lt;/button&gt;
       &lt;/template&gt;
@@ -286,12 +286,12 @@
     &lt;/b-toast&gt;
     &lt;b-toast visible static no-auto-hide no-close-button&gt;
       &lt;template v-slot:toast-title&gt;
-        &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+        &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
           &lt;rect width="100%" height="100%" fill="#007aff"&gt;&lt;/rect&gt;
         &lt;/svg&gt;
-        &lt;strong class="mr-auto"&gt;Bootstrap&lt;/strong&gt;
+        &lt;strong class="ms-auto"&gt;Bootstrap&lt;/strong&gt;
         &lt;small class="text-muted"&gt;2 seconds ago&lt;/small&gt;
-        &lt;button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
+        &lt;button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close"&gt;
           &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
         &lt;/button&gt;
       &lt;/template&gt;
@@ -308,12 +308,12 @@
               <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
                 <b-toast visible static no-auto-hide no-close-button toast-class="position-absolute">
                   <template v-slot:toast-title>
-                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                    <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect width="100%" height="100%" fill="#007aff"></rect>
                     </svg>
-                    <strong class="mr-auto">Bootstrap</strong>
+                    <strong class="ms-auto">Bootstrap</strong>
                     <small>11 mins ago</small>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                       <span aria-hidden="true">×</span>
                     </button>
                   </template>
@@ -327,12 +327,12 @@
                 <div style="position: absolute; top: 0; right: 0;">
                 <b-toast visible static no-auto-hide no-close-button>
                   <template v-slot:toast-title>
-                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                    <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect width="100%" height="100%" fill="#007aff"></rect>
                     </svg>
-                    <strong class="mr-auto">Bootstrap</strong>
+                    <strong class="ms-auto">Bootstrap</strong>
                     <small class="text-muted">just now</small>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                       <span aria-hidden="true">×</span>
                     </button>
                   </template>
@@ -340,12 +340,12 @@
                 </b-toast>
                 <b-toast visible static no-auto-hide no-close-button>
                   <template v-slot:toast-title>
-                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                    <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect width="100%" height="100%" fill="#007aff"></rect>
                     </svg>
-                    <strong class="mr-auto">Bootstrap</strong>
+                    <strong class="ms-auto">Bootstrap</strong>
                     <small class="text-muted">2 seconds ago</small>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <button type="button" class="ms-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                       <span aria-hidden="true">×</span>
                     </button>
                   </template>
@@ -376,12 +376,12 @@
                     <code>
 &lt;b-toast visible static no-auto-hide no-close-button toast-class="bg-primary" body-class="text-white"  header-class="bg-primary text-white"&gt;
   &lt;template v-slot:toast-title&gt;
-    &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+    &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
       &lt;rect width="100%" height="100%" fill="#fff"&gt;&lt;/rect&gt;
     &lt;/svg&gt;
-    &lt;strong class="mr-auto text-white"&gt;Bootstrap&lt;/strong&gt;
+    &lt;strong class="ms-auto text-white"&gt;Bootstrap&lt;/strong&gt;
     &lt;small class="text-white"&gt;11 mins ago&lt;/small&gt;
-    &lt;button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close"&gt;
+    &lt;button type="button" class="ms-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close"&gt;
       &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
     &lt;/button&gt;
   &lt;/template&gt;
@@ -389,12 +389,12 @@
 &lt;/b-toast&gt;
 &lt;b-toast variant="success" visible static no-auto-hide no-close-button toast-class="bg-success mt-3" body-class="text-white"  header-class="bg-success text-white"&gt;
   &lt;template v-slot:toast-title&gt;
-    &lt;svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
+    &lt;svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"&gt;
       &lt;rect width="100%" height="100%" fill="#fff"&gt;&lt;/rect&gt;
     &lt;/svg&gt;
-    &lt;strong class="mr-auto text-white"&gt;Bootstrap&lt;/strong&gt;
+    &lt;strong class="ms-auto text-white"&gt;Bootstrap&lt;/strong&gt;
     &lt;small class="text-white"&gt;11 mins ago&lt;/small&gt;
-    &lt;button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close"&gt;
+    &lt;button type="button" class="ms-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close"&gt;
       &lt;span aria-hidden="true"&gt;×&lt;/span&gt;
     &lt;/button&gt;
   &lt;/template&gt;
@@ -406,12 +406,12 @@
             </b-collapse>
             <b-toast visible static no-auto-hide no-close-button toast-class="bg-primary" body-class="text-white"  header-class="bg-primary text-white">
               <template v-slot:toast-title>
-                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                   <rect width="100%" height="100%" fill="#fff"></rect>
                 </svg>
-                <strong class="mr-auto text-white">Bootstrap</strong>
+                <strong class="ms-auto text-white">Bootstrap</strong>
                 <small class="text-white">11 mins ago</small>
-                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ms-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </template>
@@ -419,12 +419,12 @@
             </b-toast>
             <b-toast variant="success" visible static no-auto-hide no-close-button toast-class="bg-success mt-3" body-class="text-white"  header-class="bg-success text-white">
               <template v-slot:toast-title>
-                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <svg class="bd-placeholder-img rounded ms-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                   <rect width="100%" height="100%" fill="#fff"></rect>
                 </svg>
-                <strong class="mr-auto text-white">Bootstrap</strong>
+                <strong class="ms-auto text-white">Bootstrap</strong>
                 <small class="text-white">11 mins ago</small>
-                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ms-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </template>

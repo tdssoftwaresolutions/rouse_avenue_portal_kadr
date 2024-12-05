@@ -111,7 +111,7 @@
                       </b-row>
                     </div>
                     <b-button name="next" variant="primary" class="next action-button float-right" value="Next">Next</b-button>
-                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right mr-3" value="Previous">Previous</b-button>
+                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right ms-3" value="Previous">Previous</b-button>
                   </fieldset>
                   <fieldset>
                     <div class="form-card text-left">
@@ -156,7 +156,7 @@
                       </b-row>
                     </div>
                     <b-button name="next" variant="primary" class="next action-button float-right" value="Next">Next</b-button>
-                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right mr-3" value="Previous">Previous</b-button>
+                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right ms-3" value="Previous">Previous</b-button>
                   </fieldset>
                   <fieldset>
                     <div class="form-card text-left">
@@ -193,7 +193,7 @@
                       </b-row>
                     </div>
                     <b-button name="next" variant="primary" href="form-wizard-vertical" class="next action-button float-right" type="submit" value="Submit">Submit</b-button>
-                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right mr-3" value="Previous">Previous</b-button>
+                    <b-button name="previous" variant="dark" class="previous action-button-previous float-right ms-3" value="Previous">Previous</b-button>
                   </fieldset>
                 </b-form>
               </b-col>

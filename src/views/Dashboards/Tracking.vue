@@ -66,7 +66,7 @@
             <b-row>
               <b-col lg="12" class="d-flex justify-content-md-between">
                 <div>
-                  <div class="btn-group ml-2 bg-white" role="group" aria-label="Basic example">
+                  <div class="btn-group ms-2 bg-white" role="group" aria-label="Basic example">
                   </div>
                   <b-btn-group aria-role="group">
                     <b-button variant="outline-primary" class="active px-5" type="button">All</b-button>
@@ -85,37 +85,37 @@
                   <template v-slot:body>
                     <b-row>
                       <b-col>
-                        <div class="media mb-3">
+                        <div class="d-flex mb-3">
                           <img class="avatar-40 rounded-circle" :src="require('../../assets/images/user/1.jpg')" alt="">
-                          <div class="media-body ml-3">
+                          <div class="media-body ms-3">
                             <h5 class="mb-0"><b>{{ item.name }}</b></h5>
                             <p class="badge badge-primary font-weight-normal mb-0" v-if="item.status">ON TIME</p>
                             <p class="badge badge-danger font-weight-normal mb-0" v-else>Delayed</p>
                           </div>
                         </div>
-                        <div class="media mb-3">
+                        <div class="d-flex mb-3">
                           <img class="avatar-30 align-self-start" :src="require('../../assets/images/page-img/tag_blue.svg')" alt="">
-                          <div class="media-body ml-3">
+                          <div class="media-body ms-3">
                             <h6 class="mb-0">Flipkart</h6>
                             <p class="mb-0"><small>10 Items</small></p>
                           </div>
                         </div>
-                        <div class="media mb-3">
+                        <div class="d-flex mb-3">
                           <img class="avatar-30 align-self-start" :src="require('../../assets/images/page-img/tag_red.svg')" alt="">
-                          <div class="media-body ml-3">
+                          <div class="media-body ms-3">
                             <h6 class="mb-0">Zomato</h6>
                             <p class="mb-0"><small>2 Items</small></p>
                           </div>
                         </div>
-                        <div class="media mb-3">
+                        <div class="d-flex mb-3">
                           <img class="avatar-30" :src="require('../../assets/images/page-img/man.svg')" alt="">
-                          <div class="media-body ml-3 align-self-center">
+                          <div class="media-body ms-3 align-self-center">
                             <h6 class="mb-0 text-primary">Warehouse</h6>
                           </div>
                         </div>
-                        <div class="media">
+                        <div class="d-flex">
                           <i class="ri-time-line font-size-24" />
-                          <div class="media-body ml-3 align-self-center">
+                          <div class="media-body ms-3 align-self-center">
                             <h6 class="mb-0">Delivered in <b class="text-danger">2HR</b></h6>
                           </div>
                         </div>
@@ -125,49 +125,49 @@
                           <table>
                             <tr>
                               <td >
-                                <div class="media mt-4">
+                                <div class="d-flex mt-4">
                                   <div class="media-body">
                                     <h6 class="mb-0">Order 23578</h6>
                                     <p class="mb-0">Iphone 64GB by Amazon</p>
                                   </div>
                                 </div>
                               </td>
-                              <td  class="pl-3">
+                              <td  class="ps-3">
                                 <p class="mb-0">07:55</p>
                               </td>
-                              <td class="pl-3">
+                              <td class="ps-3">
                                 <span class="text-success">Delivared</span>
                               </td>
                             </tr>
                             <tr>
                               <td >
-                                <div class="media mt-3">
+                                <div class="d-flex mt-3">
                                   <div class="media-body">
                                     <h6 class="mb-0">Order 23578</h6>
                                     <p class="mb-0 line-height">Pizza hut cheese burst regular by swiggy</p>
                                   </div>
                                 </div>
                               </td>
-                              <td  class="pl-3">
+                              <td  class="ps-3">
                                 <p class="mb-0">07:55</p>
                               </td>
-                              <td class="pl-3">
+                              <td class="ps-3">
                                 <span class="text-danger">Return</span>
                               </td>
                             </tr>
                             <tr>
                               <td >
-                                <div class="media mt-3">
+                                <div class="d-flex mt-3">
                                   <div class="media-body">
                                     <h6 class="mb-0">Order 23578</h6>
                                     <p class="mb-0 line-height">Thunder Ice Creem by swiggy</p>
                                   </div>
                                 </div>
                               </td>
-                              <td  class="pl-3">
+                              <td  class="ps-3">
                                 <p class="mb-0">07:55</p>
                               </td>
-                              <td class="pl-3">
+                              <td class="ps-3">
                                 <span class="text-warning">Pending</span>
                               </td>
                             </tr>
@@ -193,13 +193,13 @@
               <template v-slot:headerAction>
                 <b-dropdown  id="dropdownMenuButton7" right variant="none p-0" data-toggle="dropdown">
                   <template v-slot:button-content>
-                    <span><i class="ri-more-2-fill mr-0" /></span>
+                    <span><i class="ri-more-2-fill ms-0" /></span>
                   </template>
-                  <b-dropdown-item href="#"><i class="ri-eye-fill mr-2" />View</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill mr-2" />Delete</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2" />Edit</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-printer-fill mr-2" />Print</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2" />Download</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-eye-fill ms-2" />View</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill ms-2" />Delete</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2" />Edit</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-printer-fill ms-2" />Print</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2" />Download</b-dropdown-item>
                 </b-dropdown>
               </template>
               <template v-slot:body>
@@ -248,8 +248,8 @@
                 <b-row>
                   <b-col lg="12">
                     <h2>3,897
-                      <span class="text-success font-size-14 ml-3 mr-3">
-                    <i class="ri-arrow-up-fill mr-2"/>+3.3%
+                      <span class="text-success font-size-14 ms-3 ms-3">
+                    <i class="ri-arrow-up-fill ms-2"/>+3.3%
                   </span>
                       <small class="text-secondary font-size-14">Generated by clients</small>
                     </h2>
@@ -291,11 +291,11 @@
                   <template v-slot:button-content>
                     <span class="text-primary"><i class="ri-more-2-fill"></i></span>
                   </template>
-                  <b-dropdown-item href="#"><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-                  <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill ms-2"></i>Delete</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+                  <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
                 </b-dropdown>
               </template>
               <template v-slot:body>
@@ -333,7 +333,7 @@
                       <input type="checkbox" class="custom-control-input" :id="'customCheckHome'+index">
                       <label class="custom-control-label" :for="'customCheckHome'+index">{{ item.title }}</label>
                     </div>
-                    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                       <i class="ri-close-line" />
                     </button>
                   </div>
@@ -346,7 +346,7 @@
                       <input type="checkbox" class="custom-control-input" :id="'customCheckHome'+index">
                       <label class="custom-control-label" :for="'customCheckHome'+index">{{ item.title }}</label>
                     </div>
-                    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                       <i class="ri-close-line" />
                     </button>
                   </div>
@@ -359,7 +359,7 @@
                       <input type="checkbox" class="custom-control-input" :id="'customCheckHome'+index">
                       <label class="custom-control-label" :for="'customCheckHome'+index">{{ item.title }}</label>
                     </div>
-                    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
                       <i class="ri-close-line" />
                     </button>
                   </div>

@@ -2,11 +2,11 @@
   <div>
     <h1 class="mb-0">Sign in</h1>
     <div class="mt-4">
-      <div class="form-group">
+      <div class="mb-3">
         <label for="exampleInputEmail1">Username</label>
         <input v-model="emailAddress" type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or mobile number">
       </div>
-      <div class="form-group  position-relative">
+      <div class="mb-3  position-relative">
         <label for="exampleInputPassword1">Password</label>
         <a href="#" class="float-right">Forgot password?</a>
         <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
@@ -51,7 +51,7 @@ export default {
   },
   mounted () {
     if (this.isSessionAvailable()) {
-      this.$router.push({ path: '/' })
+      this.$router.push({ name: 'dashboard1.home' })
     }
   },
   methods: {
@@ -80,7 +80,7 @@ export default {
           } else {
             console.log('Response:', response.data)
             localStorage.setItem('accessToken', response.data.accessToken)
-            this.$router.push({ path: '/' })
+            this.$router.push({ name: 'dashboard1.home' })
           }
         })
         .catch((error) => {

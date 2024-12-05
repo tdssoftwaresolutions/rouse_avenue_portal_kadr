@@ -24,27 +24,27 @@
 
         <!-- Step 1: Personal Information (Client & Mediator) -->
         <div v-if="step === 1">
-          <div class="form-group">
+          <div class="mb-3">
             <label for="name">Full Name</label>
             <input type="text" class="form-control" id="name" v-model="formData.name" placeholder="Your Full Name" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="email">Email Address</label>
             <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="Enter Email" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="phone">Phone Number</label>
             <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="city">City</label>
             <input type="text" class="form-control" id="city" v-model="formData.city" placeholder="City" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="state">State</label>
             <input type="text" class="form-control" id="state" v-model="formData.state" placeholder="State" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="pincode">Pin Code</label>
             <input type="text" class="form-control" id="pincode" v-model="formData.pincode" placeholder="Pin Code" />
           </div>
@@ -54,11 +54,11 @@
 
         <!-- Step 2: Complaint Details (Only for Client) -->
         <div v-if="step === 2 && formData.userType === 'client'">
-          <div class="form-group">
+          <div class="mb-3">
             <label for="description">Complaint Description</label>
             <textarea class="form-control" id="description" v-model="formData.description" placeholder="Describe your complaint"></textarea>
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="category">Complaint Category</label>
             <select class="form-control" id="category" v-model="formData.category">
               <option value="" disabled>Select Category</option>
@@ -69,7 +69,7 @@
               <option value="Other">Other</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="evidence">Upload Evidence</label>
             <div class="file-upload">
               <input type="file" class="form-control-file" id="evidence" @change="onFileChange('evidence-client')" />
@@ -85,7 +85,7 @@
 
         <!-- Step 2: Mediator-Specific (Empty for now) -->
         <div v-if="step === 2 && formData.userType === 'mediator'">
-          <div class="form-group">
+          <div class="mb-3">
             <label for="evidence">Upload degree</label>
             <div class="file-upload">
               <input type="file" class="form-control-file" id="evidence" @change="onFileChange('degree-mediator')" />
@@ -95,7 +95,7 @@
               <span v-if="formData.evidence" class="file-name">{{ formData.evidence.name }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="evidence">Upload license</label>
             <div class="file-upload">
               <input type="file" class="form-control-file" id="evidence" @change="onFileChange('license-mediator')" />
@@ -111,15 +111,15 @@
 
         <!-- Step 3: Opposite Party Details (Only for Client) -->
         <div v-if="step === 3 && formData.userType === 'client'">
-          <div class="form-group">
+          <div class="mb-3">
             <label for="oppositeName">Opposite Party Name</label>
             <input type="text" class="form-control" id="oppositeName" v-model="formData.oppositeName" placeholder="Name" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="oppositeEmail">Opposite Party Email</label>
             <input type="email" class="form-control" id="oppositeEmail" v-model="formData.oppositeEmail" placeholder="Email" />
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="oppositePhone">Opposite Party Phone</label>
             <input type="tel" class="form-control" id="oppositePhone" v-model="formData.oppositePhone" placeholder="Phone" />
           </div>

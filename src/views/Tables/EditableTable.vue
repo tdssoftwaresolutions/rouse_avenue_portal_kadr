@@ -37,8 +37,8 @@
                     <input type="text" v-model="data.item.salary" v-else class="form-control">
                   </template>
                   <template v-slot:cell(action)="data">
-                    <b-button variant=" iq-bg-success mr-1 mb-1" size="sm" @click="edit(data.item)" v-if="!data.item.editable"><i class="ri-ball-pen-fill m-0"></i></b-button>
-                    <b-button variant=" iq-bg-success mr-1 mb-1" size="sm" @click="submit(data.item)" v-else>Ok</b-button>
+                    <b-button variant=" iq-bg-success ms-1 mb-1" size="sm" @click="edit(data.item)" v-if="!data.item.editable"><i class="ri-ball-pen-fill m-0"></i></b-button>
+                    <b-button variant=" iq-bg-success ms-1 mb-1" size="sm" @click="submit(data.item)" v-else>Ok</b-button>
                     <b-button variant=" iq-bg-danger" size="sm" @click="remove(data.item)"><i class="ri-delete-bin-line m-0"></i></b-button>
                   </template>
                 </b-table>
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     add () {
-      let obj = this.default()
+      const obj = this.default()
       this.rows.push(obj)
     },
     default () {
@@ -82,7 +82,7 @@ export default {
       item.editable = false
     },
     remove (item) {
-      let index = this.rows.indexOf(item)
+      const index = this.rows.indexOf(item)
       this.rows.splice(index, 1)
     }
   },

@@ -18,18 +18,18 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="tooltips-1">
                     <code>
-&lt;b-button v-b-tooltip.top="'Tooltip on top'" variant="secondary" class="mt-3 mr-1"&gt;Tooltip on top&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.right="'Tooltip on right'" variant="secondary" class="mt-3 mr-1"&gt;Tooltip on right&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="secondary" class="mt-3 mr-1"&gt;Tooltip on bottom&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.left="'Tooltip on left'" variant="secondary" class="mt-3 mr-1"&gt;Tooltip on left&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.top="'Tooltip on top'" variant="secondary" class="mt-3 ms-1"&gt;Tooltip on top&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.right="'Tooltip on right'" variant="secondary" class="mt-3 ms-1"&gt;Tooltip on right&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="secondary" class="mt-3 ms-1"&gt;Tooltip on bottom&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.left="'Tooltip on left'" variant="secondary" class="mt-3 ms-1"&gt;Tooltip on left&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button v-b-tooltip.top="'Tooltip on top'" variant="secondary" class="mt-3 mr-1">Tooltip on top</b-button>
-            <b-button v-b-tooltip.right="'Tooltip on right'" variant="secondary" class="mt-3 mr-1">Tooltip on right</b-button>
-            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="secondary" class="mt-3 mr-1">Tooltip on bottom</b-button>
-            <b-button v-b-tooltip.left="'Tooltip on left'" variant="secondary" class="mt-3 mr-1">Tooltip on left</b-button>
+            <b-button v-b-tooltip.top="'Tooltip on top'" variant="secondary" class="mt-3 ms-1">Tooltip on top</b-button>
+            <b-button v-b-tooltip.right="'Tooltip on right'" variant="secondary" class="mt-3 ms-1">Tooltip on right</b-button>
+            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="secondary" class="mt-3 ms-1">Tooltip on bottom</b-button>
+            <b-button v-b-tooltip.left="'Tooltip on left'" variant="secondary" class="mt-3 ms-1">Tooltip on left</b-button>
           </template>
         </iq-card>
         <iq-card>
@@ -78,18 +78,18 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="tooltips-2">
                     <code>
- &lt;b-button v-b-tooltip.top="'Tooltip on top'" variant="primary" class="mt-3 mr-1"&gt;Tooltip on top&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.right="'Tooltip on right'" variant="success" class="mt-3 mr-1"&gt;Tooltip on right&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="danger" class="mt-3 mr-1"&gt;Tooltip on bottom&lt;/b-button&gt;
-&lt;b-button v-b-tooltip.left="'Tooltip on left'" variant="info" class="mt-3 mr-1"&gt;Tooltip on left&lt;/b-button&gt;
+ &lt;b-button v-b-tooltip.top="'Tooltip on top'" variant="primary" class="mt-3 ms-1"&gt;Tooltip on top&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.right="'Tooltip on right'" variant="success" class="mt-3 ms-1"&gt;Tooltip on right&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="danger" class="mt-3 ms-1"&gt;Tooltip on bottom&lt;/b-button&gt;
+&lt;b-button v-b-tooltip.left="'Tooltip on left'" variant="info" class="mt-3 ms-1"&gt;Tooltip on left&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button v-b-tooltip.top="'Tooltip on top'" variant="primary" class="mt-3 mr-1">Tooltip on top</b-button>
-            <b-button v-b-tooltip.right="'Tooltip on right'" variant="success" class="mt-3 mr-1">Tooltip on right</b-button>
-            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="danger" class="mt-3 mr-1">Tooltip on bottom</b-button>
-            <b-button v-b-tooltip.left="'Tooltip on left'" variant="info" class="mt-3 mr-1">Tooltip on left</b-button>
+            <b-button v-b-tooltip.top="'Tooltip on top'" variant="primary" class="mt-3 ms-1">Tooltip on top</b-button>
+            <b-button v-b-tooltip.right="'Tooltip on right'" variant="success" class="mt-3 ms-1">Tooltip on right</b-button>
+            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="danger" class="mt-3 ms-1">Tooltip on bottom</b-button>
+            <b-button v-b-tooltip.left="'Tooltip on left'" variant="info" class="mt-3 ms-1">Tooltip on left</b-button>
           </template>
         </iq-card>
         <iq-card>
@@ -116,10 +116,10 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button v-b-tooltip.top="'Tooltip on top'" variant="none" class="iq-bg-primary mt-3 mr-1">Tooltip on top</b-button>
-            <b-button v-b-tooltip.right="'Tooltip on right'" variant="none" class="iq-bg-success mt-3  mr-1">Tooltip on right</b-button>
-            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="none" class="iq-bg-danger mt-3  mr-1">Tooltip on bottom</b-button>
-            <b-button v-b-tooltip.left="'Tooltip on left'" variant="none" class="iq-bg-info mt-3  mr-1">Tooltip on left</b-button>
+            <b-button v-b-tooltip.top="'Tooltip on top'" variant="none" class="iq-bg-primary mt-3 ms-1">Tooltip on top</b-button>
+            <b-button v-b-tooltip.right="'Tooltip on right'" variant="none" class="iq-bg-success mt-3  ms-1">Tooltip on right</b-button>
+            <b-button v-b-tooltip.bottom="'Tooltip on bottom'" variant="none" class="iq-bg-danger mt-3  ms-1">Tooltip on bottom</b-button>
+            <b-button v-b-tooltip.left="'Tooltip on left'" variant="none" class="iq-bg-info mt-3  ms-1">Tooltip on left</b-button>
           </template>
         </iq-card>
       </b-col>

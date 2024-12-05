@@ -896,7 +896,7 @@
                 <kbd class="bg-dark">
                   <!--                  <a href="javascript:void(0)" v-b-tooltip.hover data-copy-target="#basic-alert" title="Copy" class="text-white float-right" data-copy="true">Copy</a>-->
                   <pre class="text-white" id="alert-with-link-additional"><code>
-&lt;div class="col-sm-6"&gt;
+&lt;div class="col-6"&gt;
   &lt;b-alert :show="true" variant="primary"&gt;
     &lt;div class="iq-alert-text"&gt;
       &lt;h5 class="alert-heading"&gt;Well done!&lt;/h5&gt;
@@ -906,7 +906,7 @@
     &lt;/div&gt;
   &lt;/b-alert&gt;
 &lt;/div&gt;
-&lt;div class="col-sm-6"&gt;
+&lt;div class="col-6"&gt;
   &lt;b-alert :show="true" variant="success"&gt;
     &lt;div class="iq-alert-text"&gt;
       &lt;h5 class="alert-heading"&gt;Well done!&lt;/h5&gt;
@@ -921,7 +921,7 @@
               </div>
             </b-collapse>
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-6">
                 <b-alert :show="true" variant="primary">
                   <div class="iq-alert-text">
                     <h5 class="alert-heading">Well done!</h5>
@@ -931,7 +931,7 @@
                   </div>
                 </b-alert>
               </div>
-              <div class="col-sm-6">
+              <div class="col-6">
                 <b-alert :show="true" variant="success">
                   <div class="iq-alert-text">
                     <h5 class="alert-heading">Well done!</h5>

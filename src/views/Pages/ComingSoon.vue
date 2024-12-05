@@ -2,7 +2,7 @@
   <div class="iq-comingsoon pt-5">
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="col-sm-8 text-center">
+        <div class="col-8 text-center">
           <div class="iq-comingsoon-info">
             <a href="#">
               <img :src="require('../../assets/logo.jpeg')" class="img-fluid w-25" alt="logo">
@@ -19,9 +19,9 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-lg-4">
+        <div class="col-4">
           <form class="iq-comingsoon-form mt-5">
-            <div class="form-group">
+            <div class="mb-3">
               <input type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email address">
               <button type="submit" class="btn btn-primary">Subscribe</button>
             </div>

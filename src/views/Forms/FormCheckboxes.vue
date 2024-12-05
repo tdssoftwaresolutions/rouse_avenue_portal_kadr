@@ -8,9 +8,9 @@
           </template>
           <template v-slot:body>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
-            <div class="checkbox d-inline-block mr-2" v-for="(item,index) in state" :key="index">
+            <div class="checkbox d-inline-block ms-2" v-for="(item,index) in state" :key="index">
               <input type="checkbox" class="checkbox-input" :id="`basic-checkbox-${index}`" v-model="item.checked" :disabled="item.disabled">
-              <label :for="`basic-checkbox-${index}`" class="ml-2">{{ item.label }}</label>
+              <label :for="`basic-checkbox-${index}`" class="ms-2">{{ item.label }}</label>
             </div>
           </template>
         </iq-card>
@@ -83,7 +83,7 @@
           <template v-slot:body>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
             <template v-for="(item,index) in icon">
-              <div class="custom-control custom-checkbox checkbox-icon custom-control-inline" :key="index">
+              <div class="form-check custom-checkbox checkbox-icon custom-control-inline" :key="index">
                 <input type="checkbox" class="custom-control-input" :id="`customSwitch-1-${index}`" v-model="item.checked">
                 <label class="custom-control-label" :for="`customSwitch-1-${index}`" v-html="item.label"></label>
               </div>

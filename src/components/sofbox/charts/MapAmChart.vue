@@ -1137,7 +1137,6 @@ export default {
         'country': 'Paraguay',
         'continent_code': 'SA',
         'continent': 'South America',
-        // eslint-disable-next-line standard/array-bracket-even-spacing
         'maps': [ 'paraguayLow', 'paraguayHigh']
       },
       'QA': {
@@ -1589,11 +1588,11 @@ export default {
       // Set up data for countries
       let data = []
       for (let id in countries) {
-        if (countries.hasOwnProperty(id)) {
+        if (Object.prototype.hasOwnProperty.call(countries, id)) {
           let country = countries[id]
           if (country.maps.length) {
             data.push({
-              id: id,
+              id,
               color: chart.colors.getIndex(continents[country.continent_code]),
               map: country.maps[0]
             })

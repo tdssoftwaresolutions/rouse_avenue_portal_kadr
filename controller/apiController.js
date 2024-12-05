@@ -1,4 +1,3 @@
-
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const helper = require('../helper')
@@ -62,7 +61,7 @@ module.exports = {
       const meetingLink = response1.data.join_url
       res.json({
         message: 'Meeting created successfully!',
-        meetingLink: meetingLink,
+        meetingLink,
         meetingId: response1.data.id
       })
     } catch (error) {
@@ -87,7 +86,7 @@ module.exports = {
   newUserSignup: async function (req, res) {
     try {
       const { name, email, phone, city, state, pincode, description, category, evidence, oppositeName, oppositeEmail, oppositePhone, userType } = req.body
-      console.log(city + ' ' + state + ' ' + pincode + ' ' + description + ' ' + category + ' ' + evidence + ' ' + oppositeEmail + ' ' + oppositeName + ' ' + oppositePhone)
+      console.log(city + ' ' + state + ' ' + pincode + ' ' + description + ' ' + category + ' ' + evidence)
       const generatedPassword = helper.generateRandomPassword()
       const htmlBody = `
                 <p>Hi ${name}, thanks for registering on KADR.live.</p>
@@ -99,24 +98,56 @@ module.exports = {
       const hashPassword = await helper.hashPassword(generatedPassword)
       const user = await prisma.user.create({
         data: {
-          name: name,
-          email: email,
+          name,
+          email,
           phone_number: phone,
           password_hash: hashPassword,
-          user_type: userType.toUpperCase()
+          user_type: userType.toUpperCase(),
+          active: false
         }
       })
+      if (userType.toUpperCase() === 'CLIENT') {
+        const oppositePartyUser = await prisma.user.create({
+          data: {
+            name: oppositeName,
+            email: oppositeEmail,
+            phone_number: oppositePhone,
+            password_hash: '',
+            user_type: userType.toUpperCase(),
+            active: false
+          }
+        })
+        const tracker = await prisma.caseIdTracker.findFirst()
+        let newCaseId = 1
+        if (tracker) {
+          newCaseId = tracker.lastCaseId + 1 // Increment the last caseId
+        }
+
+        await prisma.cases.create({
+          data: {
+            case_name: 'Test Case',
+            first_party: user.id,
+            second_party: oppositePartyUser.id,
+            caseId: `KDR-${newCaseId}`
+          }
+        })
+        await prisma.caseIdTracker.upsert({
+          where: { id: 1 }, // Assuming there's only one row in the tracker
+          update: { lastCaseId: newCaseId },
+          create: { lastCaseId: newCaseId }
+        })
+      }
       res.status(201).json({
         message: 'User created successfully',
         user
       })
     } catch (error) {
+      console.log(error)
       if (error.code === 'P2002' && error.meta.target.includes('email')) {
         res.status(201).json({
           error: 'Email already exists. Please log in instead.'
         })
       } else {
-        // For other errors, send a generic error message
         res.status(500).json({
           error: 'Something went wrong. Please try again later.'
         })
@@ -136,6 +167,12 @@ module.exports = {
     if (!user) {
       res.status(201).json({
         error: 'User not found.'
+      })
+      return
+    }
+    if (user.active === false) {
+      res.status(201).json({
+        error: 'User not yet activated, please wait for kADR team to review your account.'
       })
       return
     }
@@ -159,7 +196,7 @@ module.exports = {
     res.json({ accessToken })
   },
   getUserData: async function (req, res) {
-    const data = await helper.getUserFromToken(req.headers['authorization'])
+    const data = await helper.getUserFromToken(req.headers.authorization)
     res.json(data)
   },
   verifySignature: function (req, res) {

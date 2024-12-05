@@ -88,25 +88,25 @@
                     </b-col>
                   </b-row>
                   <b-row>
-                    <b-form-group class="col-md-6"
+                    <b-form-group class="col-6"
                       label="First Name: *"
                       label-for="fname"
                     >
                       <b-form-input id="fname" name="fname" placeholder="First Name"></b-form-input>
                     </b-form-group>
-                    <b-form-group class="col-md-6"
+                    <b-form-group class="col-6"
                       label="Last Name: *"
                       label-for="lname"
                     >
                       <b-form-input id="lname" name="lname" placeholder="Last Name"></b-form-input>
                     </b-form-group>
-                    <b-form-group class="col-md-6"
+                    <b-form-group class="col-6"
                       label="Contact No.: *"
                       label-for="phno"
                     >
                       <b-form-input type="text" name="phno" id="phno" placeholder="Contact No."></b-form-input>
                     </b-form-group>
-                    <b-form-group class="col-md-6"
+                    <b-form-group class="col-6"
                       label="Alternate Contact No.: *"
                       label-for="phno_2"
                     >
@@ -115,7 +115,7 @@
                   </b-row>
                 </div>
                 <b-button name="next" variant="primary" class="next action-button float-right" value="Next">Next</b-button>
-                <b-button name="previous" variant="dark" class="previous action-button-previous float-right mr-3" value="Previous">Previous</b-button>
+                <b-button name="previous" variant="dark" class="previous action-button-previous float-right ms-3" value="Previous">Previous</b-button>
               </fieldset>
               <fieldset>
                 <div class="form-card text-left">
@@ -141,7 +141,7 @@
                   </b-form-group>
                 </div>
                 <b-button name="next" variant="primary" class="next action-button float-right" value="Next">Next</b-button>
-                <b-button name="previous" variant="dark" class="previous action-button-previous float-right mr-3" value="Previous">Previous</b-button>
+                <b-button name="previous" variant="dark" class="previous action-button-previous float-right ms-3" value="Previous">Previous</b-button>
               </fieldset>
               <fieldset>
                 <div class="form-card text-left">

@@ -60,7 +60,7 @@
     Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
     &lt;b-media no-body class="mt-3"&gt;
       &lt;b-media-aside tag="a"&gt;
-        &lt;b-img :src="require('../../assets/images/page-img/17.jpg')" class="mr-3" alt="#"&gt;&lt;/b-img&gt;
+        &lt;b-img :src="require('../../assets/images/page-img/17.jpg')" class="ms-3" alt="#"&gt;&lt;/b-img&gt;
       &lt;/b-media-aside&gt;
       &lt;b-media-body&gt;
         &lt;h5 class="mt-0"&gt;Media heading&lt;/h5&gt;
@@ -91,7 +91,7 @@
                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
                 <b-media no-body class="mt-3">
                   <b-media-aside tag="a">
-                    <b-img :src="require('../../assets/images/page-img/17.jpg')" class="mr-3" alt="#"></b-img>
+                    <b-img :src="require('../../assets/images/page-img/17.jpg')" class="ms-3" alt="#"></b-img>
                   </b-media-aside>
                   <b-media-body>
                     <h5 class="mt-0">Media heading</h5>
@@ -196,15 +196,15 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="image-4">
                     <code>
-&lt;b-img thumbnail class="ml-3" :src="require('../../assets/images/page-img/10.jpg')" alt="Responsive image"&gt;&lt;/b-img&gt;
-&lt;b-img rounded class="ml-3" :src="require('../../assets/images/page-img/11.jpg')" alt="Responsive image"&gt;&lt;/b-img&gt;
+&lt;b-img thumbnail class="ms-3" :src="require('../../assets/images/page-img/10.jpg')" alt="Responsive image"&gt;&lt;/b-img&gt;
+&lt;b-img rounded class="ms-3" :src="require('../../assets/images/page-img/11.jpg')" alt="Responsive image"&gt;&lt;/b-img&gt;
 &lt;b-img rounded="circle" :src="require('../../assets/images/page-img/12.jpg')" alt="Responsive image"&gt;&lt;/b-img&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-img thumbnail class="ml-3" :src="require('../../assets/images/page-img/10.jpg')" alt="Responsive image"></b-img>
-            <b-img rounded class="ml-3" :src="require('../../assets/images/page-img/11.jpg')" alt="Responsive image"></b-img>
+            <b-img thumbnail class="ms-3" :src="require('../../assets/images/page-img/10.jpg')" alt="Responsive image"></b-img>
+            <b-img rounded class="ms-3" :src="require('../../assets/images/page-img/11.jpg')" alt="Responsive image"></b-img>
             <b-img rounded="circle" :src="require('../../assets/images/page-img/12.jpg')" alt="Responsive image"></b-img>
           </template>
         </iq-card>

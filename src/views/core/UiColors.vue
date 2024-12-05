@@ -249,24 +249,24 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="sofbox-text-color3">
                     <code>
-&lt;p class="iq-bg-primary pl-3 pr-3 pt-2 pb-2 rounded"&gt;Primary link&lt;/p&gt;
-&lt;p class="iq-bg-secondary pl-3 pr-3 pt-2 pb-2 rounded"&gt;Secondary link&lt;/p&gt;
-&lt;p class="iq-bg-success pl-3 pr-3 pt-2 pb-2 rounded"&gt;Success link&lt;/p&gt;
-&lt;p class="iq-bg-danger pl-3 pr-3 pt-2 pb-2 rounded"&gt;Danger link&lt;/p&gt;
-&lt;p class="iq-bg-warning pl-3 pr-3 pt-2 pb-2 rounded"&gt;Warning link&lt;/p&gt;
-&lt;p class="iq-bg-info pl-3 pr-3 pt-2 pb-2 rounded"&gt;Info link&lt;/p&gt;
-&lt;p class="iq-bg-dark pl-3 pr-3 pt-2 pb-2 rounded mb-0"&gt;Dark link&lt;/p&gt;
+&lt;p class="iq-bg-primary ps-3 pe-3 pt-2 pb-2 rounded"&gt;Primary link&lt;/p&gt;
+&lt;p class="iq-bg-secondary ps-3 pe-3 pt-2 pb-2 rounded"&gt;Secondary link&lt;/p&gt;
+&lt;p class="iq-bg-success ps-3 pe-3 pt-2 pb-2 rounded"&gt;Success link&lt;/p&gt;
+&lt;p class="iq-bg-danger ps-3 pe-3 pt-2 pb-2 rounded"&gt;Danger link&lt;/p&gt;
+&lt;p class="iq-bg-warning ps-3 pe-3 pt-2 pb-2 rounded"&gt;Warning link&lt;/p&gt;
+&lt;p class="iq-bg-info ps-3 pe-3 pt-2 pb-2 rounded"&gt;Info link&lt;/p&gt;
+&lt;p class="iq-bg-dark ps-3 pe-3 pt-2 pb-2 rounded mb-0"&gt;Dark link&lt;/p&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <p class="iq-bg-primary pl-3 pr-3 pt-2 pb-2 rounded">Primary link</p>
-            <p class="iq-bg-secondary pl-3 pr-3 pt-2 pb-2 rounded">Secondary link</p>
-            <p class="iq-bg-success pl-3 pr-3 pt-2 pb-2 rounded">Success link</p>
-            <p class="iq-bg-danger pl-3 pr-3 pt-2 pb-2 rounded">Danger link</p>
-            <p class="iq-bg-warning pl-3 pr-3 pt-2 pb-2 rounded">Warning link</p>
-            <p class="iq-bg-info pl-3 pr-3 pt-2 pb-2 rounded">Info link</p>
-            <p class="iq-bg-dark pl-3 pr-3 pt-2 pb-2 rounded mb-0">Dark link</p>
+            <p class="iq-bg-primary ps-3 pe-3 pt-2 pb-2 rounded">Primary link</p>
+            <p class="iq-bg-secondary ps-3 pe-3 pt-2 pb-2 rounded">Secondary link</p>
+            <p class="iq-bg-success ps-3 pe-3 pt-2 pb-2 rounded">Success link</p>
+            <p class="iq-bg-danger ps-3 pe-3 pt-2 pb-2 rounded">Danger link</p>
+            <p class="iq-bg-warning ps-3 pe-3 pt-2 pb-2 rounded">Warning link</p>
+            <p class="iq-bg-info ps-3 pe-3 pt-2 pb-2 rounded">Info link</p>
+            <p class="iq-bg-dark ps-3 pe-3 pt-2 pb-2 rounded mb-0">Dark link</p>
           </template>
         </iq-card>
       </b-col>
@@ -287,24 +287,24 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="sofbox-text-color4">
                     <code>
-&lt;p&gt;&lt;a href="#" class="iq-bg-primary pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Primary link&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="#" class="iq-bg-secondary pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Secondary link&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="#" class="iq-bg-success pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Success link&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="#" class="iq-bg-danger pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Danger link&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="#" class="iq-bg-warning pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Warning link&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="#" class="iq-bg-info pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Info link&lt;/a&gt;&lt;/p&gt;
-&lt;p class="mb-0"&gt;&lt;a href="#" class="iq-bg-dark pl-3 pr-3 pt-2 pb-2 rounded d-inline-block"&gt;Dark link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-primary ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Primary link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-secondary ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Secondary link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-success ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Success link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-danger ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Danger link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-warning ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Warning link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="#" class="iq-bg-info ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Info link&lt;/a&gt;&lt;/p&gt;
+&lt;p class="mb-0"&gt;&lt;a href="#" class="iq-bg-dark ps-3 pe-3 pt-2 pb-2 rounded d-inline-block"&gt;Dark link&lt;/a&gt;&lt;/p&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <p><a href="#" class="iq-bg-primary pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Primary link</a></p>
-            <p><a href="#" class="iq-bg-secondary pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Secondary link</a></p>
-            <p><a href="#" class="iq-bg-success pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Success link</a></p>
-            <p><a href="#" class="iq-bg-danger pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Danger link</a></p>
-            <p><a href="#" class="iq-bg-warning pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Warning link</a></p>
-            <p><a href="#" class="iq-bg-info pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Info link</a></p>
-            <p class="mb-0"><a href="#" class="iq-bg-dark pl-3 pr-3 pt-2 pb-2 rounded d-inline-block">Dark link</a></p>
+            <p><a href="#" class="iq-bg-primary ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Primary link</a></p>
+            <p><a href="#" class="iq-bg-secondary ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Secondary link</a></p>
+            <p><a href="#" class="iq-bg-success ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Success link</a></p>
+            <p><a href="#" class="iq-bg-danger ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Danger link</a></p>
+            <p><a href="#" class="iq-bg-warning ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Warning link</a></p>
+            <p><a href="#" class="iq-bg-info ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Info link</a></p>
+            <p class="mb-0"><a href="#" class="iq-bg-dark ps-3 pe-3 pt-2 pb-2 rounded d-inline-block">Dark link</a></p>
           </template>
         </iq-card>
       </b-col>

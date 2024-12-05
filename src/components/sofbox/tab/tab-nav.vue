@@ -14,7 +14,7 @@ export default {
     align: { type: String, default: '' }
   },
   mounted () {
-    let _this = this
+    const _this = this
     window.$('#' + this.id + ' a').on('click', function (e) {
       window.$(this).tab('show')
     })

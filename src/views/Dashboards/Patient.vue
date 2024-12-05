@@ -36,8 +36,8 @@
             <a href="#" class="">See all</a>
           </template>
           <template v-slot:body>
-            <div class="media">
-              <img class="mr-3 rounded-circle" :src="require('../../assets/images/user/01.jpg')"
+            <div class="d-flex">
+              <img class="ms-3 rounded-circle" :src="require('../../assets/images/user/01.jpg')"
                    alt="Generic placeholder image">
               <div class="media-body">
                 <h5 class="mt-0 mb-0">Dr. Jay
@@ -48,8 +48,8 @@
               </div>
             </div>
             <hr>
-            <div class="media">
-              <img class="mr-3 rounded-circle" :src="require('../../assets/images/user/02.jpg')"
+            <div class="d-flex">
+              <img class="ms-3 rounded-circle" :src="require('../../assets/images/user/02.jpg')"
                    alt="Generic placeholder image">
               <div class="media-body">
                 <h5 class="mt-0 mb-0">Dr. Lilly
@@ -60,8 +60,8 @@
               </div>
             </div>
             <hr>
-            <div class="media">
-              <img class="mr-3 rounded-circle" :src="require('../../assets/images/user/03.jpg')"
+            <div class="d-flex">
+              <img class="ms-3 rounded-circle" :src="require('../../assets/images/user/03.jpg')"
                    alt="Generic placeholder image">
               <div class="media-body">
                 <h5 class="mt-0 mb-0">Dr. Steve
@@ -72,8 +72,8 @@
               </div>
             </div>
             <hr>
-            <div class="media">
-              <img class="mr-3 rounded-circle" :src="require('../../assets/images/user/04.jpg')"
+            <div class="d-flex">
+              <img class="ms-3 rounded-circle" :src="require('../../assets/images/user/04.jpg')"
                    alt="Generic placeholder image">
               <div class="media-body">
                 <h5 class="mt-0 mb-0">Dr. Mia
@@ -117,7 +117,7 @@
                   <b-col md="4">
                     <iq-card class="shadow-none mb-0" body-class="p-1">
                       <template v-slot:body>
-                        <span class="text-dark float-right"><i class="ri-arrow-up-fill mr-1" />+30%</span>
+                        <span class="text-dark float-right"><i class="ri-arrow-up-fill ms-1" />+30%</span>
                         <span class="font-size-14">Blood pressure</span>
                         <h2>75
                           <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/page-img/04.png')" alt="summary-image" />
@@ -131,7 +131,7 @@
                   <b-col md="4">
                     <iq-card class="shadow-none mb-0" body-class="p-1">
                       <template v-slot:body>
-                        <span class="text-dark float-right"><i class="ri-arrow-up-fill mr-1" />+30%</span>
+                        <span class="text-dark float-right"><i class="ri-arrow-up-fill ms-1" />+30%</span>
                         <span class="font-size-14">Temperature</span>
                         <h2>28.6
                           <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/page-img/06.png')" alt="summary-image" />
@@ -145,7 +145,7 @@
                   <b-col md="4">
                     <iq-card class="shadow-none mb-0" body-class="p-1">
                       <template v-slot:body>
-                        <span class="text-dark float-right"><i class="ri-arrow-up-fill mr-1" />+30%</span>
+                        <span class="text-dark float-right"><i class="ri-arrow-up-fill ms-1" />+30%</span>
                         <span class="font-size-14">Heart Rate</span>
                         <h2>60
                           <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/page-img/05.png')" alt="summary-image" />
@@ -187,7 +187,7 @@
                      data-items-mobile="1" data-items-mobile-sm="1" data-margin="30">
                   <div class="item">
                     <div class="">
-                      <a class="mb-3 d-block font-size-16" href="#"><i class="ri-pencil-ruler-2-line mr-1" />Breakfast</a>
+                      <a class="mb-3 d-block font-size-16" href="#"><i class="ri-pencil-ruler-2-line ms-1" />Breakfast</a>
                       <h5 class="mb-2">Meal plan is for a person aged 19-50 years.</h5>
                       <p>
                         Wholegrain toast with polyunsaturated margarine
@@ -210,7 +210,7 @@
                 <h4 class="card-title">Appointments</h4>
               </template>
               <template v-slot:headerAction>
-                <a href="#" class="dropdown-bg"><i class="ri-add-line mr-2"></i>Book Appointment</a>
+                <a href="#" class="dropdown-bg"><i class="ri-add-line ms-2"></i>Book Appointment</a>
               </template>
               <template v-slot:body>
                 <FullCalendar :calendarEvents="events"/>

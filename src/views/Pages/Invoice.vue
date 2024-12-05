@@ -82,7 +82,7 @@
                 </div>
               </b-col>
               <b-col offset="6" cols="6" class="text-right">
-                <b-button variant="link mr-3">
+                <b-button variant="link ms-3">
                   <i class="ri-printer-line"></i>
                   Download Print
                 </b-button>

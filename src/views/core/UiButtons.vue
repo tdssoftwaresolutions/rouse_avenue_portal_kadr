@@ -18,28 +18,28 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="default-buttons">
                     <code>
-&lt;b-button variant="primary" class="mb-3 mr-1"&gt;Primary&lt;/b-button&gt;
-&lt;b-button variant="secondary" class="mb-3 mr-1"&gt;Secondary&lt;/b-button&gt;
-&lt;b-button variant="success" class="mb-3 mr-1"&gt;Success&lt;/b-button&gt;
-&lt;b-button variant="danger" class="mb-3 mr-1"&gt;Danger&lt;/b-button&gt;
-&lt;b-button variant="warning" class="mb-3 mr-1"&gt;Warning&lt;/b-button&gt;
-&lt;b-button variant="info" class="mb-3 mr-1"&gt;Info&lt;/b-button&gt;
-&lt;b-button variant="light" class="mb-3 mr-1"&gt;Light&lt;/b-button&gt;
-&lt;b-button variant="dark" class="mb-3 mr-1"&gt;Dark&lt;/b-button&gt;
-&lt;b-button variant="link" class="mb-3 mr-1"&gt;Link&lt;/b-button&gt;
+&lt;b-button variant="primary" class="mb-3 ms-1"&gt;Primary&lt;/b-button&gt;
+&lt;b-button variant="secondary" class="mb-3 ms-1"&gt;Secondary&lt;/b-button&gt;
+&lt;b-button variant="success" class="mb-3 ms-1"&gt;Success&lt;/b-button&gt;
+&lt;b-button variant="danger" class="mb-3 ms-1"&gt;Danger&lt;/b-button&gt;
+&lt;b-button variant="warning" class="mb-3 ms-1"&gt;Warning&lt;/b-button&gt;
+&lt;b-button variant="info" class="mb-3 ms-1"&gt;Info&lt;/b-button&gt;
+&lt;b-button variant="light" class="mb-3 ms-1"&gt;Light&lt;/b-button&gt;
+&lt;b-button variant="dark" class="mb-3 ms-1"&gt;Dark&lt;/b-button&gt;
+&lt;b-button variant="link" class="mb-3 ms-1"&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="mb-3 mr-1">Primary</b-button>
-            <b-button variant="secondary" class="mb-3 mr-1">Secondary</b-button>
-            <b-button variant="success" class="mb-3 mr-1">Success</b-button>
-            <b-button variant="danger" class="mb-3 mr-1">Danger</b-button>
-            <b-button variant="warning" class="mb-3 mr-1">Warning</b-button>
-            <b-button variant="info" class="mb-3 mr-1">Info</b-button>
-            <b-button variant="light" class="mb-3 mr-1">Light</b-button>
-            <b-button variant="dark" class="mb-3 mr-1">Dark</b-button>
-            <b-button variant="link" class="mb-3 mr-1">Link</b-button>
+            <b-button variant="primary" class="mb-3 ms-1">Primary</b-button>
+            <b-button variant="secondary" class="mb-3 ms-1">Secondary</b-button>
+            <b-button variant="success" class="mb-3 ms-1">Success</b-button>
+            <b-button variant="danger" class="mb-3 ms-1">Danger</b-button>
+            <b-button variant="warning" class="mb-3 ms-1">Warning</b-button>
+            <b-button variant="info" class="mb-3 ms-1">Info</b-button>
+            <b-button variant="light" class="mb-3 ms-1">Light</b-button>
+            <b-button variant="dark" class="mb-3 ms-1">Dark</b-button>
+            <b-button variant="link" class="mb-3 ms-1">Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -60,28 +60,28 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="default-buttons-round-shape">
                     <code>
-&lt;b-button pill variant="primary" class="mb-3 mr-1"&gt;Primary&lt;/b-button&gt;
-&lt;b-button pill variant="secondary" class="mb-3 mr-1"&gt;Secondary&lt;/b-button&gt;
-&lt;b-button pill variant="success" class="mb-3 mr-1"&gt;Success&lt;/b-button&gt;
-&lt;b-button pill variant="danger" class="mb-3 mr-1"&gt;Danger&lt;/b-button&gt;
-&lt;b-button pill variant="warning" class="mb-3 mr-1"&gt;Warning&lt;/b-button&gt;
-&lt;b-button pill variant="info" class="mb-3 mr-1"&gt;Info&lt;/b-button&gt;
-&lt;b-button pill variant="light" class="mb-3 mr-1"&gt;Light&lt;/b-button&gt;
-&lt;b-button pill variant="dark" class="mb-3 mr-1"&gt;Dark&lt;/b-button&gt;
-&lt;b-button pill variant="link" class="mb-3 mr-1"&gt;Link&lt;/b-button&gt;
+&lt;b-button pill variant="primary" class="mb-3 ms-1"&gt;Primary&lt;/b-button&gt;
+&lt;b-button pill variant="secondary" class="mb-3 ms-1"&gt;Secondary&lt;/b-button&gt;
+&lt;b-button pill variant="success" class="mb-3 ms-1"&gt;Success&lt;/b-button&gt;
+&lt;b-button pill variant="danger" class="mb-3 ms-1"&gt;Danger&lt;/b-button&gt;
+&lt;b-button pill variant="warning" class="mb-3 ms-1"&gt;Warning&lt;/b-button&gt;
+&lt;b-button pill variant="info" class="mb-3 ms-1"&gt;Info&lt;/b-button&gt;
+&lt;b-button pill variant="light" class="mb-3 ms-1"&gt;Light&lt;/b-button&gt;
+&lt;b-button pill variant="dark" class="mb-3 ms-1"&gt;Dark&lt;/b-button&gt;
+&lt;b-button pill variant="link" class="mb-3 ms-1"&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button pill variant="primary" class="mb-3 mr-1">Primary</b-button>
-            <b-button pill variant="secondary" class="mb-3 mr-1">Secondary</b-button>
-            <b-button pill variant="success" class="mb-3 mr-1">Success</b-button>
-            <b-button pill variant="danger" class="mb-3 mr-1">Danger</b-button>
-            <b-button pill variant="warning" class="mb-3 mr-1">Warning</b-button>
-            <b-button pill variant="info" class="mb-3 mr-1">Info</b-button>
-            <b-button pill variant="light" class="mb-3 mr-1">Light</b-button>
-            <b-button pill variant="dark" class="mb-3 mr-1">Dark</b-button>
-            <b-button pill variant="link" class="mb-3 mr-1">Link</b-button>
+            <b-button pill variant="primary" class="mb-3 ms-1">Primary</b-button>
+            <b-button pill variant="secondary" class="mb-3 ms-1">Secondary</b-button>
+            <b-button pill variant="success" class="mb-3 ms-1">Success</b-button>
+            <b-button pill variant="danger" class="mb-3 ms-1">Danger</b-button>
+            <b-button pill variant="warning" class="mb-3 ms-1">Warning</b-button>
+            <b-button pill variant="info" class="mb-3 ms-1">Info</b-button>
+            <b-button pill variant="light" class="mb-3 ms-1">Light</b-button>
+            <b-button pill variant="dark" class="mb-3 ms-1">Dark</b-button>
+            <b-button pill variant="link" class="mb-3 ms-1">Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -104,26 +104,26 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="outline-buttons">
                     <code>
-&lt;b-button variant="outline-primary" class="mb-3 mr-1"&gt;Primary&lt;/b-button&gt;
-&lt;b-button variant="outline-secondary" class="mb-3 mr-1"&gt;Secondary&lt;/b-button&gt;
-&lt;b-button variant="outline-success" class="mb-3 mr-1"&gt;Success&lt;/b-button&gt;
-&lt;b-button variant="outline-danger" class="mb-3 mr-1"&gt;Danger&lt;/b-button&gt;
-&lt;b-button variant="outline-warning" class="mb-3 mr-1"&gt;Warning&lt;/b-button&gt;
-&lt;b-button variant="outline-info" class="mb-3 mr-1"&gt;Info&lt;/b-button&gt;
-&lt;b-button variant="outline-dark" class="mb-3 mr-1"&gt;Dark&lt;/b-button&gt;
-&lt;b-button variant="outline-link" class="mb-3 mr-1"&gt;Link&lt;/b-button&gt;
+&lt;b-button variant="outline-primary" class="mb-3 ms-1"&gt;Primary&lt;/b-button&gt;
+&lt;b-button variant="outline-secondary" class="mb-3 ms-1"&gt;Secondary&lt;/b-button&gt;
+&lt;b-button variant="outline-success" class="mb-3 ms-1"&gt;Success&lt;/b-button&gt;
+&lt;b-button variant="outline-danger" class="mb-3 ms-1"&gt;Danger&lt;/b-button&gt;
+&lt;b-button variant="outline-warning" class="mb-3 ms-1"&gt;Warning&lt;/b-button&gt;
+&lt;b-button variant="outline-info" class="mb-3 ms-1"&gt;Info&lt;/b-button&gt;
+&lt;b-button variant="outline-dark" class="mb-3 ms-1"&gt;Dark&lt;/b-button&gt;
+&lt;b-button variant="outline-link" class="mb-3 ms-1"&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="outline-primary" class="mb-3 mr-1">Primary</b-button>
-            <b-button variant="outline-secondary" class="mb-3 mr-1">Secondary</b-button>
-            <b-button variant="outline-success" class="mb-3 mr-1">Success</b-button>
-            <b-button variant="outline-danger" class="mb-3 mr-1">Danger</b-button>
-            <b-button variant="outline-warning" class="mb-3 mr-1">Warning</b-button>
-            <b-button variant="outline-info" class="mb-3 mr-1">Info</b-button>
-            <b-button variant="outline-dark" class="mb-3 mr-1">Dark</b-button>
-            <b-button variant="outline-link" class="mb-3 mr-1">Link</b-button>
+            <b-button variant="outline-primary" class="mb-3 ms-1">Primary</b-button>
+            <b-button variant="outline-secondary" class="mb-3 ms-1">Secondary</b-button>
+            <b-button variant="outline-success" class="mb-3 ms-1">Success</b-button>
+            <b-button variant="outline-danger" class="mb-3 ms-1">Danger</b-button>
+            <b-button variant="outline-warning" class="mb-3 ms-1">Warning</b-button>
+            <b-button variant="outline-info" class="mb-3 ms-1">Info</b-button>
+            <b-button variant="outline-dark" class="mb-3 ms-1">Dark</b-button>
+            <b-button variant="outline-link" class="mb-3 ms-1">Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -144,26 +144,26 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="round-outlines-buttons">
                     <code>
-&lt;b-button pill variant="outline-primary" class="mb-3 mr-1"&gt;Primary&lt;/b-button&gt;
-&lt;b-button pill variant="outline-secondary" class="mb-3 mr-1"&gt;Secondary&lt;/b-button&gt;
-&lt;b-button pill variant="outline-success" class="mb-3 mr-1"&gt;Success&lt;/b-button&gt;
-&lt;b-button pill variant="outline-danger" class="mb-3 mr-1"&gt;Danger&lt;/b-button&gt;
-&lt;b-button pill variant="outline-warning" class="mb-3 mr-1"&gt;Warning&lt;/b-button&gt;
-&lt;b-button pill variant="outline-info" class="mb-3 mr-1"&gt;Info&lt;/b-button&gt;
-&lt;b-button pill variant="outline-dark" class="mb-3 mr-1"&gt;Dark&lt;/b-button&gt;
-&lt;b-button pill variant="outline-link" class="mb-3 mr-1"&gt;Link&lt;/b-button&gt;
+&lt;b-button pill variant="outline-primary" class="mb-3 ms-1"&gt;Primary&lt;/b-button&gt;
+&lt;b-button pill variant="outline-secondary" class="mb-3 ms-1"&gt;Secondary&lt;/b-button&gt;
+&lt;b-button pill variant="outline-success" class="mb-3 ms-1"&gt;Success&lt;/b-button&gt;
+&lt;b-button pill variant="outline-danger" class="mb-3 ms-1"&gt;Danger&lt;/b-button&gt;
+&lt;b-button pill variant="outline-warning" class="mb-3 ms-1"&gt;Warning&lt;/b-button&gt;
+&lt;b-button pill variant="outline-info" class="mb-3 ms-1"&gt;Info&lt;/b-button&gt;
+&lt;b-button pill variant="outline-dark" class="mb-3 ms-1"&gt;Dark&lt;/b-button&gt;
+&lt;b-button pill variant="outline-link" class="mb-3 ms-1"&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button pill variant="outline-primary" class="mb-3 mr-1">Primary</b-button>
-            <b-button pill variant="outline-secondary" class="mb-3 mr-1">Secondary</b-button>
-            <b-button pill variant="outline-success" class="mb-3 mr-1">Success</b-button>
-            <b-button pill variant="outline-danger" class="mb-3 mr-1">Danger</b-button>
-            <b-button pill variant="outline-warning" class="mb-3 mr-1">Warning</b-button>
-            <b-button pill variant="outline-info" class="mb-3 mr-1">Info</b-button>
-            <b-button pill variant="outline-dark" class="mb-3 mr-1">Dark</b-button>
-            <b-button pill variant="outline-link" class="mb-3 mr-1">Link</b-button>
+            <b-button pill variant="outline-primary" class="mb-3 ms-1">Primary</b-button>
+            <b-button pill variant="outline-secondary" class="mb-3 ms-1">Secondary</b-button>
+            <b-button pill variant="outline-success" class="mb-3 ms-1">Success</b-button>
+            <b-button pill variant="outline-danger" class="mb-3 ms-1">Danger</b-button>
+            <b-button pill variant="outline-warning" class="mb-3 ms-1">Warning</b-button>
+            <b-button pill variant="outline-info" class="mb-3 ms-1">Info</b-button>
+            <b-button pill variant="outline-dark" class="mb-3 ms-1">Dark</b-button>
+            <b-button pill variant="outline-link" class="mb-3 ms-1">Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -186,28 +186,28 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="default-buttons-icon">
                     <code>
-&lt;b-button variant="primary" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
-&lt;b-button variant="secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
-&lt;b-button variant="success" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
-&lt;b-button variant="danger" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
-&lt;b-button variant="warning" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
-&lt;b-button variant="info" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
-&lt;b-button variant="light" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Light&lt;/b-button&gt;
-&lt;b-button variant="dark" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
-&lt;b-button variant="link" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
+&lt;b-button variant="primary" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
+&lt;b-button variant="secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
+&lt;b-button variant="success" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
+&lt;b-button variant="danger" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
+&lt;b-button variant="warning" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
+&lt;b-button variant="info" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
+&lt;b-button variant="light" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Light&lt;/b-button&gt;
+&lt;b-button variant="dark" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
+&lt;b-button variant="link" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Primary</b-button>
-            <b-button variant="secondary" class="mb-3 mr-1"><i class="ri-heart-fill"></i>Secondary</b-button>
-            <b-button variant="success" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Success</b-button>
-            <b-button variant="danger" class="mb-3 mr-1"><i class="ri-heart-fill"></i>Danger</b-button>
-            <b-button variant="warning" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Warning</b-button>
-            <b-button variant="info" class="mb-3 mr-1"><i class="ri-heart-fill"></i>Info</b-button>
-            <b-button variant="light" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Light</b-button>
-            <b-button variant="dark" class="mb-3 mr-1"><i class="ri-heart-fill"></i>Dark</b-button>
-            <b-button variant="link" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Link</b-button>
+            <b-button variant="primary" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Primary</b-button>
+            <b-button variant="secondary" class="mb-3 ms-1"><i class="ri-heart-fill"></i>Secondary</b-button>
+            <b-button variant="success" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Success</b-button>
+            <b-button variant="danger" class="mb-3 ms-1"><i class="ri-heart-fill"></i>Danger</b-button>
+            <b-button variant="warning" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Warning</b-button>
+            <b-button variant="info" class="mb-3 ms-1"><i class="ri-heart-fill"></i>Info</b-button>
+            <b-button variant="light" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Light</b-button>
+            <b-button variant="dark" class="mb-3 ms-1"><i class="ri-heart-fill"></i>Dark</b-button>
+            <b-button variant="link" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -228,28 +228,28 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="default-buttons-round-shape-icon">
                     <code>
-&lt;b-button pill variant="primary" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
-&lt;b-button pill variant="secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
-&lt;b-button pill variant="success" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
-&lt;b-button pill variant="danger" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
-&lt;b-button pill variant="warning" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
-&lt;b-button pill variant="info" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
-&lt;b-button pill variant="light" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Light&lt;/b-button&gt;
-&lt;b-button pill variant="dark" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
-&lt;b-button pill variant="link" class="mb-3 mr-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
+&lt;b-button pill variant="primary" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
+&lt;b-button pill variant="secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
+&lt;b-button pill variant="success" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
+&lt;b-button pill variant="danger" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
+&lt;b-button pill variant="warning" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
+&lt;b-button pill variant="info" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
+&lt;b-button pill variant="light" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Light&lt;/b-button&gt;
+&lt;b-button pill variant="dark" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
+&lt;b-button pill variant="link" class="mb-3 ms-1"&gt;&lt;i class="ri-bill-fill"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button pill variant="primary" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Primary</b-button>
-            <b-button pill variant="secondary" class="mb-3 mr-1">Secondary</b-button>
-            <b-button pill variant="success" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Success</b-button>
-            <b-button pill variant="danger" class="mb-3 mr-1">Danger</b-button>
-            <b-button pill variant="warning" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Warning</b-button>
-            <b-button pill variant="info" class="mb-3 mr-1">Info</b-button>
-            <b-button pill variant="light" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Light</b-button>
-            <b-button pill variant="dark" class="mb-3 mr-1">Dark</b-button>
-            <b-button pill variant="link" class="mb-3 mr-1"><i class="ri-bill-fill"></i>Link</b-button>
+            <b-button pill variant="primary" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Primary</b-button>
+            <b-button pill variant="secondary" class="mb-3 ms-1">Secondary</b-button>
+            <b-button pill variant="success" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Success</b-button>
+            <b-button pill variant="danger" class="mb-3 ms-1">Danger</b-button>
+            <b-button pill variant="warning" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Warning</b-button>
+            <b-button pill variant="info" class="mb-3 ms-1">Info</b-button>
+            <b-button pill variant="light" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Light</b-button>
+            <b-button pill variant="dark" class="mb-3 ms-1">Dark</b-button>
+            <b-button pill variant="link" class="mb-3 ms-1"><i class="ri-bill-fill"></i>Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -272,26 +272,26 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="outline-buttons-icons">
                     <code>
-&lt;b-button variant="outline-primary" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
-&lt;b-button variant="outline-secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
-&lt;b-button variant="outline-success" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
-&lt;b-button variant="outline-danger" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
-&lt;b-button variant="outline-warning" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
-&lt;b-button variant="outline-info" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
-&lt;b-button variant="outline-dark" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
-&lt;b-button variant="outline-link" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
+&lt;b-button variant="outline-primary" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
+&lt;b-button variant="outline-secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
+&lt;b-button variant="outline-success" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
+&lt;b-button variant="outline-danger" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
+&lt;b-button variant="outline-warning" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
+&lt;b-button variant="outline-info" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
+&lt;b-button variant="outline-dark" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
+&lt;b-button variant="outline-link" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="outline-primary" class="mb-3 mr-1"><i class="ri-heart-line"></i>Primary</b-button>
-            <b-button variant="outline-secondary" class="mb-3 mr-1"><i class="ri-alert-line"></i>Secondary</b-button>
-            <b-button variant="outline-success" class="mb-3 mr-1"><i class="ri-heart-line"></i>Success</b-button>
-            <b-button variant="outline-danger" class="mb-3 mr-1"><i class="ri-alert-line"></i>Danger</b-button>
-            <b-button variant="outline-warning" class="mb-3 mr-1"><i class="ri-heart-line"></i>Warning</b-button>
-            <b-button variant="outline-info" class="mb-3 mr-1"><i class="ri-alert-line"></i>Info</b-button>
-            <b-button variant="outline-dark" class="mb-3 mr-1"><i class="ri-alert-line"></i>Dark</b-button>
-            <b-button variant="outline-link" class="mb-3 mr-1"><i class="ri-heart-line"></i>Link</b-button>
+            <b-button variant="outline-primary" class="mb-3 ms-1"><i class="ri-heart-line"></i>Primary</b-button>
+            <b-button variant="outline-secondary" class="mb-3 ms-1"><i class="ri-alert-line"></i>Secondary</b-button>
+            <b-button variant="outline-success" class="mb-3 ms-1"><i class="ri-heart-line"></i>Success</b-button>
+            <b-button variant="outline-danger" class="mb-3 ms-1"><i class="ri-alert-line"></i>Danger</b-button>
+            <b-button variant="outline-warning" class="mb-3 ms-1"><i class="ri-heart-line"></i>Warning</b-button>
+            <b-button variant="outline-info" class="mb-3 ms-1"><i class="ri-alert-line"></i>Info</b-button>
+            <b-button variant="outline-dark" class="mb-3 ms-1"><i class="ri-alert-line"></i>Dark</b-button>
+            <b-button variant="outline-link" class="mb-3 ms-1"><i class="ri-heart-line"></i>Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -312,26 +312,26 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="round-outlines-buttons-icons">
                     <code>
-&lt;b-button pill variant="outline-primary" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
-&lt;b-button pill variant="outline-secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
-&lt;b-button pill variant="outline-success" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
-&lt;b-button pill variant="outline-danger" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
-&lt;b-button pill variant="outline-warning" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
-&lt;b-button pill variant="outline-info" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
-&lt;b-button pill variant="outline-dark" class="mb-3 mr-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
-&lt;b-button pill variant="outline-link" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
+&lt;b-button pill variant="outline-primary" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Primary&lt;/b-button&gt;
+&lt;b-button pill variant="outline-secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Secondary&lt;/b-button&gt;
+&lt;b-button pill variant="outline-success" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Success&lt;/b-button&gt;
+&lt;b-button pill variant="outline-danger" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Danger&lt;/b-button&gt;
+&lt;b-button pill variant="outline-warning" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Warning&lt;/b-button&gt;
+&lt;b-button pill variant="outline-info" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Info&lt;/b-button&gt;
+&lt;b-button pill variant="outline-dark" class="mb-3 ms-1"&gt;&lt;i class="ri-alert-line"&gt;&lt;/i&gt;Dark&lt;/b-button&gt;
+&lt;b-button pill variant="outline-link" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-line"&gt;&lt;/i&gt;Link&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button pill variant="outline-primary" class="mb-3 mr-1"><i class="ri-heart-line"></i>Primary</b-button>
-            <b-button pill variant="outline-secondary" class="mb-3 mr-1"><i class="ri-alert-line"></i>Secondary</b-button>
-            <b-button pill variant="outline-success" class="mb-3 mr-1"><i class="ri-heart-line"></i>Success</b-button>
-            <b-button pill variant="outline-danger" class="mb-3 mr-1"><i class="ri-alert-line"></i>Danger</b-button>
-            <b-button pill variant="outline-warning" class="mb-3 mr-1"><i class="ri-heart-line"></i>Warning</b-button>
-            <b-button pill variant="outline-info" class="mb-3 mr-1"><i class="ri-alert-line"></i>Info</b-button>
-            <b-button pill variant="outline-dark" class="mb-3 mr-1"><i class="ri-alert-line"></i>Dark</b-button>
-            <b-button pill variant="outline-link" class="mb-3 mr-1"><i class="ri-heart-line"></i>Link</b-button>
+            <b-button pill variant="outline-primary" class="mb-3 ms-1"><i class="ri-heart-line"></i>Primary</b-button>
+            <b-button pill variant="outline-secondary" class="mb-3 ms-1"><i class="ri-alert-line"></i>Secondary</b-button>
+            <b-button pill variant="outline-success" class="mb-3 ms-1"><i class="ri-heart-line"></i>Success</b-button>
+            <b-button pill variant="outline-danger" class="mb-3 ms-1"><i class="ri-alert-line"></i>Danger</b-button>
+            <b-button pill variant="outline-warning" class="mb-3 ms-1"><i class="ri-heart-line"></i>Warning</b-button>
+            <b-button pill variant="outline-info" class="mb-3 ms-1"><i class="ri-alert-line"></i>Info</b-button>
+            <b-button pill variant="outline-dark" class="mb-3 ms-1"><i class="ri-alert-line"></i>Dark</b-button>
+            <b-button pill variant="outline-link" class="mb-3 ms-1"><i class="ri-heart-line"></i>Link</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -363,11 +363,11 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="mr-1" type="button">Link</b-button>
-            <b-button variant="success" class="mr-1" type="button">Button</b-button>
-            <b-button variant="danger" class="mr-1" type="button">Input</b-button>
-            <b-button variant="warning" class="mr-1" type="button">Submit</b-button>
-            <b-button variant="info" class="mr-1" type="button">Reset</b-button>
+            <b-button variant="primary" class="ms-1" type="button">Link</b-button>
+            <b-button variant="success" class="ms-1" type="button">Button</b-button>
+            <b-button variant="danger" class="ms-1" type="button">Input</b-button>
+            <b-button variant="warning" class="ms-1" type="button">Submit</b-button>
+            <b-button variant="info" class="ms-1" type="button">Reset</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -388,15 +388,15 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="buttons-sizes">
                     <code>
-&lt;b-button size="sm" variant="primary" class="mr-2"&gt;Small Button&lt;/b-button&gt;
-&lt;b-button variant="success" class="mr-2"&gt;Button&lt;/b-button&gt;
+&lt;b-button size="sm" variant="primary" class="ms-2"&gt;Small Button&lt;/b-button&gt;
+&lt;b-button variant="success" class="ms-2"&gt;Button&lt;/b-button&gt;
 &lt;b-button size="lg" variant="info"&gt;Large Button&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button size="sm" variant="primary" class="mr-2">Small Button</b-button>
-            <b-button variant="success" class="mr-2">Button</b-button>
+            <b-button size="sm" variant="primary" class="ms-2">Small Button</b-button>
+            <b-button variant="success" class="ms-2">Button</b-button>
             <b-button size="lg" variant="info">Large Button</b-button>
           </template>
         </iq-card>
@@ -448,41 +448,41 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="block-buttons">
                     <code>
-&lt;b-button variant="primary" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-star-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="success" class="mb-3 mr-1"&gt;&lt;i class="ri-settings-4-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="danger" class="mb-3 mr-1"&gt;&lt;i class="ri-radio-button-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="warning" class="mb-3 mr-1"&gt;&lt;i class="ri-delete-bin-2-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="info" class="mb-3 mr-1"&gt;&lt;i class="ri-lock-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="light" class="mb-3 mr-1"&gt;&lt;i class="ri-time-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="dark" class="mb-3 mr-1"&gt;&lt;i class="ri-sun-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
-&lt;b-button variant="link" class="mb-3 mr-1"&gt;&lt;i class="ri-moon-fill pr-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="primary" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-star-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="success" class="mb-3 ms-1"&gt;&lt;i class="ri-settings-4-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="danger" class="mb-3 ms-1"&gt;&lt;i class="ri-radio-button-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="warning" class="mb-3 ms-1"&gt;&lt;i class="ri-delete-bin-2-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="info" class="mb-3 ms-1"&gt;&lt;i class="ri-lock-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="light" class="mb-3 ms-1"&gt;&lt;i class="ri-time-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="dark" class="mb-3 ms-1"&gt;&lt;i class="ri-sun-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
+&lt;b-button variant="link" class="mb-3 ms-1"&gt;&lt;i class="ri-moon-fill pe-0"&gt;&lt;/i&gt;&lt;/b-button&gt;
 &lt;div class="d-inline-block w-100 mt-3"&gt;
-  &lt;b-button variant="primary" class="mb-3 mr-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
-  &lt;b-button variant="secondary" class="mb-3 mr-1"&gt;&lt;i class="ri-star-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
-  &lt;b-button variant="success" class="mb-3 mr-1"&gt;&lt;i class="ri-settings-4-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
-  &lt;b-button variant="danger" class="mb-3 mr-1"&gt;&lt;i class="ri-radio-button-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
-  &lt;b-button variant="info" class="mb-3 mr-1"&gt;&lt;i class="ri-lock-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
+  &lt;b-button variant="primary" class="mb-3 ms-1"&gt;&lt;i class="ri-heart-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
+  &lt;b-button variant="secondary" class="mb-3 ms-1"&gt;&lt;i class="ri-star-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
+  &lt;b-button variant="success" class="mb-3 ms-1"&gt;&lt;i class="ri-settings-4-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
+  &lt;b-button variant="danger" class="mb-3 ms-1"&gt;&lt;i class="ri-radio-button-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
+  &lt;b-button variant="info" class="mb-3 ms-1"&gt;&lt;i class="ri-lock-fill"&gt;&lt;/i&gt;Buttons&lt;/b-button&gt;
 &lt;/div&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="mb-3 mr-1"><i class="ri-heart-fill pr-0"></i></b-button>
-            <b-button variant="secondary" class="mb-3 mr-1"><i class="ri-star-fill pr-0"></i></b-button>
-            <b-button variant="success" class="mb-3 mr-1"><i class="ri-settings-4-fill pr-0"></i></b-button>
-            <b-button variant="danger" class="mb-3 mr-1"><i class="ri-radio-button-fill pr-0"></i></b-button>
-            <b-button variant="warning" class="mb-3 mr-1"><i class="ri-delete-bin-2-fill pr-0"></i></b-button>
-            <b-button variant="info" class="mb-3 mr-1"><i class="ri-lock-fill pr-0"></i></b-button>
-            <b-button variant="light" class="mb-3 mr-1"><i class="ri-time-fill pr-0"></i></b-button>
-            <b-button variant="dark" class="mb-3 mr-1"><i class="ri-sun-fill pr-0"></i></b-button>
-            <b-button variant="link" class="mb-3 mr-1"><i class="ri-moon-fill pr-0"></i></b-button>
+            <b-button variant="primary" class="mb-3 ms-1"><i class="ri-heart-fill pe-0"></i></b-button>
+            <b-button variant="secondary" class="mb-3 ms-1"><i class="ri-star-fill pe-0"></i></b-button>
+            <b-button variant="success" class="mb-3 ms-1"><i class="ri-settings-4-fill pe-0"></i></b-button>
+            <b-button variant="danger" class="mb-3 ms-1"><i class="ri-radio-button-fill pe-0"></i></b-button>
+            <b-button variant="warning" class="mb-3 ms-1"><i class="ri-delete-bin-2-fill pe-0"></i></b-button>
+            <b-button variant="info" class="mb-3 ms-1"><i class="ri-lock-fill pe-0"></i></b-button>
+            <b-button variant="light" class="mb-3 ms-1"><i class="ri-time-fill pe-0"></i></b-button>
+            <b-button variant="dark" class="mb-3 ms-1"><i class="ri-sun-fill pe-0"></i></b-button>
+            <b-button variant="link" class="mb-3 ms-1"><i class="ri-moon-fill pe-0"></i></b-button>
             <div class="d-inline-block w-100 mt-3">
-              <b-button variant="primary" class="mb-3 mr-1"><i class="ri-heart-fill"></i>Buttons</b-button>
-              <b-button variant="secondary" class="mb-3 mr-1"><i class="ri-star-fill"></i>Buttons</b-button>
-              <b-button variant="success" class="mb-3 mr-1"><i class="ri-settings-4-fill"></i>Buttons</b-button>
-              <b-button variant="danger" class="mb-3 mr-1"><i class="ri-radio-button-fill"></i>Buttons</b-button>
-              <b-button variant="info" class="mb-3 mr-1"><i class="ri-lock-fill"></i>Buttons</b-button>
+              <b-button variant="primary" class="mb-3 ms-1"><i class="ri-heart-fill"></i>Buttons</b-button>
+              <b-button variant="secondary" class="mb-3 ms-1"><i class="ri-star-fill"></i>Buttons</b-button>
+              <b-button variant="success" class="mb-3 ms-1"><i class="ri-settings-4-fill"></i>Buttons</b-button>
+              <b-button variant="danger" class="mb-3 ms-1"><i class="ri-radio-button-fill"></i>Buttons</b-button>
+              <b-button variant="info" class="mb-3 ms-1"><i class="ri-lock-fill"></i>Buttons</b-button>
             </div>
           </template>
         </iq-card>
@@ -513,9 +513,9 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button disabled variant="primary" class="mr-1">Primary button</b-button>
-            <b-button disabled variant="success" class="mr-1">Button</b-button>
-            <b-button disabled variant="outline-primary" class="mr-1">Button</b-button>
+            <b-button disabled variant="primary" class="ms-1">Primary button</b-button>
+            <b-button disabled variant="success" class="ms-1">Button</b-button>
+            <b-button disabled variant="outline-primary" class="ms-1">Button</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -567,19 +567,19 @@
 &lt;b-button variant="primary" class="active mb-3"&gt;Active&lt;/b-button&gt;
 &lt;b-button variant="secondary" class="active mb-3"&gt;Active&lt;/b-button&gt;
 &lt;b-button variant="warning" class="active mb-3"&gt;Active&lt;/b-button&gt;
-&lt;b-button variant="accent" class="mb-3 mr-1" disabled&gt;Disabled&lt;/b-button&gt;
-&lt;b-button variant="primary" class="mb-3 mr-1" disabled&gt;Disabled&lt;/b-button&gt;
-&lt;b-button variant="outline-primary" class="mb-3 mr-1" disabled&gt;Disabled&lt;/b-button&gt;
+&lt;b-button variant="accent" class="mb-3 ms-1" disabled&gt;Disabled&lt;/b-button&gt;
+&lt;b-button variant="primary" class="mb-3 ms-1" disabled&gt;Disabled&lt;/b-button&gt;
+&lt;b-button variant="outline-primary" class="mb-3 ms-1" disabled&gt;Disabled&lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="active mb-3 mr-1">Active</b-button>
-            <b-button variant="secondary" class="active mb-3 mr-1">Active</b-button>
-            <b-button variant="warning" class="active mb-3 mr-1">Active</b-button>
-            <b-button variant="accent" class="mb-3 mr-1" disabled>Disabled</b-button>
-            <b-button variant="primary" class="mb-3 mr-1" disabled>Disabled</b-button>
-            <b-button variant="outline-primary" class="mb-3 mr-1" disabled>Disabled</b-button>
+            <b-button variant="primary" class="active mb-3 ms-1">Active</b-button>
+            <b-button variant="secondary" class="active mb-3 ms-1">Active</b-button>
+            <b-button variant="warning" class="active mb-3 ms-1">Active</b-button>
+            <b-button variant="accent" class="mb-3 ms-1" disabled>Disabled</b-button>
+            <b-button variant="primary" class="mb-3 ms-1" disabled>Disabled</b-button>
+            <b-button variant="outline-primary" class="mb-3 ms-1" disabled>Disabled</b-button>
           </template>
         </iq-card>
       </b-col>
@@ -670,18 +670,18 @@
   &lt;b-button variant="primary"&gt;Right&lt;/b-button&gt;
 &lt;/b-button-group&gt;
 &lt;b-button-toolbar aria-label="Toolbar with button groups" class="mt-3"&gt;
-  &lt;b-button-group class="mr-2"&gt;
+  &lt;b-button-group class="ms-2"&gt;
     &lt;b-button variant="secondary"&gt;1&lt;/b-button&gt;
     &lt;b-button variant="secondary"&gt;2&lt;/b-button&gt;
     &lt;b-button variant="secondary"&gt;3&lt;/b-button&gt;
     &lt;b-button variant="secondary"&gt;4&lt;/b-button&gt;
   &lt;/b-button-group&gt;
-  &lt;b-button-group class="mr-2"&gt;
+  &lt;b-button-group class="ms-2"&gt;
     &lt;b-button variant="secondary"&gt;5&lt;/b-button&gt;
     &lt;b-button variant="secondary"&gt;6&lt;/b-button&gt;
     &lt;b-button variant="secondary"&gt;7&lt;/b-button&gt;
   &lt;/b-button-group&gt;
-  &lt;b-button-group class="mr-2"&gt;
+  &lt;b-button-group class="ms-2"&gt;
     &lt;b-button variant="secondary"&gt;8&lt;/b-button&gt;
   &lt;/b-button-group&gt;
 &lt;/b-button-toolbar&gt;
@@ -695,18 +695,18 @@
               <b-button variant="primary">Right</b-button>
             </b-button-group>
             <b-button-toolbar aria-label="Toolbar with button groups" class="mt-3">
-              <b-button-group class="mr-2">
+              <b-button-group class="ms-2">
                 <b-button variant="secondary">1</b-button>
                 <b-button variant="secondary">2</b-button>
                 <b-button variant="secondary">3</b-button>
                 <b-button variant="secondary">4</b-button>
               </b-button-group>
-              <b-button-group class="mr-2">
+              <b-button-group class="ms-2">
                 <b-button variant="secondary">5</b-button>
                 <b-button variant="secondary">6</b-button>
                 <b-button variant="secondary">7</b-button>
               </b-button-group>
-              <b-button-group class="mr-2">
+              <b-button-group class="ms-2">
                 <b-button variant="secondary">8</b-button>
               </b-button-group>
             </b-button-toolbar>
@@ -730,7 +730,7 @@
                 <kbd class="bg-dark">
                   <pre class="text-white" id="buttons-dropdown">
                     <code>
-&lt;b-button-group class="mr-2"&gt;
+&lt;b-button-group class="ms-2"&gt;
   &lt;b-button variant="primary"&gt;1&lt;/b-button&gt;
   &lt;b-button variant="primary"&gt;2&lt;/b-button&gt;
   &lt;b-dropdown variant="primary" text="Dropdown"&gt;
@@ -752,7 +752,7 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-button-group class="mr-2">
+            <b-button-group class="ms-2">
               <b-button variant="primary">1</b-button>
               <b-button variant="primary">2</b-button>
               <b-dropdown variant="primary" text="Dropdown">

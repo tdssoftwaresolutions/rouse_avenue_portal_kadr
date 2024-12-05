@@ -29,7 +29,7 @@
     Remember me
   &lt;/b-form-checkbox&gt;
   &lt;b-button type="submit" variant="primary"&gt;Submit&lt;/b-button&gt;
-  &lt;b-button type="submit" variant="none" class="iq-bg-danger ml-3"&gt;Cancle&lt;/b-button&gt;
+  &lt;b-button type="submit" variant="none" class="iq-bg-danger ms-3"&gt;Cancle&lt;/b-button&gt;
 &lt;/b-form&gt;
 </code></pre>
                 </kbd>
@@ -46,7 +46,7 @@
                 Remember me
               </b-form-checkbox>
               <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="submit" variant="none" class="iq-bg-danger ml-3">Cancle</b-button>
+              <b-button type="submit" variant="none" class="iq-bg-danger ms-3">Cancle</b-button>
             </b-form>
           </template>
         </iq-card>
@@ -149,7 +149,7 @@
     Remember me
   &lt;/b-form-checkbox&gt;
   &lt;b-button type="submit" variant="primary"&gt;Submit&lt;/b-button&gt;
-  &lt;b-button type="submit" variant="none" class="iq-bg-danger ml-3"&gt;Cancle&lt;/b-button&gt;
+  &lt;b-button type="submit" variant="none" class="iq-bg-danger ms-3"&gt;Cancle&lt;/b-button&gt;
 &lt;/b-form&gt;
 </code></pre>
                 </kbd>
@@ -196,7 +196,7 @@
                 Remember me
               </b-form-checkbox>
               <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="submit" variant="none" class="iq-bg-danger ml-3">Cancle</b-button>
+              <b-button type="submit" variant="none" class="iq-bg-danger ms-3">Cancle</b-button>
             </b-form>
           </template>
         </iq-card>
@@ -283,7 +283,7 @@
     &lt;b-form-checkbox&gt;Remember me&lt;/b-form-checkbox&gt;
   &lt;/b-form-group&gt;
   &lt;b-button type="submit" variant="primary"&gt;Submit&lt;/b-button&gt;
-  &lt;b-button type="submit" variant="none" class="iq-bg-danger ml-3"&gt;Cancle&lt;/b-button&gt;
+  &lt;b-button type="submit" variant="none" class="iq-bg-danger ms-3"&gt;Cancle&lt;/b-button&gt;
 &lt;/b-form&gt;
 </code></pre>
                 </kbd>
@@ -310,7 +310,7 @@
                 <b-form-checkbox>Remember me</b-form-checkbox>
               </b-form-group>
               <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="submit" variant="none" class="iq-bg-danger ml-3">Cancle</b-button>
+              <b-button type="submit" variant="none" class="iq-bg-danger ms-3">Cancle</b-button>
             </b-form>
           </template>
         </iq-card>
@@ -455,7 +455,7 @@
     &gt;&lt;/b-form-file&gt;
   &lt;/b-form-group&gt;
   &lt;b-button type="submit" variant="primary"&gt;Submit&lt;/b-button&gt;
-  &lt;b-button type="submit" variant="none" class="iq-bg-danger ml-3"&gt;Cancle&lt;/b-button&gt;
+  &lt;b-button type="submit" variant="none" class="iq-bg-danger ms-3"&gt;Cancle&lt;/b-button&gt;
 &lt;/b-form&gt;
 </code></pre>
                 </kbd>
@@ -548,7 +548,7 @@
                 ></b-form-file>
               </b-form-group>
               <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="submit" variant="none" class="iq-bg-danger ml-3">Cancle</b-button>
+              <b-button type="submit" variant="none" class="iq-bg-danger ms-3">Cancle</b-button>
             </b-form>
           </template>
         </iq-card>

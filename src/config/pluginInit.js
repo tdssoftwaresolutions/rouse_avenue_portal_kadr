@@ -57,8 +57,8 @@ export const sofbox = {
       // Remove any old one
       $('.ripple').remove()
       // Setup
-      let posX = $(this).offset().left
-      let posY = $(this).offset().top
+      const posX = $(this).offset().left
+      const posY = $(this).offset().top
       let buttonWidth = $(this).width()
       let buttonHeight = $(this).height()
 
@@ -73,8 +73,8 @@ export const sofbox = {
       }
 
       // Get the center of the element
-      let x = e.pageX - posX - buttonWidth / 2
-      let y = e.pageY - posY - buttonHeight / 2
+      const x = e.pageX - posX - buttonWidth / 2
+      const y = e.pageY - posY - buttonHeight / 2
 
       // Add the ripples CSS and start the animation
       $('.ripple').css({
@@ -90,7 +90,7 @@ export const sofbox = {
     const elementExist = this.checkElement('class', 'iq-full-screen')
     if (elementExist) {
       $(document).on('click', '.iq-full-screen', function () {
-        let elem = $(this)
+        const elem = $(this)
         if (!document.fullscreenElement &&
           !document.mozFullScreenElement &&
           !document.webkitFullscreenElement &&
@@ -123,8 +123,8 @@ export const sofbox = {
   wrapperMenuToggle () {
     const elementExist = this.checkElement('class', 'wrapper-menu')
     if (elementExist) {
-      let wrapperMenu = document.querySelectorAll('.wrapper-menu')
-      let body = document.querySelector('body')
+      const wrapperMenu = document.querySelectorAll('.wrapper-menu')
+      const body = document.querySelector('body')
       for (let i = 0; i < wrapperMenu.length; i++) {
         wrapperMenu[i].addEventListener('click', function () {
           wrapperMenu[i].classList.toggle('open')
@@ -145,7 +145,7 @@ export const sofbox = {
 
   navBarAction () {
     $(document).on('click', function (e) {
-      let myTargetElement = e.target
+      const myTargetElement = e.target
       let selector, mainElement
       if ($(myTargetElement).hasClass('search-toggle') || $(myTargetElement).parent().hasClass('search-toggle') || $(myTargetElement).parent().parent().hasClass('search-toggle')) {
         if ($(myTargetElement).hasClass('search-toggle')) {
@@ -303,6 +303,7 @@ export const sofbox = {
         if (child.link.name === activeRoute) {
           active = true
         }
+        return active
       })
     } else {
       if (item.link.name === activeRoute) {
@@ -312,10 +313,10 @@ export const sofbox = {
     return active
   },
   SimpleWizard () {
-    var currentFs, nextFs, previousFs // fieldsets
-    var opacity
-    var current = 1
-    var steps = $('fieldset').length
+    let currentFs, nextFs, previousFs // fieldsets
+    let opacity
+    let current = 1
+    let steps = $('fieldset').length
     setProgressBar(current)
     $('.next').click(function () {
       currentFs = $(this).parent()
@@ -333,7 +334,7 @@ export const sofbox = {
           // for making fielset appear animation
           opacity = 1 - now
           currentFs.css({ 'display': 'none', 'position': 'relative' })
-          nextFs.css({ 'opacity': opacity })
+          nextFs.css({ opacity })
         },
         duration: 500
       })
@@ -359,7 +360,7 @@ export const sofbox = {
             'position': 'relative'
           })
           previousFs.css({
-            'opacity': opacity
+            opacity
           })
         },
         duration: 500
@@ -367,7 +368,7 @@ export const sofbox = {
       setProgressBar(--current)
     })
     function setProgressBar (curStep) {
-      var percent = parseFloat(100 / steps) * curStep
+      let percent = parseFloat(100 / steps) * curStep
       percent = percent.toFixed()
       $('.progress-bar').css('width', percent + '%')
     }
@@ -376,10 +377,10 @@ export const sofbox = {
     })
   },
   VerticalWizard () {
-    var currentFs, nextFs, previousFs // fieldsets
-    var opacity
-    var current = 1
-    var steps = $('fieldset').length
+    let currentFs, nextFs, previousFs // fieldsets
+    let opacity
+    let current = 1
+    let steps = $('fieldset').length
     setProgressBar(current)
     $('.next').click(function () {
       currentFs = $(this).parent()
@@ -396,7 +397,7 @@ export const sofbox = {
           // for making fielset appear animation
           opacity = 1 - now
           currentFs.css({ 'display': 'none', 'position': 'relative' })
-          nextFs.css({ 'opacity': opacity })
+          nextFs.css({ opacity })
         },
         duration: 500
       })
@@ -421,7 +422,7 @@ export const sofbox = {
             'position': 'relative'
           })
           previousFs.css({
-            'opacity': opacity
+            opacity
           })
         },
         duration: 500
@@ -429,7 +430,7 @@ export const sofbox = {
       setProgressBar(--current)
     })
     function setProgressBar (curStep) {
-      var percent = parseFloat(100 / steps) * curStep
+      let percent = parseFloat(100 / steps) * curStep
       percent = percent.toFixed()
       $('.progress-bar').css('width', percent + '%')
     }
@@ -438,14 +439,14 @@ export const sofbox = {
     })
   },
   ValidateWizard () {
-    var navListItems = $('div.setup-panel div a')
-    var allWells = $('.setup-content')
-    var allNextBtn = $('.nextBtn')
+    let navListItems = $('div.setup-panel div a')
+    let allWells = $('.setup-content')
+    let allNextBtn = $('.nextBtn')
     allWells.hide()
     navListItems.click(function (e) {
       e.preventDefault()
-      var $target = $($(this).attr('href'))
-      var $item = $(this)
+      let $target = $($(this).attr('href'))
+      let $item = $(this)
       if (!$item.hasClass('disabled')) {
         navListItems.addClass('active')
         $item.parent().addClass('active')
@@ -455,13 +456,13 @@ export const sofbox = {
       }
     })
     allNextBtn.click(function () {
-      var curStep = $(this).closest('.setup-content')
-      var curStepBtn = curStep.attr('id')
-      var nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children('a')
-      var curInputs = curStep.find('input[type="text"],input[type="email"],input[type="password"],input[type="url"],textarea')
-      var isValid = true
+      let curStep = $(this).closest('.setup-content')
+      let curStepBtn = curStep.attr('id')
+      let nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children('a')
+      let curInputs = curStep.find('input[type="text"],input[type="email"],input[type="password"],input[type="url"],textarea')
+      let isValid = true
       $('.form-group').removeClass('has-error')
-      for (var i = 0; i < curInputs.length; i++) {
+      for (let i = 0; i < curInputs.length; i++) {
         if (!curInputs[i].validity.valid) {
           isValid = false
           $(curInputs[i]).closest('.form-group').addClass('has-error')

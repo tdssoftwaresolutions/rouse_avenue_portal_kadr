@@ -351,7 +351,7 @@
             </a>
           </template>
           <template v-slot:body>
-            <p>Using a single set of <code>.col-sm-*</code> classes, you can create a basic grid system that starts out stacked and becomes horizontal at the small breakpoint (<code>sm</code>).</p>
+            <p>Using a single set of <code>.col-*</code> classes, you can create a basic grid system that starts out stacked and becomes horizontal at the small breakpoint (<code>sm</code>).</p>
             <b-collapse id="collapse-7" class="mb-2">
               <div class="card">
                 <kbd class="bg-dark">

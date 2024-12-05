@@ -73,37 +73,37 @@
             <div class="new-user-info">
               <b-form>
                 <b-row>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="First Name:"
                     label-for="fname"
                   >
                     <b-form-input id="fname" name="fname" placeholder="First Name"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Last Name:"
                     label-for="lname"
                   >
                     <b-form-input id="lname" name="lname" placeholder="Last Name"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Street Address 1:"
                     label-for="add1"
                   >
                     <b-form-input type="text" name="add1" id="add1" placeholder="Street Address 1"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Street Address 2:"
                     label-for="add2"
                   >
                     <b-form-input type="text" name="add2" id="add2" placeholder="Street Address 2"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-12"
+                  <b-form-group class="col-12"
                     label="Company Name:"
                     label-for="cname"
                   >
                     <b-form-input type="text" name="cname" id="cname" placeholder="Company Name"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-sm-12"
+                  <b-form-group class="col-12"
                     label-for="selectcountry"
                     label="Country:">
                     <b-form-select plain v-model="selectedCountry" :options="options2" id="selectcountry">
@@ -112,31 +112,31 @@
                       </template>
                     </b-form-select>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Mobile Number:"
                     label-for="mobno"
                   >
                     <b-form-input type="text" name="mobno" id="mobno" placeholder="Mobile Number"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Alternate Contact:"
                     label-for="altconno"
                   >
                     <b-form-input type="text" name="altconno" id="altconno" placeholder="Alternate Contact"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Email:"
                     label-for="email"
                   >
                     <b-form-input type="text" name="email" id="email" placeholder="Email"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Pin Code:"
                     label-for="pno"
                   >
                     <b-form-input type="text" name="pno" id="pno" placeholder="Pin Code"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Town/City:"
                     label-for="city"
                   >
@@ -146,19 +146,19 @@
                 <hr>
                 <h5 class="mb-3">Security</h5>
                 <b-row>
-                  <b-form-group class="col-md-12"
+                  <b-form-group class="col-12"
                     label="User Name:"
                     label-for="uname"
                   >
                     <b-form-input type="text" name="uname" id="uname" placeholder="User Name"></b-form-input>
                   </b-form-group>
-                  <b-form-group class="col-md-6"
+                  <b-form-group class="col-6"
                     label="Password:"
                     label-for="pass"
                   >
                     <b-form-input type="text" name="pass" id="pass" placeholder="Password"></b-form-input>
                   </b-form-group>
-                    <b-form-group class="col-md-6"
+                    <b-form-group class="col-6"
                     label="Repeat Password:"
                     label-for="rpass"
                   >
@@ -166,7 +166,7 @@
                   </b-form-group>
                 </b-row>
                 <div class="checkbox">
-                  <label><input class="mr-2" type="checkbox">Enable Two-Factor-Authentication</label>
+                  <label><input class="ms-2" type="checkbox">Enable Two-Factor-Authentication</label>
                 </div>
                 <b-button variant="primary" type="submit">Add New User</b-button>
               </b-form>

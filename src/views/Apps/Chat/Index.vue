@@ -7,9 +7,9 @@
             <div class="chat-data-block">
               <b-row>
                 <b-col lg="3" class="chat-data-left scroller">
-                  <div class="chat-search pt-3 pl-3">
+                  <div class="chat-search pt-3 ps-3">
                     <div class="d-flex align-items-center">
-                      <div class="chat-profile mr-3">
+                      <div class="chat-profile ms-3">
                         <img :src="require('../../../assets/images/user/1.jpg')" alt="chat-user" class="avatar-60 ">
                       </div>
                       <div class="chat-caption">
@@ -29,27 +29,27 @@
                           <div class="user-desc"><p>Web Designer</p></div>
                         </div>
                         <hr>
-                        <div class="user-detail text-left mt-4 pl-4 pr-4">
+                        <div class="user-detail text-left mt-4 ps-4 pe-4">
                           <h5 class="mt-4 mb-4">About</h5>
                           <p>It is long established fact that a reader will be distracted bt the reddable.</p>
                           <h5 class="mt-3 mb-3">Status</h5>
                           <ul class="user-status p-0">
-                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-success pr-1"></i><span>Online</span></li>
-                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-warning pr-1"></i><span>Away</span></li>
-                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-danger pr-1"></i><span>Do Not Disturb</span></li>
-                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-light pr-1"></i><span>Offline</span></li>
+                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-success pe-1"></i><span>Online</span></li>
+                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-warning pe-1"></i><span>Away</span></li>
+                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-danger pe-1"></i><span>Do Not Disturb</span></li>
+                            <li class="mb-1"><i class="ri-checkbox-blank-circle-fill text-light pe-1"></i><span>Offline</span></li>
                           </ul>
                         </div>
                       </div>
                     </div>
                     <div class="chat-searchbar mt-4">
-                      <div class="form-group chat-search-data m-0">
+                      <div class="mb-3 chat-search-data m-0">
                         <input type="text" class="form-control round" id="chat-search" placeholder="Search">
                         <i class="ri-search-line"></i>
                       </div>
                     </div>
                   </div>
-                  <div class="chat-sidebar-channel scroller pl-3">
+                  <div class="chat-sidebar-channel scroller ps-3">
                     <tab-nav :pills="true" :vertical="true" class="iq-chat-ui" id="chat-list-data">
                       <template v-for="(item,index) in publicChannel">
                         <tab-nav-items :key="index"
@@ -65,7 +65,7 @@
                     </tab-nav>
                   </div>
                 </b-col>
-                <div class="col-lg-9 chat-data p-0 chat-data-right">
+                <div class="col-9 chat-data p-0 chat-data-right">
                   <tab-content id="v-pills-tabContent">
                     <tab-content-item :active="true" id="v-pills-default" aria-labelled-by="v-pills-default">
                       <template>
@@ -86,7 +86,7 @@
                     <tab-content-item id="chatbox" aria-labelled-by="v-pills-default">
                       <template>
                         <div class="chat-head">
-                          <header class="d-flex justify-content-between align-items-center bg-white pt-3 pr-3 pb-3">
+                          <header class="d-flex justify-content-between align-items-center bg-white pt-3 pe-3 pb-3">
                             <ToggleButton :mini-toggle="true" :close-button="false" toggleShow="#chat-user-detail-popup" mediaClass="chat-user-profile">
                               <template v-slot:media>
                                   <img :src="checkUser(5, 'image')" alt="avatar" class="avatar-50 ">
@@ -106,38 +106,38 @@
                               </template>
                               <template v-slot:body>
                                 <div class="row">
-                                  <div class="col-6 col-md-6 title">Nik Name:</div>
-                                  <div class="col-6 col-md-6 text-right">{{ checkUser(5, 'name') }}</div>
+                                  <div class="col-6 col-6 title">Nik Name:</div>
+                                  <div class="col-6 col-6 text-right">{{ checkUser(5, 'name') }}</div>
                                 </div><hr>
                                 <div class="row">
-                                  <div class="col-6 col-md-6 title">Tel:</div>
-                                  <div class="col-6 col-md-6 text-right">072 143 9920</div>
+                                  <div class="col-6 col-6 title">Tel:</div>
+                                  <div class="col-6 col-6 text-right">072 143 9920</div>
                                 </div><hr>
                                 <div class="row">
-                                  <div class="col-6 col-md-6 title">Date Of Birth:</div>
-                                  <div class="col-6 col-md-6 text-right">July 12, 1989</div>
+                                  <div class="col-6 col-6 title">Date Of Birth:</div>
+                                  <div class="col-6 col-6 text-right">July 12, 1989</div>
                                 </div><hr>
                                 <div class="row">
-                                  <div class="col-6 col-md-6 title">Gender:</div>
-                                  <div class="col-6 col-md-6 text-right">Male</div>
+                                  <div class="col-6 col-6 title">Gender:</div>
+                                  <div class="col-6 col-6 text-right">Male</div>
                                 </div><hr>
                                 <div class="row">
-                                  <div class="col-6 col-md-6 title">Language:</div>
-                                  <div class="col-6 col-md-6 text-right">Engliah</div>
+                                  <div class="col-6 col-6 title">Language:</div>
+                                  <div class="col-6 col-6 text-right">Engliah</div>
                                 </div>
                               </template>
                             </ToggleContent>
                             <div class="chat-header-icons d-flex">
-                              <a class="iq-bg-primary iq-waves-effect mr-1 chat-icon-phone"><i class="ri-phone-line mr-0" /></a>
-                              <a class="iq-bg-primary iq-waves-effect mr-1 chat-icon-video"><i class="ri-vidicon-line  mr-0" /></a>
-                              <a class="iq-bg-primary iq-waves-effect mr-1 chat-icon-delete"><i class="ri-delete-bin-line  mr-0" /></a>
+                              <a class="iq-bg-primary iq-waves-effect ms-1 chat-icon-phone"><i class="ri-phone-line ms-0" /></a>
+                              <a class="iq-bg-primary iq-waves-effect ms-1 chat-icon-video"><i class="ri-vidicon-line  ms-0" /></a>
+                              <a class="iq-bg-primary iq-waves-effect ms-1 chat-icon-delete"><i class="ri-delete-bin-line  ms-0" /></a>
                               <b-dropdown id="dropdownMenuButton2" right variant="none iq-bg-primary iq-waves-effect remove-toggle">
                                 <template v-slot:button-content>
-                                  <i class="ri-more-2-line mr-0" />
+                                  <i class="ri-more-2-line ms-0" />
                                 </template>
-                                <b-dropdown-item href="#"><i class="fa fa-thumb-tack mr-0" aria-hidden="true"></i> Pin to top</b-dropdown-item>
-                                <b-dropdown-item href="#"><i class="fa fa-trash-o mr-0" aria-hidden="true"></i> Delete chat</b-dropdown-item>
-                                <b-dropdown-item href="#"><i class="fa fa-ban mr-0" aria-hidden="true"></i> Block</b-dropdown-item>
+                                <b-dropdown-item href="#"><i class="fa fa-thumb-tack ms-0" aria-hidden="true"></i> Pin to top</b-dropdown-item>
+                                <b-dropdown-item href="#"><i class="fa fa-trash-o ms-0" aria-hidden="true"></i> Delete chat</b-dropdown-item>
+                                <b-dropdown-item href="#"><i class="fa fa-ban ms-0" aria-hidden="true"></i> Block</b-dropdown-item>
                               </b-dropdown>
                             </div>
                           </header>
@@ -175,11 +175,11 @@
                         <div class="chat-footer p-3 bg-white">
                           <form class="d-flex align-items-center"  action="javascript:void(0);">
                             <div class="chat-attagement d-flex">
-                              <a href="javascript:void(0)"><i class="fa fa-smile-o pr-3" aria-hidden="true"></i></a>
-                              <a href="javascript:void(0)"><i class="fa fa-paperclip pr-3" aria-hidden="true"></i></a>
+                              <a href="javascript:void(0)"><i class="fa fa-smile-o pe-3" aria-hidden="true"></i></a>
+                              <a href="javascript:void(0)"><i class="fa fa-paperclip pe-3" aria-hidden="true"></i></a>
                             </div>
-                            <input type="text" class="form-control mr-3" placeholder="Type your message">
-                            <button type="submit" class="btn btn-primary d-flex align-items-center p-2"><i class="fas fa-paper-plane" aria-hidden="true"></i><span class="d-none d-lg-block ml-1">Send</span></button>
+                            <input type="text" class="form-control ms-3" placeholder="Type your message">
+                            <button type="submit" class="btn btn-primary d-flex align-items-center p-2"><i class="fas fa-paper-plane" aria-hidden="true"></i><span class="d-none d-lg-block ms-1">Send</span></button>
                           </form>
                         </div>
                       </template>

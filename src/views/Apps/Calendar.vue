@@ -12,7 +12,7 @@
             <h4 class="card-title ">Classification</h4>
           </template>
           <template v-slot:headerAction>
-            <a href="#"><i class="fa fa-plus  mr-0" aria-hidden="true" /></a>
+            <a href="#"><i class="fa fa-plus  ms-0" aria-hidden="true" /></a>
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 job-classification">
@@ -50,7 +50,7 @@
           </template>
           <template v-slot:headerAction>
             <a href="#" class="btn btn-primary" @click="openModal">
-              <i class="ri-add-line mr-2"></i>Book Appointment
+              <i class="ri-add-line ms-2"></i>Book Appointment
             </a>
           </template>
           <template v-slot:body>

@@ -6,7 +6,7 @@
           <div class="iq-email-to-list p-3">
             <div class="d-flex justify-content-between">
               <ul>
-                <li class="mr-3">
+                <li class="ms-3">
                   <a href="javascript: void(0);" @click="closeDetail(item)">
                     <h4 class="m-0"><i class="ri-arrow-left-line" /></h4>
                   </a>
@@ -20,7 +20,7 @@
               </ul>
               <div class="iq-email-search d-flex">
                 <ul>
-                  <li class="mr-3">
+                  <li class="ms-3">
                     <a class="font-size-14" href="#">1 of 505</a>
                   </li>
                   <li v-b-tooltip.top title="Previous"><a href="#"><i class="ri-arrow-left-s-line" /></a></li>
@@ -86,10 +86,10 @@
                 <h6 class="mb-2">ATTACHED FILES:</h6>
                 <ul>
                   <li class="icon icon-attegment">
-                    <i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="ml-1">mydoc.doc</span>
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="ms-1">mydoc.doc</span>
                   </li>
                   <li class="icon icon-attegment">
-                    <i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="ml-1">mydoc.pdf</span>
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="ms-1">mydoc.pdf</span>
                   </li>
                 </ul>
               </div>

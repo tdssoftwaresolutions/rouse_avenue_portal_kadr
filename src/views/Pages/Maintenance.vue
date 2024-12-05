@@ -2,7 +2,7 @@
   <div class="mt-5 iq-maintenance">
     <div class="container-fluid p-0">
       <div class="row no-gutters">
-        <div class="col-sm-12 text-center">
+        <div class="col-12 text-center">
           <div class="iq-maintenance">
             <img :src="require('../../assets/images/error/02.png')" class="img-fluid" alt="error">
             <h3 class="mt-4 mb-1">We are Currently Performing Maintenance</h3>
@@ -13,7 +13,7 @@
     </div>
     <div class="container mt-3">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-4">
           <div class="card text-center mb-0">
             <div class="card-body">
               <i class="ri-window-line ri-4x line-height text-primary"></i>
@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-4">
           <div class="card text-center mb-0">
             <div class="card-body">
               <i class="ri-time-line ri-4x line-height text-primary"></i>
@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-4">
           <div class="card text-center mb-0">
             <div class="card-body">
               <i class="ri-information-line ri-4x line-height text-primary"></i>

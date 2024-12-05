@@ -20,7 +20,7 @@ import { sofbox } from '../../../config/pluginInit'
 import profile from '../../../assets/images/Screenshot (36).png'
 import profile2 from '../../../assets/images/Screenshot (36)1.png'
 export default {
-  name: 'listing',
+  name: 'listingComp',
   mounted () {
     sofbox.index()
   },

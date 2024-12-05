@@ -36,7 +36,7 @@
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a vulputate dictum, massa quam dapibus leo, eget vulputate orci purus ut lorem. In fringilla mi in ligula.</p>
                   </div>
                   <div class="product-price">
-                    <div class="regular-price"><b> $100.00</b> <span class="offer-price ml-2">$150.00</span></div>
+                    <div class="regular-price"><b> $100.00</b> <span class="offer-price ms-2">$150.00</span></div>
                   </div>
                   <div class="shipping">
                     <p class="mb-0">Shipping Free: <span>$50</span></p>
@@ -50,7 +50,7 @@
                       <input type="number" min="1" max="10" value="1" class="increment">
                       <button type="button" class="btn-plus"><i class="ri-add-fill"></i></button>
                     </div>
-                    <div class="product-action ml-2">
+                    <div class="product-action ms-2">
                       <div class="add-to-cart"><a href="#"> Add to Cart </a></div>
                       <div class="wishlist"><a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Wishlist"> <i class="ri-heart-line"></i> </a></div>
                     </div>
@@ -106,7 +106,7 @@
                               <div class="wishlist"><a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Wishlist"> <i class="ri-heart-line"></i></a></div>
                             </div>
                             <div class="product-price">
-                              <div class="regular-price"><b> ${{ item.regular_price }}</b> <span class="offer-price ml-2">${{ item.offer_price }}</span></div>
+                              <div class="regular-price"><b> ${{ item.regular_price }}</b> <span class="offer-price ms-2">${{ item.offer_price }}</span></div>
                             </div>
                           </div>
                         </div>

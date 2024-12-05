@@ -2,6 +2,7 @@
   <router-view/>
 </template>
 <script>
+import './assets/scss/style.scss'
 export default {
   name: 'App',
   components: {
@@ -9,5 +10,4 @@ export default {
 }
 </script>
 <style lang="scss">
-  @import "./src/assets/scss/style.scss";
 </style>

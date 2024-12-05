@@ -21,7 +21,7 @@
 &lt;h1 class="mb-3"&gt;Example heading &lt;b-badge variant="primary"&gt;New&lt;/b-badge&gt;&lt;/h1&gt;
 &lt;h2 class="mb-3"&gt;Example heading &lt;b-badge variant="secondary"&gt;New&lt;/b-badge&gt;&lt;/h2&gt;
 &lt;h3 class="mb-3"&gt;Example heading &lt;b-button variant="success"&gt;
-  Notifications &lt;b-badge variant="light" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications &lt;b-badge variant="light" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;&lt;/h3&gt;
 &lt;h4 class="mb-3"&gt;Example heading &lt;b-badge variant="danger"&gt;New&lt;/b-badge&gt;&lt;/h4&gt;
 &lt;h5 class="mb-3"&gt;Example heading &lt;b-badge variant="warning"&gt;New&lt;/b-badge&gt;&lt;/h5&gt;
@@ -33,7 +33,7 @@
             <h1 class="mb-3">Example heading <b-badge variant="primary">New</b-badge></h1>
             <h2 class="mb-3">Example heading <b-badge variant="secondary">New</b-badge></h2>
             <h3 class="mb-3">Example heading <b-button variant="success">
-              Notifications <b-badge variant="light" class="ml-2">4</b-badge>
+              Notifications <b-badge variant="light" class="ms-2">4</b-badge>
             </b-button></h3>
             <h4 class="mb-3">Example heading <b-badge variant="danger">New</b-badge></h4>
             <h5 class="mb-3">Example heading <b-badge variant="warning">New</b-badge></h5>
@@ -57,26 +57,26 @@
                   <pre class="text-white" id="button-badges">
                     <code>
 &lt;b-button variant="primary" class="mb-1"&gt;
-  Notifications &lt;b-badge variant="light" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications &lt;b-badge variant="light" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="success" class="mb-1"&gt;
-  Notifications&lt;b-badge variant="light" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="light" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="danger" class="mb-1"&gt;
-  Notifications&lt;b-badge variant="light" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="light" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="primary" class="mb-1 mr-1">
-              Notifications <b-badge variant="light" class="ml-2">4</b-badge>
+            <b-button variant="primary" class="mb-1 ms-1">
+              Notifications <b-badge variant="light" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="success" class="mb-1 mr-1">
-              Notifications<b-badge variant="light" class="ml-2">4</b-badge>
+            <b-button variant="success" class="mb-1 ms-1">
+              Notifications<b-badge variant="light" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="danger" class="mb-1 mr-1">
-              Notifications<b-badge variant="light" class="ml-2">4</b-badge>
+            <b-button variant="danger" class="mb-1 ms-1">
+              Notifications<b-badge variant="light" class="ms-2">4</b-badge>
             </b-button>
           </template>
         </iq-card>
@@ -97,26 +97,26 @@
                   <pre class="text-white" id="button-light-background-badges">
                     <code>
 &lt;b-button variant="outline-primary" class="mb-1"&gt;
-  Notifications &lt;b-badge variant="primary" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications &lt;b-badge variant="primary" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="outline-success" class="mb-1"&gt;
-  Notifications&lt;b-badge variant="success" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="success" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="outline-danger" class="mb-1"&gt;
-  Notifications&lt;b-badge variant="danger" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="danger" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="outline-primary" class="mb-1 mr-1">
-              Notifications <b-badge variant="primary" class="ml-2">4</b-badge>
+            <b-button variant="outline-primary" class="mb-1 ms-1">
+              Notifications <b-badge variant="primary" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="outline-success" class="mb-1 mr-1">
-              Notifications<b-badge variant="success" class="ml-2">4</b-badge>
+            <b-button variant="outline-success" class="mb-1 ms-1">
+              Notifications<b-badge variant="success" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="outline-danger" class="mb-1 mr-1">
-              Notifications<b-badge variant="danger" class="ml-2">4</b-badge>
+            <b-button variant="outline-danger" class="mb-1 ms-1">
+              Notifications<b-badge variant="danger" class="ms-2">4</b-badge>
             </b-button>
           </template>
         </iq-card>
@@ -137,26 +137,26 @@
                   <pre class="text-white" id="button-border-badges">
                     <code>
 &lt;b-button variant="none" class="iq-bg-primary mb-1"&gt;
-  Notifications &lt;b-badge variant="primary" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications &lt;b-badge variant="primary" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="none" class="iq-bg-success mb-1"&gt;
-  Notifications&lt;b-badge variant="success" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="success" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 &lt;b-button variant="none" class="iq-bg-danger mb-1"&gt;
-  Notifications&lt;b-badge variant="danger" class="ml-2"&gt;4&lt;/b-badge&gt;
+  Notifications&lt;b-badge variant="danger" class="ms-2"&gt;4&lt;/b-badge&gt;
 &lt;/b-button&gt;
 </code></pre>
                 </kbd>
               </div>
             </b-collapse>
-            <b-button variant="none" class="iq-bg-primary mb-1 mr-1">
-              Notifications <b-badge variant="primary" class="ml-2">4</b-badge>
+            <b-button variant="none" class="iq-bg-primary mb-1 ms-1">
+              Notifications <b-badge variant="primary" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="none" class="iq-bg-success mb-1 mr-1">
-              Notifications<b-badge variant="success" class="ml-2">4</b-badge>
+            <b-button variant="none" class="iq-bg-success mb-1 ms-1">
+              Notifications<b-badge variant="success" class="ms-2">4</b-badge>
             </b-button>
-            <b-button variant="none" class="iq-bg-danger mb-1 mr-1">
-              Notifications<b-badge variant="danger" class="ml-2">4</b-badge>
+            <b-button variant="none" class="iq-bg-danger mb-1 ms-1">
+              Notifications<b-badge variant="danger" class="ms-2">4</b-badge>
             </b-button>
           </template>
         </iq-card>
@@ -214,34 +214,34 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-badge variant="primary" class="mr-1">Primary</b-badge>
-            <b-badge variant="secondary" class="mr-1">Secondary</b-badge>
-            <b-badge variant="success" class="mr-1">Success</b-badge>
-            <b-badge variant="danger" class="mr-1">Danger</b-badge>
-            <b-badge variant="warning" class="mr-1">Warning</b-badge>
-            <b-badge variant="info" class="mr-1">Info</b-badge>
-            <b-badge variant="light" class="mr-1">Light</b-badge>
-            <b-badge variant="dark" class="mr-1">Dark</b-badge>
+            <b-badge variant="primary" class="ms-1">Primary</b-badge>
+            <b-badge variant="secondary" class="ms-1">Secondary</b-badge>
+            <b-badge variant="success" class="ms-1">Success</b-badge>
+            <b-badge variant="danger" class="ms-1">Danger</b-badge>
+            <b-badge variant="warning" class="ms-1">Warning</b-badge>
+            <b-badge variant="info" class="ms-1">Info</b-badge>
+            <b-badge variant="light" class="ms-1">Light</b-badge>
+            <b-badge variant="dark" class="ms-1">Dark</b-badge>
             <h5 class="card-title mt-4">Pill badges</h5>
             <p>Use the <code>.badge-pill</code> modifier class to make badges more rounded (with a larger <code>border-radius</code> and additional horizontal <code>padding</code>). Useful if you miss the badges from v3.</p>
-            <b-badge pill variant="primary" class="mr-1">Primary</b-badge>
-            <b-badge pill variant="secondary" class="mr-1">Secondary</b-badge>
-            <b-badge pill variant="success" class="mr-1">Success</b-badge>
-            <b-badge pill variant="danger" class="mr-1">Danger</b-badge>
-            <b-badge pill variant="warning" class="mr-1">Warning</b-badge>
-            <b-badge pill variant="info" class="mr-1">Info</b-badge>
-            <b-badge pill variant="light" class="mr-1">Light</b-badge>
-            <b-badge pill variant="dark" class="mr-1">Dark</b-badge>
+            <b-badge pill variant="primary" class="ms-1">Primary</b-badge>
+            <b-badge pill variant="secondary" class="ms-1">Secondary</b-badge>
+            <b-badge pill variant="success" class="ms-1">Success</b-badge>
+            <b-badge pill variant="danger" class="ms-1">Danger</b-badge>
+            <b-badge pill variant="warning" class="ms-1">Warning</b-badge>
+            <b-badge pill variant="info" class="ms-1">Info</b-badge>
+            <b-badge pill variant="light" class="ms-1">Light</b-badge>
+            <b-badge pill variant="dark" class="ms-1">Dark</b-badge>
             <h5 class="card-title mt-4">Links</h5>
             <p>Using the contextual <code>.badge-*</code> classes on an <code>&lt;a&gt;</code> element quickly provide <em>actionable</em> badges with hover and focus states.</p>
-            <b-badge href="#" variant="primary" class="mr-1">Primary</b-badge>
-            <b-badge href="#" variant="secondary" class="mr-1">Secondary</b-badge>
-            <b-badge href="#" variant="success" class="mr-1">Success</b-badge>
-            <b-badge href="#" variant="danger" class="mr-1">Danger</b-badge>
-            <b-badge href="#" variant="warning" class="mr-1">Warning</b-badge>
-            <b-badge href="#" variant="info" class="mr-1">Info</b-badge>
-            <b-badge href="#" variant="light" class="mr-1">Light</b-badge>
-            <b-badge href="#" variant="dark" class="mr-1">Dark</b-badge>
+            <b-badge href="#" variant="primary" class="ms-1">Primary</b-badge>
+            <b-badge href="#" variant="secondary" class="ms-1">Secondary</b-badge>
+            <b-badge href="#" variant="success" class="ms-1">Success</b-badge>
+            <b-badge href="#" variant="danger" class="ms-1">Danger</b-badge>
+            <b-badge href="#" variant="warning" class="ms-1">Warning</b-badge>
+            <b-badge href="#" variant="info" class="ms-1">Info</b-badge>
+            <b-badge href="#" variant="light" class="ms-1">Light</b-badge>
+            <b-badge href="#" variant="dark" class="ms-1">Dark</b-badge>
           </template>
         </iq-card>
         <iq-card>
@@ -294,34 +294,34 @@
                 </kbd>
               </div>
             </b-collapse>
-            <b-badge class="border border-primary text-primary mr-1" variant="none">Primary</b-badge>
-            <b-badge class="border border-secondary text-secondary mr-1" variant="none">Secondary</b-badge>
-            <b-badge class="border border-success text-success mr-1" variant="none">Success</b-badge>
-            <b-badge class="border border-danger text-danger mr-1" variant="none">Danger</b-badge>
-            <b-badge class="border border-warning text-warning mr-1" variant="none">Warning</b-badge>
-            <b-badge class="border border-info text-info mr-1" variant="none">Info</b-badge>
-            <b-badge class="border border-light text-light mr-1" variant="none">Light</b-badge>
-            <b-badge class="border border-dark text-dark mr-1" variant="none">Dark</b-badge>
+            <b-badge class="border border-primary text-primary ms-1" variant="none">Primary</b-badge>
+            <b-badge class="border border-secondary text-secondary ms-1" variant="none">Secondary</b-badge>
+            <b-badge class="border border-success text-success ms-1" variant="none">Success</b-badge>
+            <b-badge class="border border-danger text-danger ms-1" variant="none">Danger</b-badge>
+            <b-badge class="border border-warning text-warning ms-1" variant="none">Warning</b-badge>
+            <b-badge class="border border-info text-info ms-1" variant="none">Info</b-badge>
+            <b-badge class="border border-light text-light ms-1" variant="none">Light</b-badge>
+            <b-badge class="border border-dark text-dark ms-1" variant="none">Dark</b-badge>
             <h5 class="card-title mt-4">Pill badges</h5>
             <p>Use the <code>.badge-pill</code> modifier class to make badges more rounded (with a larger <code>border-radius</code> and additional horizontal <code>padding</code>). Useful if you miss the badges from v3.</p>
-            <b-badge class="border border-primary text-primary mr-1" pill variant="none">Primary</b-badge>
-            <b-badge class="border border-secondary text-secondary mr-1" pill variant="none">Secondary</b-badge>
-            <b-badge class="border border-success text-success mr-1" pill variant="none">Success</b-badge>
-            <b-badge class="border border-danger text-danger mr-1" pill variant="none">Danger</b-badge>
-            <b-badge class="border border-warning text-warning mr-1" pill variant="none">Warning</b-badge>
-            <b-badge class="border border-info text-info mr-1" pill variant="none">Info</b-badge>
-            <b-badge class="border border-light text-light mr-1" pill variant="none">Light</b-badge>
-            <b-badge class="border border-dark text-dark mr-1" pill variant="none">Dark</b-badge>
+            <b-badge class="border border-primary text-primary ms-1" pill variant="none">Primary</b-badge>
+            <b-badge class="border border-secondary text-secondary ms-1" pill variant="none">Secondary</b-badge>
+            <b-badge class="border border-success text-success ms-1" pill variant="none">Success</b-badge>
+            <b-badge class="border border-danger text-danger ms-1" pill variant="none">Danger</b-badge>
+            <b-badge class="border border-warning text-warning ms-1" pill variant="none">Warning</b-badge>
+            <b-badge class="border border-info text-info ms-1" pill variant="none">Info</b-badge>
+            <b-badge class="border border-light text-light ms-1" pill variant="none">Light</b-badge>
+            <b-badge class="border border-dark text-dark ms-1" pill variant="none">Dark</b-badge>
             <h5 class="card-title mt-4">Links</h5>
             <p>Using the contextual <code>.badge-*</code> classes on an <code>&lt;a&gt;</code> element quickly provide <em>actionable</em> badges with hover and focus states.</p>
-            <b-badge href="#" class="border border-primary text-primary mr-1" variant="none">Primary</b-badge>
-            <b-badge href="#" class="border border-secondary text-secondary mr-1" variant="none">Secondary</b-badge>
-            <b-badge href="#" class="border border-success text-success mr-1" variant="none">Success</b-badge>
-            <b-badge href="#" class="border border-danger text-danger mr-1" variant="none">Danger</b-badge>
-            <b-badge href="#" class="border border-warning text-warning mr-1" variant="none">Warning</b-badge>
-            <b-badge href="#" class="border border-info text-info mr-1" variant="none">Info</b-badge>
-            <b-badge href="#" class="border border-light text-light mr-1" variant="none">Light</b-badge>
-            <b-badge href="#" class="border border-dark text-dark mr-1" variant="none">Dark</b-badge>
+            <b-badge href="#" class="border border-primary text-primary ms-1" variant="none">Primary</b-badge>
+            <b-badge href="#" class="border border-secondary text-secondary ms-1" variant="none">Secondary</b-badge>
+            <b-badge href="#" class="border border-success text-success ms-1" variant="none">Success</b-badge>
+            <b-badge href="#" class="border border-danger text-danger ms-1" variant="none">Danger</b-badge>
+            <b-badge href="#" class="border border-warning text-warning ms-1" variant="none">Warning</b-badge>
+            <b-badge href="#" class="border border-info text-info ms-1" variant="none">Info</b-badge>
+            <b-badge href="#" class="border border-light text-light ms-1" variant="none">Light</b-badge>
+            <b-badge href="#" class="border border-dark text-dark ms-1" variant="none">Dark</b-badge>
           </template>
         </iq-card>
       </b-col>

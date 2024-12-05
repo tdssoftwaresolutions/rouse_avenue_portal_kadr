@@ -4,7 +4,7 @@
     <p>Enter your email address and we'll send you an email with instructions to reset your password.</p>
     <form class="mt-4">
 
-      <div class="form-group">
+      <div class="mb-3">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
       </div>

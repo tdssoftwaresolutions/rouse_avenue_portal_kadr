@@ -15,9 +15,9 @@
                   <div class="profile-info p-4">
                     <b-row>
                       <b-col md="6" sm="12">
-                        <div class="user-detail pl-5">
+                        <div class="user-detail ps-5">
                           <div class="d-flex flex-wrap align-items-center">
-                            <div class="profile-img pr-4">
+                            <div class="profile-img pe-4">
                               <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130" />
                             </div>
                             <div class="profile-detail d-flex align-items-center" style="display:block !important">
@@ -66,7 +66,7 @@
                     <div class="modal-content">
                       <h2>Enter Payment Details</h2>
                       <form @submit.prevent="processPayment">
-                        <div class="form-group">
+                        <div class="mb-3">
                           <label for="cardNumber">Credit Card Number</label>
                           <input
                             type="text"
@@ -77,7 +77,7 @@
                             required
                           />
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                           <label for="cardHolderName">Cardholder Name</label>
                           <input
                             type="text"
@@ -88,7 +88,7 @@
                           />
                         </div>
                         <div class="form-row">
-                          <div class="form-group">
+                          <div class="mb-3">
                             <label for="expiryDate">Expiry Date</label>
                             <input
                               type="month"
@@ -97,7 +97,7 @@
                               required
                             />
                           </div>
-                          <div class="form-group" style="margin-left:4rem;">
+                          <div class="mb-3" style="margin-left:4rem;">
                             <label for="cvv">CVV</label>
                             <input
                               type="password"
@@ -140,7 +140,7 @@
                       <ul class="media-story m-0 p-0">
                         <li v-for="(item,index) in story" :key="index" class="d-flex align-items-center" :class="item.isActive +' '+ item.class">
                           <b-img :src="item.image" alt="story-img" rounded="circle" fluid />
-                          <div class="stories-data ml-3">
+                          <div class="stories-data ms-3">
                             <h5>{{ item.title }}</h5>
                             <p class="mb-0">{{ item.time }}</p>
                           </div>
@@ -178,7 +178,7 @@
 
                   <!-- Aadhaar Entry Form -->
                   <form v-if="!otpRequested && !signatureStep" @submit.prevent="requestOtp">
-                    <div class="form-group">
+                    <div class="mb-3">
                       <label for="aadharNumber">Enter Aadhar Card Number</label>
                       <input
                         type="text"
@@ -195,7 +195,7 @@
 
                   <!-- OTP Entry Form -->
                   <form v-if="otpRequested && !signatureStep" @submit.prevent="verifyOtp">
-                    <div class="form-group">
+                    <div class="mb-3">
                       <label for="aadharOtp">Enter Aadhar OTP</label>
                       <input
                         type="text"
@@ -307,7 +307,7 @@ export default {
     console.log('dashboard rendered')
   },
   mounted () {
-    for (var i = 0; i < this.userStep; i++) {
+    for (let i = 0; i < this.userStep; i++) {
       this.timelineItems[i].color = 'success'
     }
     this.$nextTick(() => {
@@ -319,9 +319,11 @@ export default {
   methods: {
     adjustCanvasSize (canvas) {
       const ratio = Math.max(window.devicePixelRatio || 1, 1)
-      canvas.width = canvas.offsetWidth * ratio
-      canvas.height = canvas.offsetHeight * ratio
-      canvas.getContext('2d').scale(ratio, ratio)
+      canvas.width = canvas?.offsetWidth * ratio
+      canvas.height = canvas?.offsetHeight * ratio
+      if (canvas) {
+        canvas.getContext('2d').scale(ratio, ratio)
+      }
     },
     clearSignature () {
       this.$refs.signaturePad.undoSignature()
@@ -339,7 +341,7 @@ export default {
       )
       this.userStep = 5
       this.$cookies.set('USERSTEP', 5)
-      for (var i = 0; i < this.userStep; i++) {
+      for (let i = 0; i < this.userStep; i++) {
         this.timelineItems[i].color = 'success'
       }
       this.closePaymentModal()

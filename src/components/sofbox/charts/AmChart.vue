@@ -91,7 +91,6 @@ export default {
         return dy
       })
 
-      // eslint-disable-next-line no-unused-lets
       chart.yAxes.push(new am4charts.ValueAxis())
 
       // Create series
@@ -356,7 +355,7 @@ export default {
       dateAxis.renderer.minGridDistance = 50
 
       // eslint-disable-next-line no-unused-vars
-      var valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
 
       // Create series
       let series = chart.series.push(new am4charts.LineSeries())
@@ -414,15 +413,15 @@ export default {
     radar (chart) {
       chart.data = this.option.data
       /* Create axes */
-      var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+      let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis())
       categoryAxis.dataFields.category = this.option.xAxis[0]
 
-      var valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
       valueAxis.renderer.axisFills.template.fill = chart.colors.getIndex(2)
       valueAxis.renderer.axisFills.template.fillOpacity = 0.05
 
       /* Create and configure series */
-      var series = chart.series.push(new am4charts.RadarSeries())
+      let series = chart.series.push(new am4charts.RadarSeries())
       series.dataFields.valueY = this.option.yAxis[0]
       series.dataFields.categoryX = this.option.xAxis[0]
       series.name = this.option.labels[0]
@@ -432,10 +431,10 @@ export default {
       chart.data = this.option.data
       /* Create axes */
       /* Create axes */
-      var xAxis = chart.xAxes.push(new am4charts.ValueAxis())
+      let xAxis = chart.xAxes.push(new am4charts.ValueAxis())
       xAxis.renderer.maxLabelPosition = 0.99
 
-      var yAxis = chart.yAxes.push(new am4charts.ValueAxis())
+      let yAxis = chart.yAxes.push(new am4charts.ValueAxis())
       yAxis.renderer.labels.template.verticalCenter = 'bottom'
       yAxis.renderer.labels.template.horizontalCenter = 'right'
       yAxis.renderer.maxLabelPosition = 0.99

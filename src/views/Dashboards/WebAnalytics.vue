@@ -10,19 +10,19 @@
             <template v-slot:button-content>
               <span><i class="ri-more-2-fill"></i></span>
             </template>
-            <b-dropdown-item><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-            <b-dropdown-item><i class="ri-delete-bin-6-fill mr-2"></i>Delete</b-dropdown-item>
-            <b-dropdown-item><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-            <b-dropdown-item><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-            <b-dropdown-item><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+            <b-dropdown-item><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+            <b-dropdown-item><i class="ri-delete-bin-6-fill ms-2"></i>Delete</b-dropdown-item>
+            <b-dropdown-item><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+            <b-dropdown-item><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+            <b-dropdown-item><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
           </b-dropdown>
         </template>
         <template v-slot:body>
-          <div class="media align-items-center mb-4" v-for="(item,index) in usersList" :key="index">
+          <div class="d-flex align-items-center mb-4" v-for="(item,index) in usersList" :key="index">
             <div :class="`iq-profile-avatar ${item.isActive ? `status-online` : 'status-away'}`">
               <img class="rounded-circle avatar-60" :src="item.image" :alt="item.name">
             </div>
-            <div class="media-body ml-3">
+            <div class="media-body ms-3">
               <h6 class="mb-0"><a href="#">{{ item.name }}</a></h6>
               <p class="mb-0">{{ item.role }}</p>
             </div>
@@ -64,7 +64,7 @@
               </b-col>
             </b-row>
             <p class="mb-0 text-muted mt-3">
-              <span :class=" 'text-'+list.icons.color" class="mr-2"><i :class="list.arrow"></i> {{ list.percentage }}%</span>
+              <span :class=" 'text-'+list.icons.color" class="ms-2"><i :class="list.arrow"></i> {{ list.percentage }}%</span>
             </p>
           </template>
         </iq-card>
@@ -104,11 +104,11 @@
               <template v-slot:button-content>
                 <span class="text-primary">View All</span>
               </template>
-              <b-dropdown-item href="#"><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill ms-2"></i>Delete</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
             </b-dropdown>
           </template>
           <template v-slot:body>
@@ -126,19 +126,19 @@
           <template v-slot:headerAction>
             <b-dropdown  id="dropdownMenuButton6" right variant="none" data-toggle="dropdown">
               <template v-slot:button-content>
-                <span class="dropdown-bg">See all <i class="ri-arrow-down-s-line ml-1 text-primary"></i></span>
+                <span class="dropdown-bg">See all <i class="ri-arrow-down-s-line ms-1 text-primary"></i></span>
               </template>
-              <b-dropdown-item href="#"><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill ms-2"></i>Delete</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
             </b-dropdown>
           </template>
           <template v-slot:body>
             <b-table :items="items" head-variant="light" class="table align-items-center table-flush">
               <template v-slot:cell(bounce_rate)="data">
-                <i :class="data.value.arrow +' text-'+ data.value.color + ' mr-3'"></i> {{ data.value.percentage }}
+                <i :class="data.value.arrow +' text-'+ data.value.color + ' ms-3'"></i> {{ data.value.percentage }}
               </template>
             </b-table>
           </template>
@@ -154,11 +154,11 @@
               <template v-slot:button-content>
                 <span><i class="ri-more-2-fill"></i></span>
               </template>
-              <b-dropdown-item href="#"><i class="ri-eye-fill mr-2"></i>View</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-pencil-fill mr-2"></i>Edit</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-printer-fill mr-2"></i>Print</b-dropdown-item>
-              <b-dropdown-item href="#"><i class="ri-file-download-fill mr-2"></i>Download</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-eye-fill ms-2"></i>View</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-delete-bin-6-fill ms-2"></i>Delete</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-pencil-fill ms-2"></i>Edit</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-printer-fill ms-2"></i>Print</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="ri-file-download-fill ms-2"></i>Download</b-dropdown-item>
             </b-dropdown>
           </template>
           <template v-slot:body>

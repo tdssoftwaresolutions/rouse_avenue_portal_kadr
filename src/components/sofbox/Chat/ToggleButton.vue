@@ -3,7 +3,7 @@
     <div id="sidebar-toggle" v-if="miniToggle" class="sidebar-toggle">
       <i class="ri-menu-3-line"></i>
     </div>
-    <div class="avatar chat-profile mr-3" :class="mediaClass"  @click="toggleContent">
+    <div class="avatar chat-profile ms-3" :class="mediaClass"  @click="toggleContent">
       <slot name="media" />
     </div>
     <div class="chat-caption">
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     toggleContent () {
-      let selector = document.querySelector(this.toggleShow)
+      const selector = document.querySelector(this.toggleShow)
       selector.classList.add('show')
     },
     checkToggle (type) {

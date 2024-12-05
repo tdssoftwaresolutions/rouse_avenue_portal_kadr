@@ -35,7 +35,7 @@ export default {
   mounted () {
     sofbox.index()
     $('#user-list-table').DataTable({
-      dom: "<'row justify-content-between' <'col-md-6 col-sm-12' f><'col-md-6 sm-12' <'user-list-files d-flex float-right' B>>> <'row table-responsive' t><'row justify-content-between mt-3'<'col-md-6' i><'col-md-6' p>>",
+      dom: "<'row justify-content-between' <'col-6 col-12' f><'col-6 sm-12' <'user-list-files d-flex float-right' B>>> <'row table-responsive' t><'row justify-content-between mt-3'<'col-6' i><'col-6' p>>",
       buttons: {
         dom: {
           button: {

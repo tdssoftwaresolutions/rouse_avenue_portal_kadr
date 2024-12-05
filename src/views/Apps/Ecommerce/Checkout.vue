@@ -18,7 +18,7 @@
                         <div class="ckeckout-product">
                           <img src="https://dummyimage.com/180x180/000/fff">
                         </div>
-                        <div class="ml-3 checkout-product-details">
+                        <div class="ms-3 checkout-product-details">
                           <h5>Curabitur Dolor Nunc consectetur adipiscing</h5>
                           <p class="text-success">In stock</p>
                           <p class="mb-0"><b>Quantity</b></p>
@@ -32,11 +32,11 @@
                       <div class="checkout-amount-data text-center">
                         <div class="price">
                           <h5>$599.00</h5>
-                          <p class="shopping-info"><i class="ri-shopping-cart-2-line mr-2"></i>Free Shipping</p>
+                          <p class="shopping-info"><i class="ri-shopping-cart-2-line ms-2"></i>Free Shipping</p>
                         </div>
                         <div class="checkout-button">
-                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line mr-1"></i>Remove</a>
-                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line mr-1"></i>Wishlist</a>
+                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line ms-1"></i>Remove</a>
+                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line ms-1"></i>Wishlist</a>
                         </div>
                       </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="ckeckout-product">
                           <img src="https://dummyimage.com/180x180/000/fff">
                         </div>
-                        <div class="ml-3 checkout-product-details">
+                        <div class="ms-3 checkout-product-details">
                           <h5>Curabitur Dolor Nunc consectetur adipiscing</h5>
                           <p class="text-success">In stock</p>
                           <p class="mb-0"><b>Quantity</b></p>
@@ -65,11 +65,11 @@
                       <div class="checkout-amount-data text-center">
                         <div class="price">
                           <h5>$599.00</h5>
-                          <p class="shopping-info"><i class="ri-shopping-cart-2-line mr-2"></i>Free Shipping</p>
+                          <p class="shopping-info"><i class="ri-shopping-cart-2-line ms-2"></i>Free Shipping</p>
                         </div>
                         <div class="checkout-button">
-                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line mr-1"></i>Remove</a>
-                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line mr-1"></i>Wishlist</a>
+                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line ms-1"></i>Remove</a>
+                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line ms-1"></i>Wishlist</a>
                         </div>
                       </div>
                     </div>
@@ -84,7 +84,7 @@
                         <div class="ckeckout-product">
                           <img src="https://dummyimage.com/180x180/000/fff">
                         </div>
-                        <div class="ml-3 checkout-product-details">
+                        <div class="ms-3 checkout-product-details">
                           <h5>Curabitur Dolor Nunc consectetur adipiscing</h5>
                           <p class="text-success">In stock</p>
                           <p class="mb-0"><b>Quantity</b></p>
@@ -98,11 +98,11 @@
                       <div class="checkout-amount-data text-center">
                         <div class="price">
                           <h5>$599.00</h5>
-                          <p class="shopping-info"><i class="ri-shopping-cart-2-line mr-2"></i>Free Shipping</p>
+                          <p class="shopping-info"><i class="ri-shopping-cart-2-line ms-2"></i>Free Shipping</p>
                         </div>
                         <div class="checkout-button">
-                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line mr-1"></i>Remove</a>
-                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line mr-1"></i>Wishlist</a>
+                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line ms-1"></i>Remove</a>
+                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line ms-1"></i>Wishlist</a>
                         </div>
                       </div>
                     </div>
@@ -117,7 +117,7 @@
                         <div class="ckeckout-product">
                           <img src="https://dummyimage.com/180x180/000/fff">
                         </div>
-                        <div class="ml-3 checkout-product-details">
+                        <div class="ms-3 checkout-product-details">
                           <h5>Curabitur Dolor Nunc consectetur adipiscing</h5>
                           <p class="text-success">In stock</p>
                           <p class="mb-0"><b>Quantity</b></p>
@@ -131,11 +131,11 @@
                       <div class="checkout-amount-data text-center">
                         <div class="price">
                           <h5>$599.00</h5>
-                          <p class="shopping-info"><i class="ri-shopping-cart-2-line mr-2"></i>Free Shipping</p>
+                          <p class="shopping-info"><i class="ri-shopping-cart-2-line ms-2"></i>Free Shipping</p>
                         </div>
                         <div class="checkout-button">
-                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line mr-1"></i>Remove</a>
-                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line mr-1"></i>Wishlist</a>
+                          <a href="#" type="submit" class="btn btn-light d-block"><i class="ri-close-line ms-1"></i>Remove</a>
+                          <a href="#" type="submit" class="btn btn-primary d-block mt-2"><i class="ri-heart-line ms-1"></i>Wishlist</a>
                         </div>
                       </div>
                     </div>
@@ -194,50 +194,50 @@
                 <template v-slot:body>
                   <form onsubmit="required()">
                     <div class="row mt-3">
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="fname">Full Name: *</label>
                           <input type="text" class="form-control" name="fname" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="mno">Mobile Number: *</label>
                           <input type="text" class="form-control" name="mno" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="houseno">Flat, House No: *</label>
                           <input type="text" class="form-control" name="houseno" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="landmark">Landmark e.g. near apollo hospital:: *</label>
                           <input type="text" class="form-control" name="landmark" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="city">Town/City: *</label>
                           <input type="text" class="form-control" name="city" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="pincode">Pincode: *</label>
                           <input type="text" class="form-control" name="pincode" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="state">State: *</label>
                           <input type="text" class="form-control" name="state" required="">
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div class="col-6">
+                        <div class="mb-3">
                           <label for="addtype">Address Type</label>
                           <select class="form-control" id="addtype" required="">
                             <option>Home</option>
@@ -245,7 +245,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-6">
                         <button id="savenddeliver" type="submit" class="btn btn-primary">Save And Deliver Here</button>
                       </div>
                     </div>
@@ -289,7 +289,7 @@
                   <form class="mt-3">
                     <div class="d-flex align-items-center">
                       <span>Enter CVV: </span>
-                      <div class="cvv-input ml-3 mr-3">
+                      <div class="cvv-input ms-3 ms-3">
                         <input type="text" class="form-control" required="">
                       </div>
                       <button type="submit" class="btn btn-primary">Continue</button>
@@ -297,7 +297,7 @@
                   </form>
                   <hr>
                   <div class="card-lists">
-                    <div class="form-group">
+                    <div class="mb-3">
                       <div class="custom-control custom-radio">
                         <input type="radio" id="credit" name="customRadio" class="custom-control-input">
                         <label class="custom-control-label" for="credit"> Credit / Debit / ATM Card</label>
@@ -318,7 +318,7 @@
                   </div>
                   <hr>
                   <div class="add-card">
-                    <a href="#"><span><i class="ri-add-box-line mr-2 font-size-18"></i>Add Gift Card</span></a>
+                    <a href="#"><span><i class="ri-add-box-line ms-2 font-size-18"></i>Add Gift Card</span></a>
                   </div>
                 </template>
               </iq-card>

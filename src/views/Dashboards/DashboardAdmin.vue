@@ -15,14 +15,14 @@
                   <div class="profile-info p-4">
                     <b-row>
                       <b-col md="6" sm="12" >
-                        <div class="user-detail pl-5">
+                        <div class="user-detail ps-5">
                           <div class="d-flex flex-wrap align-items-center">
-                            <div class="profile-img pr-4">
+                            <div class="profile-img pe-4">
                               <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130" />
                             </div>
                             <div class="profile-detail d-flex align-items-center">
                               <h3>Karan VJ</h3>
-                              <p class="m-0 pl-3"> - Senior Mediator (kADR) </p>
+                              <p class="m-0 ps-3"> - Senior Mediator (kADR) </p>
                             </div>
                           </div>
                         </div>

@@ -9,7 +9,7 @@ export default {
     context.commit('updateNumberOfTicket', 0)
   },
   addTicket (context, payload) {
-    let count = payload + 1
+    const count = payload + 1
     context.commit('updateNumberOfTicket', count)
   },
   removeTicket (context, payload) {
