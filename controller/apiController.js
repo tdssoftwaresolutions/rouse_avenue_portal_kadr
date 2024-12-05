@@ -123,7 +123,7 @@ module.exports = {
           newCaseId = tracker.lastCaseId + 1 // Increment the last caseId
         }
 
-        await prisma.cases.create({
+        const newCase = await prisma.cases.create({
           data: {
             case_name: 'Test Case',
             first_party: user.id,
@@ -131,6 +131,7 @@ module.exports = {
             caseId: `KDR-${newCaseId}`
           }
         })
+        console.log(newCase)
         await prisma.caseIdTracker.upsert({
           where: { id: 1 }, // Assuming there's only one row in the tracker
           update: { lastCaseId: newCaseId },
