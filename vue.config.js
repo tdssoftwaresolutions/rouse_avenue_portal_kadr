@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 
 module.exports = {
+  lintOnSave: process.env.NODE_ENV !== 'production',
   publicPath: process.env.NODE_ENV === 'production'
     ? process.env.VUE_BASE_URL
     : '/',
