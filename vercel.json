@@ -31,14 +31,6 @@
         "build": "npm run build", 
         "outputDirectory": "dist"  
       }
-    },
-    "dev": {
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "commands": {
-        "dev": "vue-cli-service serve"  
-      }
     }
   }
   
