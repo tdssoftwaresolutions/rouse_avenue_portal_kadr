@@ -79,7 +79,7 @@ export default {
             })
           } else {
             console.log('Response:', response.data)
-            this.$cookies.set('accessToken', response.data.accessToken)
+            this.$cookies.set('accessToken', response.data.accessToken, '1d', '/', '.kadr.live', true, 'None')
             localStorage.setItem('accessToken', response.data.accessToken)
             this.$router.push({ name: 'dashboard1.home' })
           }
