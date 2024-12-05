@@ -79,6 +79,7 @@ export default {
             })
           } else {
             console.log('Response:', response.data)
+            this.$cookies.set('accessToken', response.data.accessToken)
             localStorage.setItem('accessToken', response.data.accessToken)
             this.$router.push({ name: 'dashboard1.home' })
           }
