@@ -6,8 +6,59 @@ const jwt = require('jsonwebtoken')
 const clientId = process.env.ZOOM_CLIENT_ID
 const clientSecret = process.env.ZOOM_CLIENT_SECRET
 const accountId = process.env.ZOOM_ACCOUNT_ID
+const errorCodes = require('../errorCodes')
 
 module.exports = {
+  getDashboardContent: async function (req, res) {
+    if (req.error) {
+      res.json(req.error)
+      return
+    }
+    const userDetails = req.user
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userDetails.id // The id to search by
+        }
+      })
+      if (!user) {
+        res.json(errorCodes.USER_NOT_FOUND)
+      }
+
+      let dashboardContent = {}
+
+      if (user.user_type === 'ADMIN') {
+        const inactiveUsers = await prisma.user.findMany({
+          where: {
+            active: false
+          }
+        })
+        dashboardContent.inactive_users = inactiveUsers
+      }
+
+      console.log('Fetched user:', user)
+      res.json({ success: true, dashboardContent })
+    } catch (error) {
+      console.error('Error fetching user:', error)
+    } finally {
+      await prisma.$disconnect() // Close the Prisma connection
+    }
+  },
+  logout: function (req, res) {
+    // Clear the refresh token cookie
+    res.clearCookie('refresh_token', {
+      httpOnly: true, // Make sure it's HTTP-only
+      secure: process.env.NODE_ENV === 'production', // Secure cookie in production
+      sameSite: 'None', // For cross-origin cookies (if needed)
+      path: '/' // Ensure to clear the cookie from the same path
+    })
+
+    // Optionally send a response indicating the user has been logged out
+    return res.status(200).json({ message: 'Logged out successfully' })
+  },
+  updateInactiveUsers: function (req, res) {
+    console.log(req.body.data)
+  },
   scheduleMeeting: async function (req, res) {
     try {
       const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`
@@ -172,16 +223,12 @@ module.exports = {
       return
     }
     if (user.active === false) {
-      res.status(201).json({
-        error: 'User not yet activated, please wait for kADR team to review your account.'
-      })
+      res.status(201).json(errorCodes.USER_NOT_ACTIVE)
       return
     }
     const isPasswordValid = await helper.comparePassword(password, user.password_hash)
     if (!isPasswordValid) {
-      res.status(201).json({
-        error: 'Invalid password.'
-      })
+      res.status(201).json(errorCodes.INVALID_CREDENTIALS)
       return
     }
 
@@ -191,18 +238,32 @@ module.exports = {
       res.cookie('refresh_token', refreshToken, {
         httpOnly: true, // Cookie is inaccessible to JavaScript on the client-side
         secure: process.env.NODE_ENV === 'production', // Ensure the cookie is secure in production
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        sameSite: 'None', // Allow cross-origin cookies (if necessary)
+        path: '/'
       })
     } catch (e) {
-      console.log('Cookied couldnot set, trying with setHeader')
-      res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=2592000; Path=/; Secure=${process.env.NODE_ENV === 'production'}`)
+      console.log('Cookied couldnt set, trying with setHeader')
+      res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=2592000000; Path=/; Secure=${process.env.NODE_ENV === 'production'}`)
     }
-
     res.json({ accessToken })
   },
   getUserData: async function (req, res) {
-    const data = await helper.getUserFromToken(req.headers.authorization)
-    res.json(data)
+    if (req.error) {
+      res.json(req.error)
+      return
+    }
+    const userData = {
+      'id': req.user.id,
+      'type': req.user.type,
+      'name': req.user.name,
+      'email': req.user.email
+    }
+    const signature = helper.signResponseData(userData)
+    res.json({
+      userData,
+      signature
+    })
   },
   verifySignature: function (req, res) {
     const { userData, signature } = req.body

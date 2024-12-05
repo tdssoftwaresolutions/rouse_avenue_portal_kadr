@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     isSessionAvailable () {
-      if (localStorage.getItem('accessToken')) {
+      if (this.$cookies.get('accessToken')) {
         return true
       }
       return false
@@ -71,8 +71,8 @@ export default {
           password: this.password
         })
         .then((response) => {
-          if (response.data.error) {
-            this.$bvToast.toast(response.data.error, {
+          if (response.data.errorCode) {
+            this.$bvToast.toast(response.data.message, {
               title: 'Error',
               variant: 'error',
               solid: true
@@ -80,7 +80,6 @@ export default {
           } else {
             console.log('Response:', response.data)
             this.$cookies.set('accessToken', response.data.accessToken, '1d', '/', '.kadr.live', true, 'None')
-            localStorage.setItem('accessToken', response.data.accessToken)
             this.$router.push({ name: 'dashboard1.home' })
           }
         })

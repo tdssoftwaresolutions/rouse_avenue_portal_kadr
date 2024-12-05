@@ -17,12 +17,12 @@
                       <b-col md="6" sm="12" >
                         <div class="user-detail ps-5">
                           <div class="d-flex flex-wrap align-items-center">
-                            <div class="profile-img pe-4">
-                              <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130" />
+                            <div class="profile-img pe-4"  style="z-index: 2;">
+                              <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130"/>
                             </div>
-                            <div class="profile-detail d-flex align-items-center">
-                              <h3>Karan VJ</h3>
-                              <p class="m-0 ps-3"> - Senior Mediator (kADR) </p>
+                            <div class="profile-detail">
+                              <h3 class="w-100">{{ user.name }}</h3>
+                              <p class="m-0 ps-0">{{ user.email }}</p>
                             </div>
                           </div>
                         </div>
@@ -50,19 +50,26 @@
             </iq-card>
           </b-col>
           <b-col sm="12">
-            <b-row>
-            </b-row>
+            <inactive-users :users="content.dashboardContent.inactive_users"></inactive-users>
           </b-col>
         </b-row>
       </b-container>
 </template>
 <script>
+import InactiveUsers from '../Tables/InactiveUsers.vue'
 
 export default {
   name: 'DashboardAdmin',
+  props: {
+    user: null,
+    content: null
+  },
+  components: {
+    InactiveUsers
+  },
   methods: {
     isSessionAvailable () {
-      if (localStorage.getItem('accessToken')) {
+      if (this.$cookies.get('accessToken')) {
         return true
       }
       return false

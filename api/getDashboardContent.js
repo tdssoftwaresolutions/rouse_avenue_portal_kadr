@@ -3,5 +3,5 @@ const helper = require('../helper')
 
 module.exports = async (req, res) => {
   await helper.checkTokenAndFetch(req, res)
-  return await apiController.getUserData(req, res)
+  return await apiController.getDashboardContent(req, res)
 }

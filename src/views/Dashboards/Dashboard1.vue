@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="dots" v-if="userType == ''"> </div>
+    <div class="dots" v-if="dashboardContent == null"> </div>
     <div v-else>
-      <dashboard-client v-if="userType == 'CLIENT'" />
-      <dashboard-mediator v-else-if="userType == 'MEDIATOR'"/>
-      <dashboard-admin v-else-if="userType == 'ADMIN'"/>
+      <dashboard-client v-if="user.type == 'CLIENT'" :user="user" :content="dashboardContent"/>
+      <dashboard-mediator v-else-if="user.type == 'MEDIATOR'" :user="user"  :content="dashboardContent"/>
+      <dashboard-admin v-else-if="user.type == 'ADMIN'" :user="user"  :content="dashboardContent"/>
     </div>
   </div>
 </template>
@@ -13,13 +13,27 @@ import { sofbox } from '../../config/pluginInit'
 import DashboardMediator from './DashboardMediator'
 import DashboardClient from './DashboardClient'
 import DashboardAdmin from './DashboardAdmin'
+import axios from 'axios'
+
 export default {
   name: 'Dashboard',
   components: {
     DashboardMediator, DashboardClient, DashboardAdmin
   },
   props: {
-    userType: String
+    user: null
+  },
+  data () {
+    return {
+      dashboardContent: null
+    }
+  },
+  watch: {
+    user (newUser, oldUser) {
+      if (newUser !== oldUser) {
+        this.getDashboardContent()
+      }
+    }
   },
   mounted () {
     sofbox.index()
@@ -29,10 +43,35 @@ export default {
   },
   methods: {
     isSessionAvailable () {
-      if (localStorage.getItem('accessToken')) {
+      if (this.$cookies.get('accessToken')) {
         return true
       }
       return false
+    },
+    getDashboardContent () {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+      }
+      axios
+        .get('/api/getDashboardContent', {
+          headers
+        })
+        .then((response) => {
+          if (response.data.error) {
+            this.$bvToast.toast(response.data.error, {
+              title: 'Error',
+              variant: 'error',
+              solid: true
+            })
+          } else {
+            this.dashboardContent = response.data
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          alert('Error!')
+        })
     }
   }
 }

@@ -172,9 +172,6 @@ export default {
       this.formData.evidence = event.target.files[0]
     },
     submitForm () {
-      const submissionData = { ...this.formData }
-      this.$cookies.set('SIGNUPDATA', JSON.stringify(submissionData))
-      this.$cookies.set('USERSTEP', 2)
       axios
         .post('/api/newUserSignup', this.formData)
         .then((response) => {

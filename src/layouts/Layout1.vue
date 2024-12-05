@@ -102,7 +102,7 @@
       <!-- TOP Nav Bar END -->
       <div id="content-page" class="content-page">
         <transition name="router-anim">
-          <router-view :userType="userType"/>
+          <router-view :user="user"/>
         </transition>
       </div>
     </div>
@@ -138,15 +138,17 @@ export default {
   created () {
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
     }
     axios
       .get('/api/getUserData', {
         headers
       })
       .then((response) => {
-        if (response.data.error) {
-          this.$bvToast.toast(response.data.error, {
+        console.log(response.data)
+        if (response.data.errorCode) {
+          alert(response.data.message)
+          this.$bvToast.toast(response.data.message, {
             title: 'Error',
             variant: 'error',
             solid: true
@@ -170,13 +172,12 @@ export default {
   },
   watch: {
   },
-  // sidebarTicket
   data () {
     return {
       sidebar: SideBarItems,
       userProfile: profile,
       logo,
-      userType: ''
+      user: ''
     }
   },
   methods: {
@@ -195,7 +196,9 @@ export default {
             } else if (userType === 'ADMIN') {
               this.sidebar = SideBarItemAdmin
             }
-            this.userType = userType
+            this.user = data.userData
+          } else {
+            this.onClickSignOut()
           }
         })
         .catch((error) => {
@@ -209,8 +212,21 @@ export default {
       }
     },
     onClickSignOut () {
-      localStorage.removeItem('accessToken')
-      this.$router.push({ path: '/auth/sign-in' })
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+      }
+      axios
+        .get('/api/logout', {
+          headers
+        })
+        .then((response) => {
+          this.$cookies.remove('accessToken')
+          this.$router.push({ path: '/auth/sign-in' })
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     }
   }
 }

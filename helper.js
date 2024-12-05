@@ -5,6 +5,7 @@ const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY
 const SIGN_SECRET_KEY = process.env.SIGN_SECRET_KEY
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
+const errorCodes = require('./errorCodes')
 
 class Helper {
   static generateRandomPassword (length = 12) {
@@ -34,7 +35,7 @@ class Helper {
     return new Promise((resolve, reject) => {
       jwt.verify(token, secretKey, (err, user) => {
         if (err) {
-          reject(new Error('Invalid or expired token'))
+          reject(err)
         } else {
           resolve(user) // Resolving with the decoded user object
         }
@@ -42,25 +43,20 @@ class Helper {
     })
   }
 
-  static async getUserFromToken (authToken) {
-    const token = authToken?.split(' ')[1] // Extract the token from the Authorization header
+  static async checkTokenAndFetch (req, res) {
+    const token = req.headers.authorization
+
     if (!token) {
-      return { error: 'No token provided' }
+      req.error = { message: 'No token provided, authorization denied' }
     }
+
+    const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7, token.length) : token
+
     try {
-      const user = await this.verifyToken(token, SECRET_KEY)
-      const userData = {
-        'id': user.id,
-        'type': user.type
-      }
-      const signature = this.signResponseData(userData)
-      return {
-        userData,
-        signature
-      }
-    } catch (error) {
-      console.error('Error verifying token:', error)
-      return { error: 'Invalid or expired token' }
+      const user = await this.verifyToken(tokenWithoutBearer, SECRET_KEY)
+      req.user = user
+    } catch (err) {
+      req.error = errorCodes.TOKEN_EXPIRED
     }
   }
 
@@ -80,11 +76,11 @@ class Helper {
   }
 
   static generateAccessToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type }, SECRET_KEY, { expiresIn: '1d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type, name: user.name }, SECRET_KEY, { expiresIn: '1d' })
   }
 
   static generateRefreshToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type }, REFRESH_SECRET_KEY, { expiresIn: '30d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type, name: user.name }, REFRESH_SECRET_KEY, { expiresIn: '30d' })
   }
 
   static async sendEmail (emailId, htmlBody) {

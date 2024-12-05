@@ -163,7 +163,7 @@ export default {
   name: 'DashboardMediator',
   methods: {
     isSessionAvailable () {
-      if (localStorage.getItem('accessToken')) {
+      if (this.$cookies.get('accessToken')) {
         return true
       }
       return false
