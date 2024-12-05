@@ -187,12 +187,16 @@ module.exports = {
 
     const accessToken = helper.generateAccessToken(user)
     const refreshToken = helper.generateRefreshToken(user)
-
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true, // Cookie is inaccessible to JavaScript on the client-side
-      secure: process.env.NODE_ENV === 'production', // Ensure the cookie is secure in production
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    })
+    try {
+      res.cookie('refresh_token', refreshToken, {
+        httpOnly: true, // Cookie is inaccessible to JavaScript on the client-side
+        secure: process.env.NODE_ENV === 'production', // Ensure the cookie is secure in production
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      })
+    } catch (e) {
+      console.log('Cookied couldnot set, trying with setHeader')
+      res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=2592000; Path=/; Secure=${process.env.NODE_ENV === 'production'}`)
+    }
 
     res.json({ accessToken })
   },
