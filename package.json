@@ -10,7 +10,7 @@
     "watch": "vue-cli-service build --watch",
     "start": "node server.js",
     "lint": "vue-cli-service lint",
-    "postinstall": "prisma generate && npm run build"
+    "postinstall": "prisma generate"
   },
   "engines": {
     "node": "22.x"
