@@ -1,9 +1,44 @@
 {
     "version": 2,
-    "rewrites": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/$1"  
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "package.json",
+        "use": "@vercel/node",
+        "config": {
+          "maxLambdaSize": "50mb"
         }
-    ]
-}
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/server.js"  
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/dist/$1"  
+      }
+    ],
+    "build": {
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "commands": {
+        "build": "npm run build", 
+        "outputDirectory": "dist"  
+      }
+    },
+    "dev": {
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "commands": {
+        "dev": "vue-cli-service serve"  
+      }
+    }
+  }
+  
