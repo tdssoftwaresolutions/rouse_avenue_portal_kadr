@@ -204,7 +204,7 @@ export default {
         { name: 'Greta Life', mutual_friend: '#KDR92375', image: require('../../assets/images/user/05.jpg') },
         { name: 'Ira Membrit', mutual_friend: '#KDR109475', image: require('../../assets/images/user/06.jpg') }
       ],
-      mchart1: {
+      chart1: {
         chart: {
           height: 80,
           type: 'area',

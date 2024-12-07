@@ -16,10 +16,8 @@
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 job-classification">
-              <li class=""><i class="ri-check-line bg-danger" />Meeting</li>
-              <li class=""><i class="ri-check-line bg-success" />Business travel</li>
-              <li class=""><i class="ri-check-line bg-warning" />Personal Work</li>
-              <li class=""><i class="ri-check-line bg-info" />Team Project</li>
+              <li class=""><i class="ri-check-line bg-danger" />kADR Client Meeting</li>
+              <li class=""><i class="ri-check-line bg-success" />Personal Client Meeting</li>
             </ul>
           </template>
         </iq-card>
@@ -59,69 +57,101 @@
         </iq-card>
       </b-col>
     </b-row>
-    <b-modal
-    id="appointmentModal"
-    title="Create New Appointment"
-    @hide="resetForm"
-    hide-footer
-  >
-    <b-form @submit.prevent="submitAppointment">
-      <b-form-group label="Title" label-for="appointment-title">
-        <b-form-input
-          id="appointment-title"
-          v-model="newAppointment.title"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="Google Meet Link" label-for="google-meet-link">
-        <b-form-input
-          id="google-meet-link"
-          v-model="newAppointment.link"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="Start Date and Time" label-for="start-datetime">
-        <b-form-input
-          id="start-datetime"
-          type="datetime-local"
-          v-model="newAppointment.start"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="End Date and Time" label-for="end-datetime">
-        <b-form-input
-          id="end-datetime"
-          type="datetime-local"
-          v-model="newAppointment.end"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="Select Case" label-for="user-select">
-      <b-form-select
-        id="user-select"
-        v-model="newAppointment.user"
-        :options="users"
-        required
-      ></b-form-select>
-    </b-form-group>
-      <b-button type="submit" variant="primary">Save Appointment</b-button>
-      <b-button @click="$bvModal.hide('appointmentModal')" variant="secondary" style="margin-left:1rem">Cancel</b-button>
-    </b-form>
-  </b-modal>
+    <div v-if="showBookAppointment" class="custom-modal-overlay" @click.self="closeModal">
+      <div class="custom-modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Book Appointment</h3>
+          <button class="close-button" @click="closeModal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label for="appointment-datetime" class="form-label">Select Date and Time</label>
+            <VueMaterialDateTimePicker
+              id="appointment-datetime"
+              v-model="newAppointment.start"
+              :disabled-dates-and-times="disabledDatesAndTime"
+              :is-date-only="false"
+              class="form-input"
+            />
+          </div>
+          <div class="form-row">
+            <label for="client-select" class="form-label">Select Client</label>
+            <b-form-select
+              id="client-select"
+              v-model="newAppointment.user"
+              :options="users"
+              required
+              class="form-input"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" @click="closeModal">Cancel</button>
+          <button class="btn-save" @click="onSave">Save</button>
+        </div>
+      </div>
+    </div>
+    <div v-if="showViewAppointment" class="custom-modal-overlay" @click.self="closeViewModal">
+      <div class="custom-modal">
+        <div class="modal-header">
+          <h3 class="modal-title">View Appointment</h3>
+          <button class="close-button" @click="closeViewModal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="appointment-details">
+            <div class="form-row">
+              <label class="form-label">Client Name</label>
+              <p>{{ selectedAppointment.clientName }}</p>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">Start Time</label>
+              <p>{{ formatDateTime(selectedAppointment.start) }}</p>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">End Time</label>
+              <p>{{ formatDateTime(selectedAppointment.end) }}</p>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">Zoom Link</label>
+              <a :href="selectedAppointment.zoomLink" target="_blank" class="zoom-link">
+                Join Zoom Meeting
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-save" @click="closeViewModal">Close</button>
+        </div>
+      </div>
+    </div>
   </b-container>
 </template>
 <script>
 import { sofbox } from '../../config/pluginInit'
+import VueMaterialDateTimePicker from 'vue-material-date-time-picker'
+
 export default {
   name: 'calendar',
+  components: {
+    VueMaterialDateTimePicker
+  },
   data () {
     return {
+      showViewAppointment: false,
+      showBookAppointment: false,
+      selectedAppointment: null,
       newAppointment: {
         title: '',
         start: '',
         end: '',
         link: '',
         user: ''
+      },
+      disabledDatesAndTime: {
+        to: this.getYesterdayDate()
       },
       users: [
         { value: null, text: 'Select a case' },
@@ -130,119 +160,6 @@ export default {
         { value: 'user3', text: '#KDR389575' }
       ],
       events: [
-        {
-          title: 'All Day Event',
-          start: '2024-12-01',
-          color: '#fc9919'
-        },
-        {
-          title: 'Long Event',
-          start: '2024-12-07',
-          end: '2024-12-10',
-          color: '#ffc107' // override!
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2024-12-09T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2024-12-16T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          title: 'Conference',
-          start: '2024-12-11',
-          end: '2024-12-13',
-          color: '#27e3f4' // override!
-        },
-        {
-          title: 'Meeting',
-          start: '2024-12-12T10:30:00',
-          end: '2024-12-12T12:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Lunch',
-          start: '2024-12-12T12:00:00',
-          color: '#777D74'
-        },
-        {
-          title: 'Meeting',
-          start: '2024-12-12T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2024-12-28T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Meeting',
-          start: '2020-01-12T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2020-01-02T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2020-01-25'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2020-01-13T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2024-12-28'
-        },
-        {
-          title: 'Meeting',
-          start: '2020-01-12T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2020-01-13T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2020-01-28'
-        },
-        {
-          title: 'All Day Event',
-          start: '2020-02-01',
-          color: '#fc9919'
-        },
-        {
-          title: 'Long Event',
-          start: '2020-02-07',
-          end: '2020-02-10',
-          color: '#ffc107' // override!
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2020-02-09T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2020-02-16T16:00:00',
-          color: '#17a2b8'
-        }
       ]
     }
   },
@@ -252,15 +169,61 @@ export default {
   computed: {
   },
   methods: {
+    formatDateTime (dateString) {
+      const date = new Date(dateString)
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }
+      return new Intl.DateTimeFormat('en-US', options).format(date)
+    },
+    getYesterdayDate () {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      return yesterday
+    },
+    closeModal () {
+      this.showBookAppointment = false
+    },
+    closeViewModal () {
+      this.showViewAppointment = false
+    },
+    onSave () {
+      console.log(typeof this.newAppointment.start)
+      const endDate = new Date(this.newAppointment.start)
+      endDate.setMinutes(endDate.getMinutes() + 30)
+
+      if (this.newAppointment.start && this.newAppointment.user) {
+        this.events.push({
+          id: 'gfgfgd3',
+          title: `Meeting with ${this.newAppointment.user}`,
+          start: this.newAppointment.start,
+          end: endDate,
+          color: '#0084ff' // Example color, you can change it
+        })
+        this.closeModal()
+        this.resetForm()
+      }
+    },
     openDetailsModal (event) {
-      alert('dsd')
-      this.newAppointment.title = event.title
-      this.newAppointment.start = event.start
-      this.newAppointment.end = event.end
-      this.$bvModal.show('appointmentModal')
+      console.log(JSON.stringify(event))
+      this.selectedAppointment = {
+        clientName: event.title,
+        start: event.start,
+        end: event.end,
+        zoomLink: 'http://test.com',
+        id: event.id
+      }
+      console.log(this.selectedAppointment)
+      this.showViewAppointment = true
     },
     openModal () {
-      this.$bvModal.show('appointmentModal')
+      this.showBookAppointment = true
     },
     resetForm () {
       this.newAppointment = {
@@ -268,19 +231,137 @@ export default {
         start: '',
         end: ''
       }
-    },
-    submitAppointment () {
-      if (this.newAppointment.title && this.newAppointment.start && this.newAppointment.end) {
-        this.events.push({
-          title: this.newAppointment.title,
-          start: this.newAppointment.start,
-          end: this.newAppointment.end,
-          color: '#0084ff' // Example color, you can change it
-        })
-        this.$bvModal.hide('appointmentModal')
-        this.resetForm()
-      }
     }
   }
 }
 </script>
+<style scoped>
+/* Modal Overlay */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+/* Modal Box */
+.custom-modal {
+  background: white;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90%;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-button {
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Body */
+.modal-body {
+  padding: 10px 0;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Form Row */
+.form-row {
+  margin-bottom: 20px;
+}
+
+/* Label */
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #444;
+  font-size: 16px;
+}
+
+/* Form Input */
+.form-input {
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+/* Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-save {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #d32f2f;
+}
+
+.btn-save:hover {
+  background-color: #388e3c;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

@@ -1,5 +1,4 @@
 <template>
-  <b-container fluid>
     <b-row>
       <b-col md="12">
         <iq-card>
@@ -26,7 +25,6 @@
         </iq-card>
       </b-col>
     </b-row>
-  </b-container>
 </template>
 <script>
 import { sofbox } from '../../config/pluginInit'

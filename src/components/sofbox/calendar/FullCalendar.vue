@@ -1,11 +1,5 @@
 <template>
-  <VueFullCalendar defaultView="dayGridMonth"
-                   :header="header"
-                   :plugins="calendarPlugins"
-                   :events="calendarEvents"
-                   :dateClick="onClickDate"
-                   :eventClick="onEventClick"
-                   time-zone="UTC"
+  <VueFullCalendar :options='calendarOptions'
   />
 </template>
 <script>
@@ -19,25 +13,41 @@ export default {
   props: {
     // eslint-disable-next-line vue/require-valid-default-prop
     calendarEvents: { type: Array, default: [] },
-    header: { type: Object,
-      // eslint-disable-next-line vue/require-valid-default-prop
-      default () {
-        return {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        }
-      }
+    eventClick: {
+      type: Function,
+      default: null
     }
   },
   data () {
     return {
-      calendarPlugins: [
-        dayGridPlugin,
-        timeGridPlugin,
-        interactionPlugin,
-        listPlugin
-      ]
+      calendarOptions: {
+        plugins: [
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+          interactionPlugin // needed for dateClick
+        ],
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        initialView: 'dayGridMonth',
+        events: this.calendarEvents, // alternatively, use the `events` setting to fetch from a feed
+        editable: true,
+        selectable: true,
+        selectMirror: true,
+        dayMaxEvents: true,
+        weekends: true,
+        select: this.handleDateSelect,
+        eventClick: this.handleEventClick,
+        eventsSet: this.handleEvents
+        /* you can update a remote database when these fire:
+        eventAdd:
+        eventChange:
+        eventRemove:
+        */
+      }
     }
   },
   components: {
@@ -49,29 +59,31 @@ export default {
 
   },
   methods: {
-    onClickDate (record) {
-      alert(record)
+    handleWeekendsToggle () {
+      this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
-    onEventClick (info) {
-      const event = info.event
-      alert(`Event clicked: ${event.title}`)
-      console.log('Event details:', {
-        title: event.title,
-        start: event.start,
-        end: event.end,
-        extendedProps: event.extendedProps
-      })
+    handleDateSelect (selectInfo) {
+      let title = prompt('Please enter a new title for your event')
+      let calendarApi = selectInfo.view.calendar
+
+      calendarApi.unselect() // clear date selection
+
+      if (title) {
+        calendarApi.addEvent({
+          id: 1,
+          title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          allDay: selectInfo.allDay
+        })
+      }
+    },
+    handleEventClick (clickInfo) {
+      this.eventClick(clickInfo.event)
+    },
+    handleEvents (events) {
+      this.currentEvents = events
     }
   }
 }
 </script>
-
-<style lang='scss'>
-  .fc-event, .fc-event:hover{
-    color: #ffffff !important;
-  }
-  @import '~@fullcalendar/core/main.css';
-  @import '~@fullcalendar/daygrid/main.css';
-  @import '~@fullcalendar/timegrid/main.css';
-  @import '~@fullcalendar/list/main.min.css';
-</style>

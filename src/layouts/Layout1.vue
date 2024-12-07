@@ -138,7 +138,7 @@ export default {
   created () {
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFkNGVjMDQ5LWIxYjYtMTFlZi1hODk4LTZhM2RmNDEwNzMwZiIsImVtYWlsIjoidGFyYW5kZWVwc3luY0BnbWFpbC5jb20iLCJ0eXBlIjoiTUVESUFUT1IiLCJuYW1lIjoiVGFyYW5kZWVwIiwiaWF0IjoxNzMzNTc2MzcxLCJleHAiOjE3MzM2NjI3NzF9.Z-rjLoJhSIEuSB9ObUlObLZ0QdmFoGiaUucHqGWYF68'
     }
     axios
       .get('/api/getUserData', {

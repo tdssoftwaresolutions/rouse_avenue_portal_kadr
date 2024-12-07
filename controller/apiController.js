@@ -33,7 +33,31 @@ module.exports = {
             active: false
           }
         })
+
+        const counts = await prisma.$transaction([
+          prisma.cases.count(),
+          prisma.user.count({
+            where: {
+              user_type: 'CLIENT'
+            }
+          }),
+          prisma.user.count({
+            where: {
+              user_type: 'MEDIATOR'
+            }
+          })
+        ])
+
+        const totalCases = counts[0]
+        const clientUsers = counts[1]
+        const mediatorUsers = counts[2]
+
         dashboardContent.inactive_users = inactiveUsers
+        dashboardContent.count = {
+          cases: totalCases,
+          clients: clientUsers,
+          mediators: mediatorUsers
+        }
       }
 
       console.log('Fetched user:', user)

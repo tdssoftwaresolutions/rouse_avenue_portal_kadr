@@ -1,62 +1,85 @@
 <template>
-    <b-container fluid>
+  <b-container fluid>
+    <Alert :message="alertMessage" :type="alertType" v-model="alertVisible" ></Alert>
+    <b-row>
+      <b-col lg="3" md="12">
+        <iq-card class="iq-profile-card text-center">
+          <template v-slot:body>
+            <div class="iq-team text-center p-0">
+              <img :src="require('../../assets/images/user/1.jpg')"
+                  class="img-fluid mb-3 avatar-120 rounded-circle" alt="">
+              <h4 class="mb-0">{{ user.name }}</h4>
+              <p class="d-inline-block w-100">{{ user.email }}</p>
+            </div>
+          </template>
+        </iq-card>
+      </b-col>
+      <b-col lg="9" md="12">
         <b-row>
-          <b-col sm="12">
-            <iq-card body-class=" profile-page p-0">
+          <b-col md="4">
+            <iq-card>
               <template v-slot:body>
-                <div class="profile-header">
-                  <div class="cover-container">
-                    <b-img :src="require('../../assets/images/page-img/profile-bg.jpg')" alt="profile-bg" rounded fluid style="width:100%;"/>
-                    <ul class="header-nav d-flex flex-wrap justify-end p-0 m-0" style="display:none !important">
-                      <li><b-link href="javascript:void();"><i class="ri-pencil-line"></i></b-link></li>
-                      <li><b-link href="javascript:void();"><i class="ri-settings-4-line"></i></b-link></li>
-                    </ul>
-                  </div>
-                  <div class="profile-info p-4">
-                    <b-row>
-                      <b-col md="6" sm="12" >
-                        <div class="user-detail ps-5">
-                          <div class="d-flex flex-wrap align-items-center">
-                            <div class="profile-img pe-4"  style="z-index: 2;">
-                              <b-img :src="require('../../assets/images/user/11.png')" alt="profile-img" fluid class="avatar-130"/>
-                            </div>
-                            <div class="profile-detail">
-                              <h3 class="w-100">{{ user.name }}</h3>
-                              <p class="m-0 ps-0">{{ user.email }}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </b-col>
-                      <b-col md="6" sm="12" style="display: none;">
-                        <ul class="nav nav-pills d-flex align-items-end float-right profile-feed-items p-0 m-0">
-                          <li>
-                            <b-link class="nav-link active" data-toggle="pill" href="#profile-feed">feed</b-link>
-                          </li>
-                          <li>
-                            <b-link class="nav-link" data-toggle="pill" href="#profile-activity">Activity</b-link>
-                          </li>
-                          <li>
-                            <b-link class="nav-link" data-toggle="pill" href="#profile-friends">friends</b-link>
-                          </li>
-                          <li>
-                            <b-link class="nav-link" data-toggle="pill" href="#profile-profile">profile</b-link>
-                          </li>
-                        </ul>
-                      </b-col>
-                    </b-row>
-                  </div>
-                </div>
+                <b-row>
+                  <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                    <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                      <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/call-center.gif')" alt="summary-image" />
+                    </div>
+                  </b-col>
+                  <b-col lg="12" class="mt-3">
+                    <h6 class="card-title text-uppercase text-secondary mb-0">No. of registered Mediators</h6>
+                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.mediators}}</span>
+                  </b-col>
+                </b-row>
               </template>
             </iq-card>
           </b-col>
-          <b-col sm="12">
-            <inactive-users :users="content.dashboardContent.inactive_users"></inactive-users>
-          </b-col>
+          <b-col md="4">
+            <iq-card>
+              <template v-slot:body>
+                <b-row>
+                  <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                    <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                      <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/happy.gif')" alt="summary-image" />
+                    </div>
+                  </b-col>
+                  <b-col lg="12" class="mt-3">
+                    <h6 class="card-title text-uppercase text-secondary mb-0">No. of registered Clients</h6>
+                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.clients}}</span>
+                  </b-col>
+                </b-row>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col md="4">
+              <iq-card>
+                <template v-slot:body>
+                  <b-row>
+                    <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                      <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                        <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/checklist.gif')" alt="summary-image" />
+                      </div>
+                    </b-col>
+                    <b-col lg="12" class="mt-3">
+                      <h6 class="card-title text-uppercase text-secondary mb-0">No. of cases</h6>
+                      <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.cases}}</span>
+                    </b-col>
+                  </b-row>
+                </template>
+              </iq-card>
+            </b-col>
         </b-row>
-      </b-container>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="12">
+        <inactive-users :users="content.dashboardContent.inactive_users"></inactive-users>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 <script>
 import InactiveUsers from '../Tables/InactiveUsers.vue'
+import Alert from '../../components/sofbox/alert/Alert.vue'
 
 export default {
   name: 'DashboardAdmin',
@@ -65,7 +88,14 @@ export default {
     content: null
   },
   components: {
-    InactiveUsers
+    InactiveUsers, Alert
+  },
+  data () {
+    return {
+      alertVisible: false,
+      alertMessage: '',
+      alertType: ''
+    }
   },
   methods: {
     isSessionAvailable () {
@@ -73,11 +103,17 @@ export default {
         return true
       }
       return false
-    }
-  },
-  data () {
-    return {
+    },
+    showAlert (message, type) {
+      this.alertMessage = message
+      this.alertType = type
+      this.alertVisible = true
     }
   }
 }
 </script>
+<style>
+img.summary-image-top {
+    width: 50px;
+}
+</style>

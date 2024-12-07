@@ -28,18 +28,12 @@ export default {
       dashboardContent: null
     }
   },
-  watch: {
-    user (newUser, oldUser) {
-      if (newUser !== oldUser) {
-        this.getDashboardContent()
-      }
-    }
-  },
   mounted () {
     sofbox.index()
     if (!this.isSessionAvailable()) {
       this.$router.push({ path: '/auth/sign-in' })
     }
+    this.getDashboardContent()
   },
   methods: {
     isSessionAvailable () {
