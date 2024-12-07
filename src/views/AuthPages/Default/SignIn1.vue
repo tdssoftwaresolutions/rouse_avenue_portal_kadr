@@ -50,7 +50,7 @@ export default {
     }
   },
   mounted () {
-    if (!this.isSessionAvailable()) {
+    if (this.isSessionAvailable()) {
       this.$router.push({ name: 'dashboard1.home' })
     }
   },
@@ -79,7 +79,7 @@ export default {
             })
           } else {
             console.log('Response:', response.data)
-            this.$cookies.set('accessToken', response.data.accessToken, '1d', '/', '', true, 'None')
+            this.$cookies.set('accessToken', response.data.accessToken, '1d', '/', '.kadr.live', true, 'None')
             this.$router.push({ name: 'dashboard1.home' })
           }
         })
