@@ -48,6 +48,7 @@ class Helper {
 
     if (!token) {
       req.error = { message: 'No token provided, authorization denied' }
+      return
     }
 
     const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7, token.length) : token

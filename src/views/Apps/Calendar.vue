@@ -216,7 +216,7 @@ export default {
         clientName: event.title,
         start: event.start,
         end: event.end,
-        zoomLink: 'http://test.com',
+        zoomLink: 'https://us04web.zoom.us/j/76629964865?pwd=EFAmPoVHkx9Vq5rqcaSjryJVi1I431.1',
         id: event.id
       }
       console.log(this.selectedAppointment)

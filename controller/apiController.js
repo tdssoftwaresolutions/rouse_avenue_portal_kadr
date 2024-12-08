@@ -84,6 +84,10 @@ module.exports = {
     console.log(req.body.data)
   },
   scheduleMeeting: async function (req, res) {
+    if (req.error) {
+      res.json(req.error)
+      return
+    }
     try {
       const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`
       const response = await axios.post(
