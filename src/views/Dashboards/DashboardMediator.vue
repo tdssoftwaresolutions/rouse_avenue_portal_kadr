@@ -28,7 +28,7 @@
               <div class="iq-team text-center p-0">
                 <img :src="require('../../assets/images/user/1.jpg')"
                     class="img-fluid mb-3 avatar-120 rounded-circle" alt="">
-                <h4 class="mb-0">{{ user.name }}</h4>
+                <h4 class="mb-0">Welcome {{ user.name }}</h4>
                 <p class="d-inline-block w-100">{{ user.email }}</p>
               </div>
             </template>
@@ -66,7 +66,7 @@
             </template>
           </iq-card>
         </b-col>
-        <b-col lg="5" md="12">
+        <b-col lg="4" md="12">
           <iq-card>
             <template v-slot:headerTitle>
               <h4 class="card-title">Today's Schedule</h4>
@@ -86,6 +86,28 @@
               </ul>
             </template>
           </iq-card>
+          <iq-card>
+            <template v-slot:headerTitle>
+              <h4 class="card-title">My Notes</h4>
+            </template>
+            <template v-slot:headerAction>
+              <a href="#" class="btn btn-primary" @click="onClickNewAdd">
+                  Add New
+              </a>
+            </template>
+            <template v-slot:body>
+                <div style="max-height:25rem;overflow-y:auto;overflow-x:hidden">
+                  <div class="textarea-wrapper" v-for="(note,index) in notes" :key="note.id">
+                    <textarea class="sticky-note" v-mode="note.content"></textarea>
+                    <button class="delete-btn" aria-label="Delete" @click="onClickDelete(index)">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+            </template>
+          </iq-card>
+        </b-col>
+        <b-col lg="5" md="12">
           <iq-card class-name="overflow-hidden" body-class="pb-0">
             <template v-slot:body>
               <div class="rounded-circle iq-card-icon iq-bg-primary"><i class="ri-exchange-dollar-fill"></i></div>
@@ -109,28 +131,6 @@
               </div>
             </template>
             <ApexChart element="chart-4" :chartOption="chart4"/>
-          </iq-card>
-        </b-col>
-        <b-col lg="4" md="12">
-          <iq-card>
-            <template v-slot:headerTitle>
-              <h4 class="card-title">My Notes</h4>
-            </template>
-            <template v-slot:headerAction>
-              <a href="#" class="btn btn-primary" @click="onClickNewAdd">
-                  Add New
-              </a>
-            </template>
-            <template v-slot:body>
-                <div style="max-height:40rem;overflow-y:auto;overflow-x:hidden">
-                  <div class="textarea-wrapper" v-for="(note,index) in notes" :key="note.id">
-                    <textarea class="sticky-note" v-mode="note.content"></textarea>
-                    <button class="delete-btn" aria-label="Delete" @click="onClickDelete(index)">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                  </div>
-                </div>
-            </template>
           </iq-card>
         </b-col>
       </b-row>

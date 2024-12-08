@@ -16,8 +16,8 @@
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 job-classification">
-              <li class=""><i class="ri-check-line bg-danger" />kADR Client Meeting</li>
-              <li class=""><i class="ri-check-line bg-success" />Personal Client Meeting</li>
+              <li class=""><i class="ri-check-line" :style="{ backgroundColor: personalEventColor }"/>kADR Client Meeting</li>
+              <li class=""><i class="ri-check-line"  :style="{ backgroundColor: kadrEventColor }"/>Personal Client Meeting</li>
             </ul>
           </template>
         </iq-card>
@@ -65,6 +65,33 @@
         </div>
         <div class="modal-body">
           <div class="form-row">
+            <label for="appointment-datetime" class="form-label">Select Appointment Type</label>
+            <div class="radio-group">
+              <div class="radio-btn-wrapper">
+                <input type="radio" id="option1" name="group1" value="kadr" v-model="newAppointment.type">
+                <label for="option1">
+                  <span class="radio-dot"></span> kADR Client Meeting
+                </label>
+              </div>
+              <div class="radio-btn-wrapper">
+                <input type="radio" id="option2" name="group1" value="personal" v-model="newAppointment.type">
+                <label for="option2">
+                  <span class="radio-dot"></span> Personal Client Meeting
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" v-if="newAppointment.type == 'personal'">
+            <label for="title" class="form-label">Title</label>
+            <b-form-input
+              id="title"
+              type="text"
+              v-model="newAppointment.title"
+              required
+              class="form-input"
+            />
+          </div>
+          <div class="form-row">
             <label for="appointment-datetime" class="form-label">Select Date and Time</label>
             <VueMaterialDateTimePicker
               id="appointment-datetime"
@@ -74,7 +101,7 @@
               class="form-input"
             />
           </div>
-          <div class="form-row">
+          <div class="form-row" v-if="newAppointment.type == 'kadr'">
             <label for="client-select" class="form-label">Select Client</label>
             <b-form-select
               id="client-select"
@@ -100,7 +127,7 @@
         <div class="modal-body">
           <div class="appointment-details">
             <div class="form-row">
-              <label class="form-label">Client Name</label>
+              <label class="form-label">Title</label>
               <p>{{ selectedAppointment.clientName }}</p>
             </div>
 
@@ -132,6 +159,8 @@
 <script>
 import { sofbox } from '../../config/pluginInit'
 import VueMaterialDateTimePicker from 'vue-material-date-time-picker'
+const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
+const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
 
 export default {
   name: 'calendar',
@@ -140,6 +169,9 @@ export default {
   },
   data () {
     return {
+      incrementalId: 1,
+      personalEventColor: PERSONAL_EVENT_COLOR,
+      kadrEventColor: KADR_EVENT_COLOR,
       showViewAppointment: false,
       showBookAppointment: false,
       selectedAppointment: null,
@@ -148,7 +180,8 @@ export default {
         start: '',
         end: '',
         link: '',
-        user: ''
+        user: '',
+        type: 'kadr'
       },
       disabledDatesAndTime: {
         to: this.getYesterdayDate()
@@ -194,17 +227,16 @@ export default {
       this.showViewAppointment = false
     },
     onSave () {
-      console.log(typeof this.newAppointment.start)
       const endDate = new Date(this.newAppointment.start)
       endDate.setMinutes(endDate.getMinutes() + 30)
 
-      if (this.newAppointment.start && this.newAppointment.user) {
+      if (this.newAppointment.start) {
         this.events.push({
-          id: 'gfgfgd3',
-          title: `Meeting with ${this.newAppointment.user}`,
+          id: this.incrementalId++,
+          title: this.newAppointment.user ? `Client meeting with ${this.newAppointment.user}` : this.newAppointment.title,
           start: this.newAppointment.start,
           end: endDate,
-          color: '#0084ff' // Example color, you can change it
+          color: this.newAppointment.type === 'kadr' ? this.kadrEventColor : this.personalEventColor // Example color, you can change it
         })
         this.closeModal()
         this.resetForm()
@@ -236,132 +268,202 @@ export default {
 }
 </script>
 <style scoped>
-/* Modal Overlay */
-.custom-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  transition: opacity 0.3s ease;
-}
+  /* Modal Overlay */
+  .custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+  }
 
-/* Modal Box */
-.custom-modal {
-  background: white;
-  border-radius: 8px;
-  width: 500px;
-  max-width: 90%;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  animation: fadeIn 0.3s ease;
-}
+  /* Modal Box */
+  .custom-modal {
+    background: white;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: fadeIn 0.3s ease;
+  }
 
-/* Header */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-}
+  /* Header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
 
-.modal-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-}
+  .modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
 
-.close-button {
-  font-size: 24px;
-  background: none;
-  border: none;
-  color: #333;
-  cursor: pointer;
-  padding: 0;
-}
+  .close-button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 0;
+  }
 
-/* Body */
-.modal-body {
-  padding: 10px 0;
-  color: #666;
-  font-size: 16px;
-  line-height: 1.5;
-}
+  /* Body */
+  .modal-body {
+    padding: 10px 0;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+  }
 
-/* Form Row */
-.form-row {
-  margin-bottom: 20px;
-}
+  /* Form Row */
+  .form-row {
+    margin-bottom: 20px;
+  }
 
-/* Label */
-.form-label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 5px;
-  color: #444;
-  font-size: 16px;
-}
+  /* Label */
+  .form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #444;
+    font-size: 16px;
+  }
 
-/* Form Input */
-.form-input {
-  width: 100%;
-}
+  /* Form Input */
+  .form-input {
+    width: 100%;
+  }
 
-.form-input:focus {
-  border-color: #007bff;
-  background-color: #fff;
-}
+  .form-input:focus {
+    border-color: #007bff;
+    background-color: #fff;
+  }
 
-/* Footer */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
+  /* Footer */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-}
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
 
-.btn-cancel {
-  background-color: #f44336;
-  color: white;
-}
+  .btn-cancel {
+    background-color: #f44336;
+    color: white;
+  }
 
-.btn-save {
-  background-color: #4CAF50;
-  color: white;
-}
+  .btn-save {
+    background-color: #4CAF50;
+    color: white;
+  }
 
-.btn-cancel:hover {
-  background-color: #d32f2f;
-}
+  .btn-cancel:hover {
+    background-color: #d32f2f;
+  }
 
-.btn-save:hover {
-  background-color: #388e3c;
-}
+  .btn-save:hover {
+    background-color: #388e3c;
+  }
 
-/* Fade-in Animation */
-@keyframes fadeIn {
-  from {
+  /* Fade-in Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .radio-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .radio-btn-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .radio-btn-wrapper input {
+    position: absolute;
     opacity: 0;
-    transform: scale(0.8);
+    cursor: pointer;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+
+  .radio-btn-wrapper label {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background-color: #fff;
+    color: #555;
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
-}
+
+  .radio-btn-wrapper input:checked + label {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+  }
+
+  .radio-btn-wrapper input:checked + label .radio-dot {
+    background-color: #fff;
+    transform: scale(1.3);
+  }
+
+  .radio-btn-wrapper label .radio-dot {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .radio-btn-wrapper input:focus + label {
+    outline: none;
+    border-color: #3498db;
+  }
+
+  .radio-btn-wrapper:hover label {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+  }
+
+  .radio-btn-wrapper input:disabled + label {
+    background-color: #f5f5f5;
+    color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+  }
 </style>
