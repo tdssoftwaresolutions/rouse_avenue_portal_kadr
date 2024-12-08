@@ -70,12 +70,19 @@ module.exports = {
   },
   logout: function (req, res) {
     // Clear the refresh token cookie
-    res.clearCookie('refresh_token', {
-      httpOnly: true, // Make sure it's HTTP-only
-      secure: process.env.NODE_ENV === 'production', // Secure cookie in production
-      sameSite: 'None', // For cross-origin cookies (if needed)
-      path: '/' // Ensure to clear the cookie from the same path
-    })
+    try {
+      res.clearCookie('refresh_token', {
+        httpOnly: true, // Make sure it's HTTP-only
+        secure: process.env.NODE_ENV === 'production', // Secure cookie in production
+        sameSite: 'None', // For cross-origin cookies (if needed)
+        path: '/' // Ensure to clear the cookie from the same path
+      })
+    } catch (e) {
+      console.log('Cookie couldn\'t be cleared, trying with Set-Cookie header for serverless')
+      // Set-Cookie header to expire the refresh_token cookie
+      const expiredCookie = `refresh_token=; Max-Age=0; Path=/; Secure=${process.env.NODE_ENV === 'production' ? 'true' : 'false'}; SameSite=None`
+      res.setHeader('Set-Cookie', expiredCookie)
+    }
 
     // Optionally send a response indicating the user has been logged out
     return res.status(200).json({ message: 'Logged out successfully' })
