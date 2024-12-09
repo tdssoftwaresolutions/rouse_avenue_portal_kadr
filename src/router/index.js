@@ -9,9 +9,7 @@ import Dashboard from '../views/Dashboards/Dashboard1.vue'
 import AuthLayout1 from '../layouts/AuthLayouts/AuthLayout1'
 import SignIn1 from '../views/AuthPages/Default/SignIn1'
 import SignUp1 from '../views/AuthPages/Default/SignUp1'
-import RecoverPassword1 from '../views/AuthPages/Default/RecoverPassword1'
-import LockScreen1 from '../views/AuthPages/Default/LockScreen1'
-import ConfirmMail1 from '../views/AuthPages/Default/ConfirmMail1'
+import RecoverPassword from '../views/AuthPages/Default/RecoverPassword1'
 /* Extra Pages */
 import ErrorPage from '../views/Pages/ErrorPage'
 import ComingSoon from '../views/Pages/ComingSoon'
@@ -67,19 +65,9 @@ const authChildRoutes = (prop) => [
     component: SignUp1
   },
   {
-    path: 'password-reset1',
-    name: prop + '.password-reset1',
-    component: RecoverPassword1
-  },
-  {
-    path: 'lock-screen1',
-    name: prop + '.lock-screen1',
-    component: LockScreen1
-  },
-  {
-    path: 'confirm-mail1',
-    name: prop + '.confirm-mail1',
-    component: ConfirmMail1
+    path: 'password-reset',
+    name: prop + '.password-reset',
+    component: RecoverPassword
   }
 ]
 

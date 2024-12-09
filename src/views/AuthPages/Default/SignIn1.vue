@@ -1,52 +1,48 @@
 <template>
   <div>
+    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
+    <Spinner :isVisible="loading" />
     <h1 class="mb-0">Sign in</h1>
     <div class="mt-4">
       <div class="mb-3">
         <label for="exampleInputEmail1">Username</label>
         <input v-model="emailAddress" type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or mobile number">
       </div>
-      <div class="mb-3  position-relative">
+      <div class="mb-3 position-relative">
         <label for="exampleInputPassword1">Password</label>
-        <a href="#" class="float-right">Forgot password?</a>
+        <a href="#" @click="onClickForgotPassword" style="float:right">Forgot password?</a>
         <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
         <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility" :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
       </div>
       <div class="d-inline-block w-100" style="display:none;">
-        <div class="custom-control custom-checkbox d-inline-block mt-2 pt-1">
-          <input type="checkbox" class="custom-control-input" id="customCheck1">
-          <label class="custom-control-label" for="customCheck1">Remember Me</label>
-        </div>
         <button class="btn btn-primary float-right" @click="onClickLogin">Sign in</button>
       </div>
       <div class="sign-info">
         <span class="dark-color d-inline-block line-height-2">Don't have an account? <a href="#" @click="onClickSignUp">Sign up</a></span>
-        <ul class="iq-social-media"  style="display:none;">
-          <li><a href="#"><i class="ri-facebook-box-line"></i></a></li>
-          <li><a href="#"><i class="ri-twitter-line"></i></a></li>
-          <li><a href="#"><i class="ri-instagram-line"></i></a></li>
-        </ul>
       </div>
     </div>
-    <b-alert :show="showError" variant="danger" class="text-white bg-danger" style="left: 50%;position: fixed;transform: translate(-50%, 0px);z-index: 9999;top: 5%;">
-      <div class="iq-alert-icon">
-        <i class="ri-alert-line"></i>
-      </div>
-      <div class="iq-alert-text">Invalid Username/Password</div>
-    </b-alert>
   </div>
 </template>
 <script>
-import axios from 'axios'
+import Alert from '../../../components/sofbox/alert/Alert.vue'
+import Spinner from '../../../components/sofbox/spinner/spinner.vue'
 
 export default {
   name: 'SignIn',
+  components: {
+    Alert, Spinner
+  },
   data () {
     return {
       emailAddress: '',
       password: '',
-      showError: false,
-      showPassword: false
+      showPassword: false,
+      alert: {
+        visible: false,
+        message: '',
+        type: 'primary'
+      },
+      loading: false
     }
   },
   mounted () {
@@ -55,6 +51,13 @@ export default {
     }
   },
   methods: {
+    showAlert (message, type) {
+      this.alert = {
+        message,
+        type,
+        visible: true
+      }
+    },
     isSessionAvailable () {
       if (this.$cookies.get('accessToken')) {
         return true
@@ -64,47 +67,46 @@ export default {
     togglePasswordVisibility () {
       this.showPassword = !this.showPassword
     },
-    onClickLogin () {
-      axios
-        .post('/api/login', {
-          username: this.emailAddress,
-          password: this.password
-        })
-        .then((response) => {
-          if (response.data.errorCode) {
-            this.$bvToast.toast(response.data.message, {
-              title: 'Error',
-              variant: 'error',
-              solid: true
-            })
-          } else {
-            console.log('Response:', response.data)
-            this.$cookies.set('accessToken', response.data.accessToken, '1d', '/', '.kadr.live', true, 'None')
-            this.$router.push({ name: 'dashboard1.home' })
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('Error!')
-        })
+    async onClickLogin () {
+      if (this.emailAddress.trim() === '') {
+        this.showAlert('Enter username', 'danger')
+        return
+      }
+      if (this.password.trim() === '') {
+        this.showAlert('Enter password', 'danger')
+        return
+      }
+
+      this.loading = true
+      const response = await this.$store.dispatch('login', {
+        username: this.emailAddress,
+        password: this.password
+      })
+      if (response.errorCode) {
+        this.showAlert(response.message, 'danger')
+      }
+      this.loading = false
     },
     onClickSignUp () {
       this.$router.push({ path: '/auth/sign-up' })
+    },
+    onClickForgotPassword () {
+      this.$router.push({ path: '/auth/password-reset' })
     }
   }
 }
 </script>
 <style>
-.password-toggle-icon {
-  position: absolute;
-  right: 10px;
-  top: 70%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 1.2rem;
-}
+  .password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
 
-.form-group {
-  position: relative;
-}
+  .form-group {
+    position: relative;
+  }
 </style>

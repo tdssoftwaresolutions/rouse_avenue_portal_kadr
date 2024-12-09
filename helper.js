@@ -100,7 +100,7 @@ class Helper {
       const mailOptions = {
         from: process.env.EMAIL_USER, // Sender's email address
         to: emailId, // Recipient's email address
-        subject: 'Mediation Request Initiated', // Subject line
+        subject: 'Mail from kADR.live', // Subject line
         html: htmlBody
       }
 

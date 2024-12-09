@@ -13,6 +13,11 @@ router.get('/scheduleMeeting', authMiddleware, apiController.scheduleMeeting)
 router.get('/getDashboardContent', authMiddleware, apiController.getDashboardContent)
 router.get('/logout', apiController.logout)
 router.post('/updateInactiveUsers', apiController.updateInactiveUsers)
+router.get('/authenticateWithGoogle', authMiddleware, apiController.authenticateWithGoogle)
+router.get('/googleCallback', apiController.googleCallback)
+router.post('/newCalendarEvent', authMiddleware, apiController.newCalendarEvent)
+router.post('/resetPassword', apiController.resetPassword)
+router.post('/confirmPasswordChange', apiController.confirmPasswordChange)
 
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)

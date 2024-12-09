@@ -51,12 +51,20 @@ const ERROR_CODES = {
     message: 'The resource you are trying to modify is in conflict with existing data.'
   },
   USER_NOT_FOUND: {
-    error: 'E303',
+    errorCode: 'E303',
     message: 'A user not found for this session.'
   },
   USER_NOT_ACTIVE: {
-    error: 'E304',
+    errorCode: 'E304',
     message: 'User not yet activated, please wait for kADR team to review your account.'
+  },
+  INVALID_OTP: {
+    errorCode: 'E305',
+    message: 'Invalid OTP, please enter valid OTP.'
+  },
+  OTP_EXPIRED: {
+    errorCode: 'E306',
+    message: 'OTP Expired, please request a new one'
   }
 }
 

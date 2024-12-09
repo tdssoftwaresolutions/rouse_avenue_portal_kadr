@@ -59,7 +59,7 @@ export default {
               solid: true
             })
           } else {
-            this.dashboardContent = response.data
+            this.dashboardContent = response.data.dashboardContent
           }
         })
         .catch((error) => {

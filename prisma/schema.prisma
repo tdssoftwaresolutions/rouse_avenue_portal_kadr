@@ -17,9 +17,11 @@ model user {
   updated_at                     DateTime?      @default(now()) @db.Timestamp(0)
   user_type                      user_user_type @default(CLIENT)
   active                         Boolean        @default(true)
+  google_token                   String?        @db.LongText
   cases_cases_first_partyTouser  cases[]        @relation("cases_first_partyTouser")
   cases_cases_second_partyTouser cases[]        @relation("cases_second_partyTouser")
   cases_cases_mediatorTouser     cases[]        @relation("cases_mediatorTouser")
+  events                         events[]
 }
 
 model cases {
@@ -34,6 +36,7 @@ model cases {
   user_cases_first_partyTouser  user?     @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
   user_cases_second_partyTouser user?     @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
   user_cases_mediatorTouser     user?     @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
+  events                        events[]
 
   @@index([mediator], map: "fk_mediator")
   @@index([first_party], map: "fk_first_party")
@@ -45,8 +48,40 @@ model caseIdTracker {
   lastCaseId Int
 }
 
+model events {
+  id                   String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  title                String      @db.VarChar(255)
+  description          String?     @db.Text
+  start_datetime       DateTime    @db.DateTime(0)
+  end_datetime         DateTime    @db.DateTime(0)
+  type                 events_type
+  meeting_link         String?     @db.VarChar(255)
+  google_calendar_link String?     @db.VarChar(255)
+  created_by           String?     @db.Char(36)
+  case_id              String?     @db.Char(36)
+  created_at           DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at           DateTime?   @default(now()) @db.Timestamp(0)
+  cases                cases?      @relation(fields: [case_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_case_id")
+  user                 user?       @relation(fields: [created_by], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_created_by")
+
+  @@index([case_id], map: "fk_case_id")
+  @@index([created_by], map: "fk_created_by")
+}
+
+model otp_resets {
+  email      String    @id @db.VarChar(255)
+  otp        Int?
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  expires_at DateTime  @db.Timestamp(0)
+}
+
 enum user_user_type {
   ADMIN
   MEDIATOR
   CLIENT
+}
+
+enum events_type {
+  PERSONAL
+  KADR
 }

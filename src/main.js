@@ -3,9 +3,8 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import { VuejsDatatableFactory } from 'vuejs-datatable'
 import App from './App.vue'
-// import './registerServiceWorker'
 import router from './router'
-import store from './store'
+import createStore from './store'
 import _ from 'lodash'
 import HighchartsVue from 'highcharts-vue'
 import VueCookies from 'vue-cookies'
@@ -33,6 +32,8 @@ Vue.use(VueCookies)
 Vue.config.productionTip = false
 
 Vue.use(VuejsDatatableFactory)
+
+const store = createStore(router)
 
 const vm = new Vue({
   router,

@@ -47,6 +47,9 @@
             <h4 class="card-title">Book Appointment</h4>
           </template>
           <template v-slot:headerAction>
+            <div v-if="!isAuthenticated">
+              <button @click="authenticate">Login with Google</button>
+            </div>
             <a href="#" class="btn btn-primary" @click="openModal">
               <i class="ri-add-line ms-2"></i>Book Appointment
             </a>
@@ -157,6 +160,7 @@
   </b-container>
 </template>
 <script>
+import axios from 'axios'
 import { sofbox } from '../../config/pluginInit'
 import VueMaterialDateTimePicker from 'vue-material-date-time-picker'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
@@ -193,7 +197,8 @@ export default {
         { value: 'user3', text: '#KDR389575' }
       ],
       events: [
-      ]
+      ],
+      isAuthenticated: false
     }
   },
   mounted () {
@@ -202,6 +207,40 @@ export default {
   computed: {
   },
   methods: {
+    authenticate () {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+      }
+      axios
+        .get('/api/authenticateWithGoogle', {
+          headers
+        })
+        .then((response) => {
+          if (response.data.errorCode) {
+            this.$bvToast.toast(response.data.error, {
+              title: 'Error',
+              variant: 'error',
+              solid: true
+            })
+          } else {
+            const popup = window.open(response.data.url, '_blank', 'width=500,height=600')
+            const checkPopupClosed = setInterval(() => {
+              if (popup.closed) {
+                clearInterval(checkPopupClosed)
+                console.log('Popup has been closed')
+                this.handlePopupClose()
+              }
+            }, 500)
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          alert('Error!')
+        })
+    },
+    handlePopupClose () {
+    },
     formatDateTime (dateString) {
       const date = new Date(dateString)
       const options = {
@@ -231,16 +270,45 @@ export default {
       endDate.setMinutes(endDate.getMinutes() + 30)
 
       if (this.newAppointment.start) {
-        this.events.push({
+        const event = {
           id: this.incrementalId++,
           title: this.newAppointment.user ? `Client meeting with ${this.newAppointment.user}` : this.newAppointment.title,
           start: this.newAppointment.start,
           end: endDate,
-          color: this.newAppointment.type === 'kadr' ? this.kadrEventColor : this.personalEventColor // Example color, you can change it
-        })
-        this.closeModal()
-        this.resetForm()
+          color: this.newAppointment.type === 'kadr' ? this.kadrEventColor : this.personalEventColor,
+          caseId: '84e40820-b56f-11ef-a898-6a3df410730f',
+          description: 'Test description',
+          type: 'KADR'
+        }
+        this.storeNewEvent(event)
       }
+    },
+    storeNewEvent (event) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+      }
+      axios
+        .post('/api/newCalendarEvent', event, {
+          headers
+        })
+        .then((response) => {
+          if (response.data.errorCode) {
+            this.$bvToast.toast(response.data.error, {
+              title: 'Error',
+              variant: 'error',
+              solid: true
+            })
+          } else {
+            this.events.push(event)
+            this.closeModal()
+            this.resetForm()
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          alert('Error!')
+        })
     },
     openDetailsModal (event) {
       console.log(JSON.stringify(event))

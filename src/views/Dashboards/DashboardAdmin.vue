@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <Alert :message="alertMessage" :type="alertType" v-model="alertVisible" ></Alert>
+    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
     <b-row>
       <b-col lg="3" md="12">
         <iq-card class="iq-profile-card text-center">
@@ -27,7 +27,7 @@
                   </b-col>
                   <b-col lg="12" class="mt-3">
                     <h6 class="card-title text-uppercase text-secondary mb-0">No. of registered Mediators</h6>
-                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.mediators}}</span>
+                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.count.mediators}}</span>
                   </b-col>
                 </b-row>
               </template>
@@ -44,7 +44,7 @@
                   </b-col>
                   <b-col lg="12" class="mt-3">
                     <h6 class="card-title text-uppercase text-secondary mb-0">No. of registered Clients</h6>
-                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.clients}}</span>
+                    <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.count.clients}}</span>
                   </b-col>
                 </b-row>
                 </template>
@@ -61,7 +61,7 @@
                     </b-col>
                     <b-col lg="12" class="mt-3">
                       <h6 class="card-title text-uppercase text-secondary mb-0">No. of cases</h6>
-                      <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.dashboardContent.count.cases}}</span>
+                      <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{content.count.cases}}</span>
                     </b-col>
                   </b-row>
                 </template>
@@ -72,7 +72,7 @@
     </b-row>
     <b-row>
       <b-col sm="12">
-        <inactive-users :users="content.dashboardContent.inactive_users"></inactive-users>
+        <inactive-users :users="content.inactive_users"></inactive-users>
       </b-col>
     </b-row>
   </b-container>
@@ -92,9 +92,11 @@ export default {
   },
   data () {
     return {
-      alertVisible: false,
-      alertMessage: '',
-      alertType: ''
+      alert: {
+        visible: false,
+        message: '',
+        type: ''
+      }
     }
   },
   methods: {
@@ -105,9 +107,11 @@ export default {
       return false
     },
     showAlert (message, type) {
-      this.alertMessage = message
-      this.alertType = type
-      this.alertVisible = true
+      this.alert = {
+        message,
+        type,
+        visible: true
+      }
     }
   }
 }

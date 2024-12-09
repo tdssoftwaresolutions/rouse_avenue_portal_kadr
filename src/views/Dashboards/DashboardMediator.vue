@@ -37,28 +37,15 @@
             <template v-slot:headerTitle>
               <h4 class="card-title">My Cases</h4>
             </template>
-            <template v-slot:headerAction>
-              <b-link href="#"><i class="ri-more-fill"></i></b-link>
-            </template>
             <template v-slot:body>
               <ul class="suggestions-lists m-0 p-0">
-                <li class="d-flex mb-4 align-items-center" @click="onClickCase">
-                  <div class="user-img img-fluid">
-                    <b-img :src="selectedUser.image" alt="story-img" rounded="circle" class="avatar-40" />
-                  </div>
-                  <div class="media-support-info ms-3">
-                    <h6>{{ selectedUser.name }}</h6>
-                    <p class="mb-0">Case ID:{{ selectedUser.caseId }}</p>
-                  </div>
-                  <div class="add-suggestion"><b-link href="javascript:void();"><i class="ri-user-add-line"></i></b-link></div>
-                </li>
-                <li v-for="(item,index) in suggestions" :key="index" class="d-flex mb-4 align-items-center" @click="onClickCase">
+                <li v-for="(item,index) in content.myCases" :key="index" class="d-flex mb-4 align-items-center" @click="onClickCase">
                   <div class="user-img img-fluid">
                     <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
                   </div>
                   <div class="media-support-info ms-3">
-                    <h6>{{ item.name }}</h6>
-                    <p class="mb-0">{{ item.mutual_friend }}</p>
+                    <h6>{{ item.caseId }}</h6>
+                    <p class="mb-0">{{ item.case_name }}</p>
                   </div>
                   <div class="add-suggestion"><b-link href="javascript:void();"><i class="ri-user-add-line"></i></b-link></div>
                 </li>
@@ -177,6 +164,8 @@ export default {
   },
   mounted () {
     this.onClickNewAdd()
+    console.log(this.content)
+    console.log(this.content.myCases)
   },
   data () {
     return {
@@ -286,7 +275,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .textarea-wrapper {
     position: relative;
     display: inline-block;

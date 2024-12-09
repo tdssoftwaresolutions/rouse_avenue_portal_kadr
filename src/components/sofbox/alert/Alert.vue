@@ -1,6 +1,6 @@
 <template>
-    <div v-if="value" class="alert text-white bg-danger" role="alert">
-        <div class="iq-alert-text" v-html="message"></div>
+    <div v-if="value" :class="['alert', alertClass, textColor]" role="alert">
+      <div class="iq-alert-text" v-html="message"></div>
     </div>
 </template>
 <script>
@@ -13,11 +13,31 @@ export default {
     },
     type: {
       type: String,
-      default: 'success'
+      required: true,
+      validator (value) {
+        return [
+          'primary',
+          'secondary',
+          'success',
+          'danger',
+          'warning',
+          'info',
+          'light',
+          'dark'
+        ].includes(value)
+      }
     },
     value: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    alertClass () {
+      return `bg-${this.type}`
+    },
+    textColor () {
+      return this.type === 'light' ? 'text-dark' : 'text-white'
     }
   },
   data () {
@@ -43,7 +63,7 @@ export default {
 
       this.autoHideTimeout = setTimeout(() => {
         this.closeAlert()
-      }, 3000)
+      }, 5000)
     }
   },
   beforeDestroy () {

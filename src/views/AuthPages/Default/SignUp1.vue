@@ -1,12 +1,7 @@
 <template>
   <div class="container">
-    <!-- Header: "Already Have an Account?" stays at the top -->
-    <div class="header" v-if="step !== 0">
-      <span class="dark-color d-inline-block line-height-2">
-        Already Have an Account? <a href="#" @click="onClickLogin">Log In</a>
-      </span>
-    </div>
-
+    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
+    <Spinner :isVisible="loading" />
     <div class="form-container">
       <form class="mt-4">
         <!-- Step 0: Select User Type -->
@@ -14,7 +9,7 @@
           <div class="card-body">
             <h5 class="card-title">Are you a Mediator or Client?</h5>
             <p class="card-text">Please select your role to proceed with the sign-up process.</p>
-            <button type="button" class="btn btn-primary" style="margin-right:1rem" @click="selectUserType('mediator')">Sign Up as Mediator</button>
+            <button type="button" class="btn btn-primary" style="margin-right:1rem" @click="selectUserType('mediator')">Sign Up as Dispute Resolution Expert</button>
             <button type="button" class="btn btn-primary" style="margin-left:1rem" @click="selectUserType('client')">Sign Up as Client</button>
             <span class="dark-color d-inline-block line-height-2" style="margin-top: 2rem;">
               Already Have an Account? <a href="#" @click="onClickLogin">Log In</a>
@@ -26,7 +21,7 @@
         <div v-if="step === 1">
           <div class="mb-3">
             <label for="name">Full Name</label>
-            <input type="text" class="form-control" id="name" v-model="formData.name" placeholder="Your Full Name" />
+            <input type="text" class="form-control capitalize-first-word" id="name" v-model="formData.name" placeholder="Your Full Name" />
           </div>
           <div class="mb-3">
             <label for="email">Email Address</label>
@@ -37,26 +32,39 @@
             <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
           </div>
           <div class="mb-3">
-            <label for="city">City</label>
-            <input type="text" class="form-control" id="city" v-model="formData.city" placeholder="City" />
+            <label for="state">State</label>
+            <select id="state" v-model="formData.state" class="form-control">
+              <option value="">Select State</option>
+              <option v-for="(item, index) in states" :key="index" :value="item">
+                {{ item }}
+              </option>
+            </select>
           </div>
           <div class="mb-3">
-            <label for="state">State</label>
-            <input type="text" class="form-control" id="state" v-model="formData.state" placeholder="State" />
+            <label for="city">City</label>
+            <input type="text" class="form-control capitalize-first-word" id="city" v-model="formData.city" placeholder="City" />
           </div>
           <div class="mb-3">
             <label for="pincode">Pin Code</label>
             <input type="text" class="form-control" id="pincode" v-model="formData.pincode" placeholder="Pin Code" />
           </div>
-          <button type="button" class="btn btn-secondary" @click="prevStep">Previous</button>
-          <button type="button" class="btn btn-primary float-right" @click="nextStep">Next</button>
+          <div class="d-flex justify-content-between">
+            <div>
+              <button type="button" class="btn btn-secondary" @click="prevStep(1)">Previous</button>
+              <button type="button" class="btn btn-primary ml" @click="nextStep(1)">Next</button>
+            </div>
+            <div class="align-self-center">
+              <span class="dark-color d-inline-block line-height-2">
+                Already Have an Account? <a href="#" @click="onClickLogin">Log In</a>
+              </span>
+            </div>
+          </div>
         </div>
-
         <!-- Step 2: Complaint Details (Only for Client) -->
         <div v-if="step === 2 && formData.userType === 'client'">
           <div class="mb-3">
             <label for="description">Complaint Description</label>
-            <textarea class="form-control" id="description" v-model="formData.description" placeholder="Describe your complaint"></textarea>
+            <textarea class="form-control" id="description" v-model="formData.description" placeholder="Describe your complaint" style="height:150px"></textarea>
           </div>
           <div class="mb-3">
             <label for="category">Complaint Category</label>
@@ -72,15 +80,25 @@
           <div class="mb-3">
             <label for="evidence">Upload Evidence</label>
             <div class="file-upload">
-              <input type="file" class="form-control-file" id="evidence" @change="onFileChange('evidence-client')" />
+              <input type="file" class="form-control-file" id="evidence" @change="onFileChange" />
               <label for="evidence" class="custom-file-upload">
                 Choose File
               </label>
               <span v-if="formData.evidence" class="file-name">{{ formData.evidence.name }}</span>
             </div>
           </div>
-          <button type="button" class="btn btn-secondary" @click="prevStep">Previous</button>
-          <button type="button" class="btn btn-primary float-right" @click="nextStep">Next</button>
+          <div class="d-flex justify-content-between">
+            <div>
+              <button type="button" class="btn btn-secondary" @click="prevStep(2)">Previous</button>
+              <button type="button" class="btn btn-primary float-right ml" @click="nextStep(2)">Next</button>
+            </div>
+            <div class="align-self-center">
+              <span class="dark-color d-inline-block line-height-2">
+                Already Have an Account? <a href="#" @click="onClickLogin">Log In</a>
+              </span>
+            </div>
+          </div>
+
         </div>
 
         <!-- Step 2: Mediator-Specific (Empty for now) -->
@@ -105,8 +123,8 @@
               <span v-if="formData.evidence" class="file-name">{{ formData.evidence.name }}</span>
             </div>
           </div>
-          <button type="button" class="btn btn-secondary" @click="prevStep">Previous</button>
-          <button type="button" class="btn btn-primary float-right" @click="submitForm">Submit</button>
+          <button type="button" class="btn btn-secondary" @click="prevStep(3)">Previous</button>
+          <button type="button" class="btn btn-primary float-right ml" @click="submitForm()">Submit</button>
         </div>
 
         <!-- Step 3: Opposite Party Details (Only for Client) -->
@@ -124,7 +142,7 @@
             <input type="tel" class="form-control" id="oppositePhone" v-model="formData.oppositePhone" placeholder="Phone" />
           </div>
           <button type="button" class="btn btn-secondary" @click="prevStep">Previous</button>
-          <button type="button" class="btn btn-success float-right" @click="submitForm">Submit</button>
+          <button type="button" class="btn btn-success float-right ml" @click="submitForm">Submit</button>
         </div>
       </form>
     </div>
@@ -133,10 +151,17 @@
 
 <script>
 import axios from 'axios'
+import Alert from '../../../components/sofbox/alert/Alert.vue'
+import Spinner from '../../../components/sofbox/spinner/spinner.vue'
 
 export default {
+  name: 'SignUp',
+  components: {
+    Alert, Spinner
+  },
   data () {
     return {
+      states: [],
       step: 0, // Start at Step 0
       formData: {
         name: '',
@@ -152,19 +177,88 @@ export default {
         oppositeEmail: '',
         oppositePhone: '',
         userType: '' // Store selected user type (mediator/client)
-      }
+      },
+      alert: {
+        visible: false,
+        message: '',
+        type: 'primary'
+      },
+      loading: false
     }
   },
+  mounted () {
+    this.loadStates()
+  },
   methods: {
-    nextStep () {
+    showAlert (message, type) {
+      this.alert = {
+        message,
+        type,
+        visible: true
+      }
+    },
+    async loadStates () {
+      try {
+        const response = await fetch('/states.json')
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        const jsonData = await response.json()
+        this.states = jsonData
+      } catch (error) {
+        console.error('Error loading the JSON data:', error)
+      }
+    },
+    nextStep (currentStep) {
+      if (currentStep === 1) {
+        if (this.formData.name.trim() === '') {
+          this.showAlert('Enter your full name', 'danger')
+          return
+        }
+        if (this.formData.email.trim() === '') {
+          this.showAlert('Enter email address', 'danger')
+          return
+        }
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        if (!emailPattern.test(this.formData.email)) {
+          this.showAlert('Invalid email address', 'danger')
+          return
+        }
+        if (this.formData.phone.trim() === '') {
+          this.showAlert('Enter phone number', 'danger')
+          return
+        }
+        const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
+        if (!phonePattern.test(this.formData.phone)) {
+          this.showAlert('Enter valid phone number', 'danger')
+          return
+        }
+        if (this.formData.state.trim() === '') {
+          this.showAlert('Select state', 'danger')
+          return
+        }
+        if (this.formData.city.trim() === '') {
+          this.showAlert('Enter city', 'danger')
+          return
+        }
+        if (this.formData.pincode.trim() === '') {
+          this.showAlert('Enter pincode', 'danger')
+          return
+        }
+        const pinCodePattern = /^[1-9][0-9]{5}$/
+        if (!pinCodePattern.test(this.formData.pincode)) {
+          this.showAlert('Enter valid pincode', 'danger')
+          return
+        }
+      }
       if (this.step < 3 && (this.formData.userType === 'client' || this.step < 2)) {
         this.step++
       }
     },
-    prevStep () {
-      if (this.step === 1) {
+    prevStep (currentStep) {
+      if (currentStep === 1) {
         this.step = 0 // Go back to Step 0 if user is on Step 1
-      } else if (this.step > 0) {
+      } else if (currentStep > 0) {
         this.step-- // Go to the previous step if not on Step 0
       }
     },
@@ -307,5 +401,10 @@ body, html {
   margin-left: auto;
   margin-right: auto;
 }
-
+.ml {
+    margin-left: 0.5rem;
+}
+.capitalize-first-word {
+  text-transform: capitalize;
+}
 </style>

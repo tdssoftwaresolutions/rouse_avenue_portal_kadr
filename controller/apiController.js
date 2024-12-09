@@ -7,6 +7,12 @@ const clientId = process.env.ZOOM_CLIENT_ID
 const clientSecret = process.env.ZOOM_CLIENT_SECRET
 const accountId = process.env.ZOOM_ACCOUNT_ID
 const errorCodes = require('../errorCodes')
+const { google } = require('googleapis')
+const oauth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI
+)
 
 module.exports = {
   getDashboardContent: async function (req, res) {
@@ -14,18 +20,17 @@ module.exports = {
       res.json(req.error)
       return
     }
-    const userDetails = req.user
     try {
+      const userDetails = req.user
+      let dashboardContent = {}
       const user = await prisma.user.findUnique({
         where: {
-          id: userDetails.id // The id to search by
+          id: userDetails.id
         }
       })
       if (!user) {
         res.json(errorCodes.USER_NOT_FOUND)
       }
-
-      let dashboardContent = {}
 
       if (user.user_type === 'ADMIN') {
         const inactiveUsers = await prisma.user.findMany({
@@ -33,7 +38,6 @@ module.exports = {
             active: false
           }
         })
-
         const counts = await prisma.$transaction([
           prisma.cases.count(),
           prisma.user.count({
@@ -47,11 +51,9 @@ module.exports = {
             }
           })
         ])
-
         const totalCases = counts[0]
         const clientUsers = counts[1]
         const mediatorUsers = counts[2]
-
         dashboardContent.inactive_users = inactiveUsers
         dashboardContent.count = {
           cases: totalCases,
@@ -60,12 +62,74 @@ module.exports = {
         }
       }
 
-      console.log('Fetched user:', user)
+      if (user.user_type === 'MEDIATOR') {
+        const cases = await prisma.cases.findMany({
+          where: {
+            mediator: userDetails.id
+          },
+          select: {
+            id: true
+          }
+        })
+        if (cases.length === 0) {
+          return res.json(errorCodes.CASES_NOT_FOUND)
+        }
+        const casesWithEvents = await prisma.cases.findMany({
+          where: {
+            mediator: userDetails.id
+          },
+          include: {
+            events: {
+              where: {
+                case_id: {
+                  in: cases.map(c => c.id)
+                }
+              }
+            }
+          }
+        })
+        dashboardContent.myCases = casesWithEvents
+      }
+
+      if (user.user_type === 'CLIENT') {
+        const cases = await prisma.cases.findMany({
+          where: {
+            OR: [
+              { first_party: userDetails.id },
+              { second_party: userDetails.id }
+            ]
+          },
+          select: {
+            id: true
+          }
+        })
+        if (cases.length === 0) {
+          return res.json(errorCodes.CASES_NOT_FOUND)
+        }
+        const casesWithEvents = await prisma.cases.findMany({
+          where: {
+            mediator: userDetails.id
+          },
+          include: {
+            events: {
+              where: {
+                case_id: {
+                  in: cases.map(c => c.id)
+                }
+              }
+            }
+          }
+        })
+        dashboardContent.myCases = casesWithEvents
+
+        dashboardContent.cases = cases
+      }
+
       res.json({ success: true, dashboardContent })
     } catch (error) {
       console.error('Error fetching user:', error)
     } finally {
-      await prisma.$disconnect() // Close the Prisma connection
+      await prisma.$disconnect()
     }
   },
   logout: function (req, res) {
@@ -153,6 +217,190 @@ module.exports = {
     } catch (error) {
       console.error('Error getting access token:', error.response?.data || error.message)
     }
+  },
+  googleCallback: async function (req, res) {
+    const code = decodeURIComponent(req.query.code)
+    const state = req.query.state
+    try {
+      const { tokens } = await oauth2Client.getToken(code)
+      console.log(tokens)
+      await prisma.user.update({
+        where: {
+          id: state
+        },
+        data: {
+          google_token: JSON.stringify(tokens)
+        }
+      })
+      res.send('<html><body><h1>Your Google account is now connected. You can now close this window and return to the app.</h1></body></html>')
+    } catch (e) {
+      console.error('Error retrieving access token', e)
+      res.status(500).send('Authentication failed')
+    }
+  },
+  confirmPasswordChange: async function (req, res) {
+    const { emailAddress, otp, password } = req.body
+    const otpReset = await prisma.otp_resets.findUnique({
+      where: {
+        email: emailAddress
+      },
+      select: {
+        otp: true,
+        expires_at: true
+      }
+    })
+    if (otpReset) {
+      if (otpReset.otp !== otp) {
+        res.status(401).json(errorCodes.INVALID_OTP)
+        return
+      }
+      if (otpReset.expires_at < new Date()) {
+        res.status(401).json(errorCodes.OTP_EXPIRED)
+        return
+      }
+      const hashPassword = await helper.hashPassword(password)
+      await prisma.user.update({
+        where: {
+          email: emailAddress
+        },
+        data: {
+          password_hash: hashPassword
+        }
+      })
+      await prisma.otp_resets.delete({
+        where: {
+          email: emailAddress
+        }
+      })
+      res.status(201).json({ success: true, message: 'Password reset successfully.' })
+    } else {
+      res.status(401).json(errorCodes.INVALID_REQUEST)
+    }
+  },
+  resetPassword: async function (req, res) {
+    const email = req.body.emailAddress
+    const user = await prisma.user.findUnique({
+      where: {
+        email
+      },
+      select: {
+        id: true
+      }
+    })
+    if (user) {
+      const createdAt = new Date()
+      const expiresAt = new Date(createdAt.getTime() + 10 * 60000)
+      const otp = Math.floor(100000 + Math.random() * 900000)
+      await prisma.otp_resets.upsert({
+        where: {
+          email // Check if OTP already exists for this email
+        },
+        update: {
+          otp, // Update OTP
+          created_at: createdAt, // Update created time
+          expires_at: expiresAt // Update expiration time
+        },
+        create: {
+          email, // Insert the email if doesn't exist
+          otp, // Insert the OTP
+          created_at: createdAt, // Insert created time
+          expires_at: expiresAt // Insert expiration time
+        }
+      })
+      const htmlBody = `
+                    <p>Hi, we have recieved your request to reset password for your account on kADR.live.</p>
+                    <p>To go ahead with this, please enter OTP: ${otp} on our platform to reset the password</p>
+                  `
+      await helper.sendEmail(email, htmlBody)
+    }
+    res.json({ success: true })
+  },
+  newCalendarEvent: async function (req, res) {
+    if (req.error) {
+      res.json(req.error)
+      return
+    }
+    try {
+      const { id, title, description, start, end, type, caseId } = req.body
+      const user = await prisma.user.findUnique({
+        where: {
+          id: req.user.id
+        },
+        select: {
+          google_token: true
+        }
+      })
+      oauth2Client.setCredentials(JSON.parse(user.google_token))
+      const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
+      const event = {
+        summary: title,
+        description,
+        start: { dateTime: start, timeZone: 'Asia/Kolkata' },
+        end: { dateTime: end, timeZone: 'Asia/Kolkata' },
+        attendees: [
+          { email: 'tarandeepsync@gmail.com' },
+          { email: 'mebonixservices@gmail.com' },
+          { email: 'support@mebonix.in' }
+        ],
+        conferenceData: {
+          createRequest: {
+            requestId: id,
+            conferenceSolutionKey: { type: 'hangoutsMeet' }
+          }
+        }
+      }
+      const response = await calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+        conferenceDataVersion: 1
+      })
+      await prisma.events.create({
+        data: {
+          title: 'Event Title',
+          description: 'Event Description',
+          start_datetime: start,
+          end_datetime: end,
+          type,
+          meeting_link: response.data.conferenceData.entryPoints[0].uri,
+          google_calendar_link: response.data.htmlLink,
+          created_by: req.user.id,
+          case_id: caseId
+        }
+      })
+      res.send({
+        message: 'Event created successfully',
+        eventLink: response.data.htmlLink,
+        meetLink: response.data.conferenceData.entryPoints[0].uri
+      })
+    } catch (err) {
+      console.error('Error retrieving access token', err)
+      res.status(500).send('Authentication failed')
+    }
+  },
+  authenticateWithGoogle: async function (req, res) {
+    if (req.error) {
+      res.json(req.error)
+      return
+    }
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      process.env.REDIRECT_URI
+    )
+
+    const scopes = [
+      'https://www.googleapis.com/auth/calendar.events',
+      'https://www.googleapis.com/auth/calendar'
+    ]
+
+    const url = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: scopes,
+      prompt: 'consent',
+      state: req.user.id
+    })
+
+    res.json({ success: true, url })
   },
   generatePassword: async function (req, res) {
     const generatedPassword = helper.generateRandomPassword()
@@ -252,18 +500,16 @@ module.exports = {
       }
     })
     if (!user) {
-      res.status(201).json({
-        error: 'User not found.'
-      })
+      res.status(401).json(errorCodes.INVALID_CREDENTIALS)
       return
     }
     if (user.active === false) {
-      res.status(201).json(errorCodes.USER_NOT_ACTIVE)
+      res.status(403).json(errorCodes.USER_NOT_ACTIVE)
       return
     }
     const isPasswordValid = await helper.comparePassword(password, user.password_hash)
     if (!isPasswordValid) {
-      res.status(201).json(errorCodes.INVALID_CREDENTIALS)
+      res.status(401).json(errorCodes.INVALID_CREDENTIALS)
       return
     }
 
@@ -281,7 +527,7 @@ module.exports = {
       console.log('Cookied couldnt set, trying with setHeader')
       res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=2592000000; Path=/; Secure=${process.env.NODE_ENV === 'production'}`)
     }
-    res.json({ accessToken })
+    res.status(201).json({ accessToken })
   },
   getUserData: async function (req, res) {
     if (req.error) {
