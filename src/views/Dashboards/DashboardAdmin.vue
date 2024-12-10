@@ -95,7 +95,7 @@ export default {
       alert: {
         visible: false,
         message: '',
-        type: ''
+        type: 'danger'
       }
     }
   },

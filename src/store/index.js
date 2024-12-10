@@ -8,8 +8,13 @@ const LOGIN_ENDPOINT = '/login'
 const REGISTER_ENDPOINT = '/register'
 const RESET_PASSWORD_ENDPOINT = '/resetPassword'
 const CONFIRM_PASSWORD_CHANGE_ENDPOINT = '/confirmPasswordChange'
-
+const NEW_USER_SIGNUP_ENDPOINT = '/newUserSignup'
+const IS_EMAIL_EXIST_ENDPOINT = '/isEmailExist'
+const AVAILABLE_LANGUAGES_ENDPOINT = '/getAvailableLanguages'
+const GET_INACTIVE_USERS_ENDPOINT = '/getInactiveUsers'
+const UPDATE_INACTIVE_USER_ENDPOINT = '/updateInactiveUser'
 const debug = process.env.NODE_ENV !== 'production'
+
 const apiClient = axios.create({
   baseURL: '/api',
   timeout: 5000
@@ -45,7 +50,9 @@ export default (router) => {
   const store = new Vuex.Store({
     state: {
       loader: false,
-      user: null
+      user: null,
+      availableLanguages: null,
+      availableStates: null
     },
     mutations: {
       commitLoader (state, data) {
@@ -53,6 +60,12 @@ export default (router) => {
       },
       setUser (state, user) {
         state.user = user
+      },
+      setAvailableLanguages (state, data) {
+        state.availableLanguages = data
+      },
+      setAvailableStates (state, data) {
+        state.availableStates = data
       }
     },
     actions: {
@@ -85,6 +98,70 @@ export default (router) => {
           return error.response.data
         }
       },
+      async newUserSignup ({ commit }, { userDetails }) {
+        try {
+          const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { userDetails })
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async updateInactiveUsers ({ commit }, { isActive, caseId, userId, caseType }) {
+        try {
+          const { data } = await apiClient.post(UPDATE_INACTIVE_USER_ENDPOINT, { isActive, caseId, userId, caseType })
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async isEmailExist ({ commit }, { emailAddress }) {
+        try {
+          const { data } = await apiClient.get(`${IS_EMAIL_EXIST_ENDPOINT}?email=${encodeURIComponent(emailAddress)}`)
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async getInactiveUsers ({ commit }, { page }) {
+        try {
+          const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}`)
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async getAvailableLanguages ({ state, commit }) {
+        try {
+          if (state.availableLanguages) {
+            return state.availableLanguages
+          }
+
+          const { data } = await apiClient.get(AVAILABLE_LANGUAGES_ENDPOINT)
+          commit('setAvailableLanguages', data)
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async getStates ({ state, commit }) {
+        try {
+          if (state.availableStates) {
+            return state.availableStates
+          }
+          const response = await fetch('/states.json')
+          if (!response.ok) {
+            return {
+              'errorCode': 'E256',
+              'message': 'Network response was not ok'
+            }
+          }
+          const jsonData = await response.json()
+          commit('setAvailableStates', jsonData)
+          return jsonData
+        } catch (error) {
+          return error.response.data
+        }
+      },
       async refreshTokens () {
         try {
           const refreshToken = localStorage.getItem('refreshToken')
@@ -99,7 +176,9 @@ export default (router) => {
     },
     getters: {
       loader: state => state.loader,
-      user: (state) => state.user
+      user: (state) => state.user,
+      availableLanguages: (state) => state.availableLanguages,
+      availableStates: (state) => state.availableStates
     },
     strict: debug,
     plugins: [plugin(router)]

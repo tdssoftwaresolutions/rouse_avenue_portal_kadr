@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
+    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
     <Spinner :isVisible="loading" />
     <div class="form-container">
       <form class="mt-4">
@@ -30,6 +30,15 @@
           <div class="mb-3">
             <label for="phone">Phone Number</label>
             <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
+          </div>
+          <div class="mb-3">
+            <label for="language">Preferred Language</label>
+            <select id="language" v-model="formData.preferredLanguage" class="form-control">
+              <option value="">Select Language</option>
+              <option v-for="(item, index) in availableLanguges" :key="index" :value="item.id">
+                {{ item.language }}
+              </option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="state">State</label>
@@ -80,7 +89,7 @@
           <div class="mb-3">
             <label for="evidence">Upload Evidence</label>
             <div class="file-upload">
-              <input type="file" class="form-control-file" id="evidence" @change="onFileChange" />
+              <input type="file" class="form-control-file" id="evidence" @change="onEvidenceChange" />
               <label for="evidence" class="custom-file-upload">
                 Choose File
               </label>
@@ -124,7 +133,7 @@
             </div>
           </div>
           <button type="button" class="btn btn-secondary" @click="prevStep(3)">Previous</button>
-          <button type="button" class="btn btn-primary float-right ml" @click="submitForm()">Submit</button>
+          <button type="button" class="btn btn-primary float-right ml" @click="submitClientForm()">Submit</button>
         </div>
 
         <!-- Step 3: Opposite Party Details (Only for Client) -->
@@ -141,8 +150,8 @@
             <label for="oppositePhone">Opposite Party Phone</label>
             <input type="tel" class="form-control" id="oppositePhone" v-model="formData.oppositePhone" placeholder="Phone" />
           </div>
-          <button type="button" class="btn btn-secondary" @click="prevStep">Previous</button>
-          <button type="button" class="btn btn-success float-right ml" @click="submitForm">Submit</button>
+          <button type="button" class="btn btn-secondary" @click="prevStep(3)">Previous</button>
+          <button type="button" class="btn btn-success float-right ml" @click="submitClientForm">Submit</button>
         </div>
       </form>
     </div>
@@ -150,7 +159,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Alert from '../../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../../components/sofbox/spinner/spinner.vue'
 
@@ -173,43 +181,61 @@ export default {
         description: '',
         category: '',
         evidence: null,
+        evidenceContent: null,
         oppositeName: '',
         oppositeEmail: '',
+        preferredLanguage: '',
         oppositePhone: '',
         userType: '' // Store selected user type (mediator/client)
       },
       alert: {
         visible: false,
         message: '',
+        timeout: 5000,
         type: 'primary'
       },
-      loading: false
+      loading: false,
+      availableLanguges: {}
     }
   },
   mounted () {
     this.loadStates()
+    this.loadAvailableLanguages()
   },
   methods: {
     showAlert (message, type) {
       this.alert = {
         message,
         type,
+        timeout: 5000,
         visible: true
       }
     },
-    async loadStates () {
-      try {
-        const response = await fetch('/states.json')
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        const jsonData = await response.json()
-        this.states = jsonData
-      } catch (error) {
-        console.error('Error loading the JSON data:', error)
+    showAlertWithTimeout (message, type, timeout) {
+      this.alert = {
+        message,
+        type,
+        visible: true,
+        timeout
       }
     },
-    nextStep (currentStep) {
+    async loadStates () {
+      const response = await this.$store.dispatch('getStates')
+      if (response.errorCode) {
+        this.showAlert(response.message, 'danger')
+      } else {
+        this.states = response
+      }
+    },
+    async loadAvailableLanguages () {
+      const response = await this.$store.dispatch('getAvailableLanguages')
+      if (response.errorCode) {
+        this.showAlert(response.message, 'danger')
+      } else {
+        this.availableLanguges = response
+      }
+    },
+    async nextStep (currentStep) {
       if (currentStep === 1) {
         if (this.formData.name.trim() === '') {
           this.showAlert('Enter your full name', 'danger')
@@ -233,6 +259,10 @@ export default {
           this.showAlert('Enter valid phone number', 'danger')
           return
         }
+        if (this.formData.preferredLanguage.trim() === '') {
+          this.showAlert('Select your preferred language', 'danger')
+          return
+        }
         if (this.formData.state.trim() === '') {
           this.showAlert('Select state', 'danger')
           return
@@ -250,6 +280,43 @@ export default {
           this.showAlert('Enter valid pincode', 'danger')
           return
         }
+        this.loading = true
+        const response = await this.$store.dispatch('isEmailExist', {
+          emailAddress: this.formData.email
+        })
+        this.loading = false
+        if (response.success) {
+          this.showAlert('Email address already exist, please login instead.', 'danger')
+          return
+        }
+      } else if (currentStep === 2) {
+        if (this.formData.description.trim() === '') {
+          this.showAlert('Enter complaint description', 'danger')
+          return
+        }
+        if (this.formData.category.trim() === '') {
+          this.showAlert('Enter complaint category', 'danger')
+          return
+        }
+        if (this.formData.evidence) {
+          const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg',
+            'image/png'
+          ]
+          const maxSize = 2 * 1024 * 1024
+
+          if (!allowedTypes.includes(this.formData.evidence.type)) {
+            this.showAlert('Invalid file type. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
+            return
+          }
+          if (this.formData.evidence.size > maxSize) {
+            this.showAlert('File size exceeds 2MB.', 'danger')
+            return
+          }
+        }
       }
       if (this.step < 3 && (this.formData.userType === 'client' || this.step < 2)) {
         this.step++
@@ -262,30 +329,57 @@ export default {
         this.step-- // Go to the previous step if not on Step 0
       }
     },
-    onFileChange (event) {
-      this.formData.evidence = event.target.files[0]
+    onEvidenceChange (event) {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          this.formData.evidenceContent = reader.result
+        }
+        reader.onerror = (error) => {
+          console.error('Error reading file:', error)
+        }
+        reader.readAsDataURL(file)
+        this.formData.evidence = file
+      }
     },
-    submitForm () {
-      axios
-        .post('/api/newUserSignup', this.formData)
-        .then((response) => {
-          if (response.data.error !== null) {
-            this.$bvToast.toast(response.data.error, {
-              title: 'Error',
-              variant: 'error',
-              solid: true
-            })
-          } else {
-            console.log('Response:', response.data)
-            alert('Account created successfully!')
-            this.$router.push({ path: '/auth/sign-in' })
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('Account created successfully!')
-          this.$router.push({ path: '/auth/sign-in' })
-        })
+    async submitClientForm () {
+      if (this.formData.oppositeName.trim() === '') {
+        this.showAlert('Enter opposite party name', 'danger')
+        return
+      }
+      if (this.formData.oppositeEmail.trim() === '') {
+        this.showAlert('Enter opposite party email', 'danger')
+        return
+      }
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (!emailPattern.test(this.formData.oppositeEmail)) {
+        this.showAlert('Invalid email address', 'danger')
+        return
+      }
+      if (this.formData.oppositePhone.trim() === '') {
+        this.showAlert('Enter opposite party phone', 'danger')
+        return
+      }
+      const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
+      if (!phonePattern.test(this.formData.oppositePhone)) {
+        this.showAlert('Enter valid phone number', 'danger')
+        return
+      }
+
+      this.loading = true
+      const response = await this.$store.dispatch('newUserSignup', {
+        userDetails: this.formData
+      })
+      if (response.errorCode) {
+        this.showAlert(response.message, 'danger')
+      } else {
+        this.showAlertWithTimeout(response.message, 'success', 7000)
+        setTimeout(() => {
+          this.onClickLogin()
+        }, 1500)
+      }
+      this.loading = false
     },
     onClickLogin () {
       this.$router.push({ path: '/auth/sign-in' })

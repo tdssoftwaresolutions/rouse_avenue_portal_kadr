@@ -8,6 +8,7 @@ const clientSecret = process.env.ZOOM_CLIENT_SECRET
 const accountId = process.env.ZOOM_ACCOUNT_ID
 const errorCodes = require('../errorCodes')
 const { google } = require('googleapis')
+const { v4: uuidv4 } = require('uuid')
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
@@ -33,11 +34,7 @@ module.exports = {
       }
 
       if (user.user_type === 'ADMIN') {
-        const inactiveUsers = await prisma.user.findMany({
-          where: {
-            active: false
-          }
-        })
+        const inactiveUsers = await helper.getInactiveUsers(prisma, 1)
         const counts = await prisma.$transaction([
           prisma.cases.count(),
           prisma.user.count({
@@ -132,6 +129,10 @@ module.exports = {
       await prisma.$disconnect()
     }
   },
+  getInactiveUsers: async function (req, res) {
+    const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page)
+    res.json({ success: true, inactiveUsers })
+  },
   logout: function (req, res) {
     // Clear the refresh token cookie
     try {
@@ -151,8 +152,39 @@ module.exports = {
     // Optionally send a response indicating the user has been logged out
     return res.status(200).json({ message: 'Logged out successfully' })
   },
-  updateInactiveUsers: function (req, res) {
-    console.log(req.body.data)
+  updateInactiveUser: async function (req, res) {
+    const { isActive, caseId, userId, caseType } = req.body
+    const generatedPassword = helper.generateRandomPassword()
+    const hashPassword = await helper.hashPassword(generatedPassword)
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        active: isActive,
+        password_hash: hashPassword
+      },
+      select: {
+        name: true,
+        email: true,
+        phone_number: true
+      }
+    })
+    await prisma.cases.update({
+      where: {
+        id: caseId
+      },
+      data: {
+        case_type: caseType
+      }
+    })
+    const htmlBody = `
+              <p>Hi ${updatedUser.name}, thanks for registering on KADR.live. Your account is now active.</p>
+              <p>To login, use below credentials:</p> <br/>
+              <p>Username : ${updatedUser.email} OR ${updatedUser.phone_number}</p> <br/>
+              <p>Password : ${generatedPassword} <p>`
+    await helper.sendEmail(updatedUser.email, htmlBody)
+    res.json({ success: true, message: 'User updated successfully.' })
   },
   scheduleMeeting: async function (req, res) {
     if (req.error) {
@@ -237,6 +269,22 @@ module.exports = {
       console.error('Error retrieving access token', e)
       res.status(500).send('Authentication failed')
     }
+  },
+  isEmailExist: async function (req, res) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: req.query.email
+      }
+    })
+    if (user) {
+      res.json({ success: true })
+    } else {
+      res.json(errorCodes.NOT_FOUND)
+    }
+  },
+  getAvailableLanguages: async function (req, res) {
+    const availableLanguages = await prisma.available_languages.findMany()
+    res.json(availableLanguages)
   },
   confirmPasswordChange: async function (req, res) {
     const { emailAddress, otp, password } = req.body
@@ -419,73 +467,77 @@ module.exports = {
   },
   newUserSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, description, category, evidence, oppositeName, oppositeEmail, oppositePhone, userType } = req.body
-      console.log(city + ' ' + state + ' ' + pincode + ' ' + description + ' ' + category + ' ' + evidence)
-      const generatedPassword = helper.generateRandomPassword()
-      const htmlBody = `
-                <p>Hi ${name}, thanks for registering on KADR.live.</p>
-                <p>To login use below credentials:</p> <br/>
-                <p>Username : ${email} OR ${phone}</p> <br/>
-                <p>Password : ${generatedPassword} <p>
-              `
-      await helper.sendEmail(email, htmlBody)
-      const hashPassword = await helper.hashPassword(generatedPassword)
+      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, oppositeName, oppositeEmail, oppositePhone, userType } = req.body.userDetails
+      const uploadFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
       const user = await prisma.user.create({
         data: {
           name,
           email,
           phone_number: phone,
-          password_hash: hashPassword,
+          password_hash: '',
           user_type: userType.toUpperCase(),
-          active: false
+          active: false,
+          city,
+          state,
+          preferred_language: preferredLanguage,
+          pincode,
+          is_self_signed_up: true
         }
       })
       if (userType.toUpperCase() === 'CLIENT') {
-        const oppositePartyUser = await prisma.user.create({
-          data: {
+        const oppositePartyUser = await prisma.user.upsert({
+          where: {
+            email: oppositeEmail
+          },
+          update: {
+
+          },
+          create: {
             name: oppositeName,
             email: oppositeEmail,
             phone_number: oppositePhone,
             password_hash: '',
+            is_self_signed_up: false,
             user_type: userType.toUpperCase(),
             active: false
           }
         })
+
         const tracker = await prisma.caseIdTracker.findFirst()
         let newCaseId = 1
         if (tracker) {
-          newCaseId = tracker.lastCaseId + 1 // Increment the last caseId
+          newCaseId = tracker.lastCaseId + 1
         }
 
-        const newCase = await prisma.cases.create({
+        await prisma.cases.create({
           data: {
-            case_name: 'Test Case',
             first_party: user.id,
             second_party: oppositePartyUser.id,
+            evidence_document_url: uploadFileResponse.stored_url,
+            description,
+            category,
             caseId: `KDR-${newCaseId}`
           }
         })
-        console.log(newCase)
+
         await prisma.caseIdTracker.upsert({
-          where: { id: 1 }, // Assuming there's only one row in the tracker
+          where: { id: 1 },
           update: { lastCaseId: newCaseId },
           create: { lastCaseId: newCaseId }
         })
       }
+      const htmlBody = `<p>Hi ${name}, thanks for registering on KADR.live. Your account is under review, and you'll be notified once approved by the KADR team.</p>`
+      await helper.sendEmail(email, htmlBody)
+
       res.status(201).json({
-        message: 'User created successfully',
-        user
+        message: 'User created successfully! Your account is under review, and you\'ll be notified once approved by the KADR team.'
       })
     } catch (error) {
       console.log(error)
       if (error.code === 'P2002' && error.meta.target.includes('email')) {
-        res.status(201).json({
-          error: 'Email already exists. Please log in instead.'
-        })
+        res.status(201).json(errorCodes.YOU_USER_ALREADY_EXISTS)
       } else {
-        res.status(500).json({
-          error: 'Something went wrong. Please try again later.'
-        })
+        res.status(500).json(errorCodes.INVALID_REQUEST)
       }
     }
   },

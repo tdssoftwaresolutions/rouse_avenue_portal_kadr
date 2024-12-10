@@ -1,0 +1,36 @@
+{
+    "languages": {
+      "hi": "Hindi",
+      "bn": "Bengali",
+      "te": "Telugu",
+      "mr": "Marathi",
+      "ta": "Tamil",
+      "ur": "Urdu",
+      "gu": "Gujarati",
+      "ml": "Malayalam",
+      "kn": "Kannada",
+      "or": "Odia",
+      "pa": "Punjabi",
+      "as": "Assamese",
+      "mai": "Maithili",
+      "sa": "Sanskrit",
+      "dogri": "Dogri",
+      "sat": "Santali",
+      "ks": "Kashmiri",
+      "ne": "Nepali",
+      "sd": "Sindhi",
+      "kok": "Konkani",
+      "bo": "Bodo",
+      "si": "Sikkimese",
+      "raj": "Rajasthani",
+      "man": "Manipuri",
+      "kh": "Khasi",
+      "mi": "Mizo",
+      "mar": "Marwari",
+      "tu": "Tulu",
+      "lad": "Ladakhi",
+      "bng": "Bengali",
+      "en": "English"
+    }
+  }
+  

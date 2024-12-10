@@ -3,7 +3,11 @@ const path = require('path')
 const app = express()
 const port = process.env.PORT || 3000
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 require('dotenv').config()
+
+app.use(bodyParser.json({ limit: '10mb' }))
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

@@ -46,6 +46,10 @@ const ERROR_CODES = {
     errorCode: 'E301',
     message: 'A user with this email already exists.'
   },
+  YOU_USER_ALREADY_EXISTS: {
+    errorCode: 'E307',
+    message: 'A user with your email already exists, login instead.'
+  },
   RESOURCE_CONFLICT: {
     errorCode: 'E302',
     message: 'The resource you are trying to modify is in conflict with existing data.'

@@ -30,6 +30,10 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    timeout: {
+      type: Number,
+      default: 5000
     }
   },
   computed: {
@@ -63,7 +67,7 @@ export default {
 
       this.autoHideTimeout = setTimeout(() => {
         this.closeAlert()
-      }, 5000)
+      }, this.timeout)
     }
   },
   beforeDestroy () {

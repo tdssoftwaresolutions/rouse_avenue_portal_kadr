@@ -6,6 +6,7 @@ const SIGN_SECRET_KEY = process.env.SIGN_SECRET_KEY
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const errorCodes = require('./errorCodes')
+const axios = require('axios')
 
 class Helper {
   static generateRandomPassword (length = 12) {
@@ -18,6 +19,101 @@ class Helper {
     }
 
     return password
+  }
+
+  static async uploadFile (fileContent, fileName) {
+    try {
+      const response = await axios.post(`${process.env.KADR_WEBSITE_URL}/services/upload.php`, {
+        base64string: fileContent,
+        filename: fileName
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      return response.data
+    } catch (err) {
+      console.error('Upload failed:', err)
+      return {
+        'status': 'failed',
+        'message': '',
+        'stored_url': ''
+      }
+    }
+  };
+
+  static async getInactiveUsers (prisma, page) {
+    const perPage = 10
+
+    // Calculate the number of items to skip
+    const skip = (page - 1) * perPage
+
+    let inactiveUsers = await prisma.user.findMany({
+      where: {
+        AND: [
+          { active: false },
+          { is_self_signed_up: true },
+          { user_type: 'CLIENT' }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      skip, // Skip items for pagination
+      take: perPage, // Limit the number of items per page
+      select: {
+        'id': true,
+        'name': true,
+        'email': true,
+        'phone_number': true,
+        'city': true,
+        'created_at': true,
+        'state': true,
+        'pincode': true,
+        'preferred_language': true,
+        'cases_cases_first_partyTouser': {
+          select: {
+            'id': true,
+            'caseId': true,
+            'evidence_document_url': true,
+            'description': true,
+            'category': true,
+            'case_type': true
+          }
+        }
+      }
+    })
+    inactiveUsers = inactiveUsers.map(user => {
+      const caseData = user.cases_cases_first_partyTouser[0] || {}
+      const caseId = caseData.id
+
+      const flatUser = {
+        ...caseData,
+        ...user,
+        caseId
+      }
+      delete flatUser.cases_cases_first_partyTouser
+      return flatUser
+    })
+
+    // Count total inactive users for pagination
+    const totalInactiveUsers = await prisma.user.count({
+      where: {
+        AND: [
+          { active: false },
+          { is_self_signed_up: true },
+          { user_type: 'CLIENT' }
+        ]
+      }
+    })
+
+    // Send the response back to the client
+    return {
+      users: inactiveUsers,
+      total: totalInactiveUsers,
+      page,
+      perPage
+    }
   }
 
   static async hashPassword (password) {
