@@ -1,6 +1,7 @@
 {
     "languages": {
       "hi": "Hindi",
+      "en": "English",
       "bn": "Bengali",
       "te": "Telugu",
       "mr": "Marathi",
@@ -29,8 +30,7 @@
       "mar": "Marwari",
       "tu": "Tulu",
       "lad": "Ladakhi",
-      "bng": "Bengali",
-      "en": "English"
+      "bng": "Bengali"
     }
   }
   

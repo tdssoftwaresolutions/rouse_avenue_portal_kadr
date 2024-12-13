@@ -35,27 +35,6 @@
           </iq-card>
           <iq-card>
             <template v-slot:headerTitle>
-              <h4 class="card-title">My Cases</h4>
-            </template>
-            <template v-slot:body>
-              <ul class="suggestions-lists m-0 p-0">
-                <li v-for="(item,index) in content.myCases" :key="index" class="d-flex mb-4 align-items-center" @click="onClickCase">
-                  <div class="user-img img-fluid">
-                    <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
-                  </div>
-                  <div class="media-support-info ms-3">
-                    <h6>{{ item.caseId }}</h6>
-                    <p class="mb-0">{{ item.case_name }}</p>
-                  </div>
-                  <div class="add-suggestion"><b-link href="javascript:void();"><i class="ri-user-add-line"></i></b-link></div>
-                </li>
-              </ul>
-            </template>
-          </iq-card>
-        </b-col>
-        <b-col lg="4" md="12">
-          <iq-card>
-            <template v-slot:headerTitle>
               <h4 class="card-title">Today's Schedule</h4>
             </template>
             <template v-slot:body>
@@ -73,24 +52,29 @@
               </ul>
             </template>
           </iq-card>
+        </b-col>
+        <b-col lg="4" md="12">
           <iq-card>
             <template v-slot:headerTitle>
               <h4 class="card-title">My Notes</h4>
             </template>
             <template v-slot:headerAction>
-              <a href="#" class="btn btn-primary" @click="onClickNewAdd">
+              <a href="#" class="btn btn-primary" @click="onClickNewAdd('')">
                   Add New
               </a>
             </template>
             <template v-slot:body>
-                <div style="max-height:25rem;overflow-y:auto;overflow-x:hidden">
-                  <div class="textarea-wrapper" v-for="(note,index) in notes" :key="note.id">
-                    <textarea class="sticky-note" v-mode="note.content"></textarea>
-                    <button class="delete-btn" aria-label="Delete" @click="onClickDelete(index)">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                  </div>
+              <div style="height: 400px;overflow-x: scroll; ">
+                <div class="textarea-wrapper" v-for="(note, index) in notes" :key="note.id">
+                  <textarea class="sticky-note" v-model="note.content" @input="onContentChange(index)" :data-index="index"></textarea>
+                  <button v-if="note.isModified" class="save-btn" aria-label="Save" @click="onClickSave(index)">
+                    <i class="fas fa-save"></i>
+                  </button>
+                  <button class="delete-btn" aria-label="Delete" @click="onClickDelete(index)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                 </div>
+              </div>
             </template>
           </iq-card>
         </b-col>
@@ -121,6 +105,29 @@
           </iq-card>
         </b-col>
       </b-row>
+      <b-row>
+        <b-col lg="12" md="12">
+          <iq-card>
+            <template v-slot:headerTitle>
+              <h4 class="card-title">My Cases</h4>
+            </template>
+            <template v-slot:body>
+              <ul class="suggestions-lists m-0 p-0">
+                <li v-for="(item,index) in content.myCases" :key="index" class="d-flex mb-4 align-items-center" @click="onClickCase">
+                  <div class="user-img img-fluid">
+                    <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
+                  </div>
+                  <div class="media-support-info ms-3">
+                    <h6>{{ item.caseId }}</h6>
+                    <p class="mb-0">{{ item.case_name }}</p>
+                  </div>
+                  <div class="add-suggestion"><b-link href="javascript:void();"><i class="ri-user-add-line"></i></b-link></div>
+                </li>
+              </ul>
+            </template>
+          </iq-card>
+        </b-col>
+      </b-row>
     </b-container>
 </template>
 <script>
@@ -145,6 +152,9 @@ export default {
       this.note = this.$cookies.get('notes') || ''
       this.isModalVisible = true
     },
+    onContentChange (index) {
+      this.notes[index].isModified = true
+    },
     saveNote () {
       if (this.selectedUser) {
         this.$cookies.set('notes', this.note)
@@ -155,17 +165,35 @@ export default {
         })
       }
     },
-    onClickNewAdd () {
+    onClickNewAdd (content) {
       this.notes.push({
         id: this.newNoteId++,
-        content: ''
+        content
       })
+    },
+    onClickSave (index) {
+      alert('saved' + index)
     }
   },
   mounted () {
-    this.onClickNewAdd()
-    console.log(this.content)
-    console.log(this.content.myCases)
+    for (let i = 0; i < this.content.notes.length; i++) {
+      this.onClickNewAdd(this.content.notes[i].note_text)
+    }
+    const ref = this
+    document.addEventListener('keydown', function (event) {
+      const activeElement = document.activeElement
+      if (activeElement.tagName === 'TEXTAREA') {
+        if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+          event.preventDefault()
+          const noteIndex = activeElement.dataset.index
+          if (noteIndex !== undefined) {
+            ref.onClickSave(Number(noteIndex))
+          } else {
+            console.error('Could not find associated note for saving.')
+          }
+        }
+      }
+    })
   },
   data () {
     return {
@@ -277,44 +305,51 @@ export default {
 </script>
 <style scoped>
   .textarea-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-  .delete-btn {
-    position: absolute;
-    right: 5px;
-    background: transparent;
-    border: none;
-    font-size: 24px; /* Icon size */
-    color: #f00; /* Red color for the trash can */
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%; /* Round button for a circular appearance */
-    transition: background 0.3s ease;
-  }
-  .delete-btn i {
-    font-size: 18px; /* Adjusts the size of the trash icon */
-  }
-  textarea {
-    font:17px 'Gloria Hallelujah', cursive;
-    line-height:1.5;
-    border:0;
-    border-radius:3px;
-    background: linear-gradient(#F9EFAF, #F7E98D);
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-    overflow-x: hidden;
-    overflow-y: auto;
-    transition:box-shadow 0.5s ease;
-    max-width:520px;
-    max-height:250px;
-    width: 100%;
-    height: 150px;
-    padding-right: 2rem;
-    padding-left: 0.5rem;
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-  }
-  textarea:hover { box-shadow:0 5px 8px rgba(0,0,0,0.15); }
-  textarea:focus { box-shadow:0 5px 12px rgba(0,0,0,0.2); outline:none; }
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.delete-btn, .save-btn {
+  position: absolute;
+  right: 5px;
+  background: transparent;
+  border: none;
+  font-size: 24px; /* Icon size */
+  color: #f00; /* Red color for delete button */
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%; /* Round button for a circular appearance */
+  transition: background 0.3s ease;
+}
+
+.delete-btn {
+  top: 5px; /* Position delete button at the top right */
+}
+
+.save-btn {
+  top: 40px; /* Position save button below the delete button */
+  color: #4CAF50; /* Green color for the save button */
+}
+
+textarea {
+  font: 17px 'Gloria Hallelujah', cursive;
+  line-height: 1.5;
+  border: 0;
+  border-radius: 3px;
+  background: linear-gradient(#F9EFAF, #F7E98D);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: box-shadow 0.5s ease;
+  max-width: 520px;
+  max-height: 250px;
+  width: 100%;
+  height: 150px;
+  padding-right: 2rem;
+  padding-left: 0.5rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
 </style>

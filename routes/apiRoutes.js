@@ -5,6 +5,7 @@ const authMiddleware = require('../authMiddleware')
 
 // V1 APIs
 router.post('/newUserSignup', apiController.newUserSignup)
+router.post('/newMediatorSignup', apiController.newMediatorSignup)
 router.post('/login', apiController.login)
 router.post('/refresh-token', apiController.refreshToken)
 router.get('/getUserData', authMiddleware, apiController.getUserData)

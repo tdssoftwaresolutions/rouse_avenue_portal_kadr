@@ -1,6 +1,5 @@
 <template>
   <b-container fluid>
-    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
     <b-row>
       <b-col lg="3" md="12">
         <iq-card class="iq-profile-card text-center">
@@ -72,14 +71,22 @@
     </b-row>
     <b-row>
       <b-col sm="12">
-        <inactive-users :users="content.inactive_users"></inactive-users>
+        <b-card no-body>
+          <b-tabs card>
+            <b-tab :title="'New Clients ('+content.inactive_users.total+')'" active><p>
+              <inactive-users :users="content.inactive_users" type="CLIENT" :columns="clientColumns"></inactive-users>
+            </p></b-tab>
+            <b-tab :title="'New Dispute Resolution Experts ('+content.inactive_mediators.total+')'"><p>
+              <inactive-users :users="content.inactive_mediators" type="MEDIATOR" :columns="mediatorColumns"></inactive-users>
+            </p></b-tab>
+          </b-tabs>
+        </b-card>
       </b-col>
     </b-row>
   </b-container>
 </template>
 <script>
 import InactiveUsers from '../Tables/InactiveUsers.vue'
-import Alert from '../../components/sofbox/alert/Alert.vue'
 
 export default {
   name: 'DashboardAdmin',
@@ -88,30 +95,28 @@ export default {
     content: null
   },
   components: {
-    InactiveUsers, Alert
+    InactiveUsers
   },
   data () {
     return {
-      alert: {
-        visible: false,
-        message: '',
-        type: 'danger'
-      }
-    }
-  },
-  methods: {
-    isSessionAvailable () {
-      if (this.$cookies.get('accessToken')) {
-        return true
-      }
-      return false
-    },
-    showAlert (message, type) {
-      this.alert = {
-        message,
-        type,
-        visible: true
-      }
+      clientColumns: [
+        { label: 'Name', key: 'name', class: 'text-left', sortable: true },
+        { label: 'Email', key: 'email', class: 'text-left' },
+        { label: 'Case Category', key: 'category', class: 'text-left', sortable: true },
+        { label: 'Created At', key: 'created_at', class: 'text-left', sortable: true },
+        { label: 'Case Type', key: 'case_type', class: 'text-center', sortable: true },
+        { label: 'Is Active', key: 'active', class: 'text-center' },
+        { label: 'Action', key: 'action', class: 'text-center' }
+      ],
+      mediatorColumns: [
+        { label: 'Name', key: 'name', class: 'text-left', sortable: true },
+        { label: 'Email', key: 'email', class: 'text-left' },
+        { label: 'Phone Number', key: 'phone_number', class: 'text-left' },
+        { label: 'State', key: 'state', class: 'text-left', sortable: true },
+        { label: 'Preferred Area of Practice', key: 'preferred_area_of_practice', class: 'text-center', sortable: true },
+        { label: 'Is Active', key: 'active', class: 'text-center' },
+        { label: 'Action', key: 'action', class: 'text-center' }
+      ]
     }
   }
 }

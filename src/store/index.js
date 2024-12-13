@@ -5,14 +5,19 @@ import VueCookies from 'vue-cookies'
 Vue.use(Vuex)
 
 const LOGIN_ENDPOINT = '/login'
-const REGISTER_ENDPOINT = '/register'
 const RESET_PASSWORD_ENDPOINT = '/resetPassword'
 const CONFIRM_PASSWORD_CHANGE_ENDPOINT = '/confirmPasswordChange'
 const NEW_USER_SIGNUP_ENDPOINT = '/newUserSignup'
+const NEW_MEDIATOR_SIGNUP_ENDPOINT = '/newMediatorSignup'
 const IS_EMAIL_EXIST_ENDPOINT = '/isEmailExist'
+const LOGOUT_ENDPOINT = '/logout'
+const GET_USER_DATA_ENDPOINT = '/getUserData'
+const VERIFY_SIGNATURE_ENDPOINT = '/verify-signature'
 const AVAILABLE_LANGUAGES_ENDPOINT = '/getAvailableLanguages'
 const GET_INACTIVE_USERS_ENDPOINT = '/getInactiveUsers'
 const UPDATE_INACTIVE_USER_ENDPOINT = '/updateInactiveUser'
+const REFRESH_TOKEN_ENDPOINT = '/refresh-token'
+
 const debug = process.env.NODE_ENV !== 'production'
 
 const apiClient = axios.create({
@@ -26,7 +31,7 @@ const plugin = (router) => (store) => {
 }
 
 apiClient.interceptors.request.use((config) => {
-  const excludedEndpoints = [LOGIN_ENDPOINT, REGISTER_ENDPOINT, RESET_PASSWORD_ENDPOINT]
+  const excludedEndpoints = [LOGIN_ENDPOINT, RESET_PASSWORD_ENDPOINT, CONFIRM_PASSWORD_CHANGE_ENDPOINT, NEW_USER_SIGNUP_ENDPOINT, NEW_MEDIATOR_SIGNUP_ENDPOINT, IS_EMAIL_EXIST_ENDPOINT]
   const isExcluded = excludedEndpoints.some((endpoint) =>
     config.url.includes(endpoint)
   )
@@ -42,7 +47,20 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    return Promise.reject(error)
+    if (error.response.data.errorCode === 'E102') {
+      try {
+        const { data } = await apiClient.post(REFRESH_TOKEN_ENDPOINT)
+        VueCookies.set('accessToken', data.accessToken, '1d', '/', '', true, 'None')
+        const originalRequest = error.config
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`
+        return apiClient(originalRequest) // Retry the request
+      } catch (error) {
+        console.error('Refreshing tokens failed:', error)
+        throw error
+      }
+    } else {
+      return Promise.reject(error)
+    }
   }
 )
 
@@ -52,7 +70,8 @@ export default (router) => {
       loader: false,
       user: null,
       availableLanguages: null,
-      availableStates: null
+      availableStates: null,
+      allLanguages: null
     },
     mutations: {
       commitLoader (state, data) {
@@ -66,6 +85,9 @@ export default (router) => {
       },
       setAvailableStates (state, data) {
         state.availableStates = data
+      },
+      setAllLanguages (state, data) {
+        state.allLanguages = data
       }
     },
     actions: {
@@ -90,6 +112,14 @@ export default (router) => {
           return error.response.data
         }
       },
+      async logout ({ commit }) {
+        try {
+          const { data } = await apiClient.get(LOGOUT_ENDPOINT)
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
       async confirmPasswordChange ({ commit }, { emailAddress, otp, password }) {
         try {
           const { data } = await apiClient.post(CONFIRM_PASSWORD_CHANGE_ENDPOINT, { emailAddress, otp, password })
@@ -98,9 +128,33 @@ export default (router) => {
           return error.response.data
         }
       },
+      async verifySignature ({ commit }, { signature, userData }) {
+        try {
+          const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
       async newUserSignup ({ commit }, { userDetails }) {
         try {
           const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { userDetails })
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async newMediatorSignup ({ commit }, { userDetails }) {
+        try {
+          const { data } = await apiClient.post(NEW_MEDIATOR_SIGNUP_ENDPOINT, { userDetails })
+          return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async getUserData ({ commit }) {
+        try {
+          const { data } = await apiClient.get(GET_USER_DATA_ENDPOINT)
           return data
         } catch (error) {
           return error.response.data
@@ -122,10 +176,29 @@ export default (router) => {
           return error.response.data
         }
       },
-      async getInactiveUsers ({ commit }, { page }) {
+      async getInactiveUsers ({ commit }, { page, type }) {
         try {
-          const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}`)
+          const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}`)
           return data
+        } catch (error) {
+          return error.response.data
+        }
+      },
+      async getAllLanguages ({ state, commit }) {
+        try {
+          if (state.allLanguages) {
+            return state.allLanguages
+          }
+          const response = await fetch('/languages.json')
+          if (!response.ok) {
+            return {
+              'errorCode': 'E256',
+              'message': 'Network response was not ok'
+            }
+          }
+          const jsonData = await response.json()
+          commit('setAllLanguages', jsonData)
+          return jsonData
         } catch (error) {
           return error.response.data
         }
@@ -161,24 +234,14 @@ export default (router) => {
         } catch (error) {
           return error.response.data
         }
-      },
-      async refreshTokens () {
-        try {
-          const refreshToken = localStorage.getItem('refreshToken')
-          const { data } = await apiClient.post('/refresh-token', { refreshToken })
-          localStorage.setItem('accessToken', data.accessToken)
-          return data
-        } catch (error) {
-          console.error('Refreshing tokens failed:', error)
-          throw error
-        }
       }
     },
     getters: {
       loader: state => state.loader,
       user: (state) => state.user,
       availableLanguages: (state) => state.availableLanguages,
-      availableStates: (state) => state.availableStates
+      availableStates: (state) => state.availableStates,
+      allLanguages: (state) => state.allLanguages
     },
     strict: debug,
     plugins: [plugin(router)]

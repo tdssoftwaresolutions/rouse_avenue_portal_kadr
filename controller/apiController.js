@@ -17,10 +17,6 @@ const oauth2Client = new google.auth.OAuth2(
 
 module.exports = {
   getDashboardContent: async function (req, res) {
-    if (req.error) {
-      res.json(req.error)
-      return
-    }
     try {
       const userDetails = req.user
       let dashboardContent = {}
@@ -34,7 +30,8 @@ module.exports = {
       }
 
       if (user.user_type === 'ADMIN') {
-        const inactiveUsers = await helper.getInactiveUsers(prisma, 1)
+        const inactiveUsers = await helper.getInactiveUsers(prisma, 1, 'CLIENT', 'cases_cases_first_partyTouser')
+        const inactiveMediators = await helper.getInactiveUsers(prisma, 1, 'MEDIATOR', 'cases_cases_mediatorTouser')
         const counts = await prisma.$transaction([
           prisma.cases.count(),
           prisma.user.count({
@@ -52,43 +49,38 @@ module.exports = {
         const clientUsers = counts[1]
         const mediatorUsers = counts[2]
         dashboardContent.inactive_users = inactiveUsers
+        dashboardContent.inactive_mediators = inactiveMediators
         dashboardContent.count = {
           cases: totalCases,
           clients: clientUsers,
           mediators: mediatorUsers
         }
-      }
-
-      if (user.user_type === 'MEDIATOR') {
-        const cases = await prisma.cases.findMany({
-          where: {
-            mediator: userDetails.id
-          },
-          select: {
-            id: true
-          }
-        })
-        if (cases.length === 0) {
-          return res.json(errorCodes.CASES_NOT_FOUND)
-        }
-        const casesWithEvents = await prisma.cases.findMany({
-          where: {
-            mediator: userDetails.id
-          },
-          include: {
-            events: {
-              where: {
-                case_id: {
-                  in: cases.map(c => c.id)
-                }
-              }
+      } else if (user.user_type === 'MEDIATOR') {
+        const [notes, casesWithEvents] = await Promise.all([
+          prisma.notes.findMany({
+            where: {
+              user_id: userDetails.id
+            },
+            select: {
+              note_text: true
+            },
+            orderBy: {
+              created: 'desc'
             }
-          }
-        })
+          }),
+          prisma.cases.findMany({
+            where: {
+              mediator: userDetails.id
+            },
+            select: {
+              id: true,
+              events: {}
+            }
+          })
+        ])
         dashboardContent.myCases = casesWithEvents
-      }
-
-      if (user.user_type === 'CLIENT') {
+        dashboardContent.notes = notes
+      } else if (user.user_type === 'CLIENT') {
         const cases = await prisma.cases.findMany({
           where: {
             OR: [
@@ -118,19 +110,21 @@ module.exports = {
           }
         })
         dashboardContent.myCases = casesWithEvents
-
         dashboardContent.cases = cases
       }
 
       res.json({ success: true, dashboardContent })
     } catch (error) {
+      res.json(errorCodes.INVALID_REQUEST)
       console.error('Error fetching user:', error)
     } finally {
       await prisma.$disconnect()
     }
   },
   getInactiveUsers: async function (req, res) {
-    const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page)
+    const type = req.query.type
+    const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
+    const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page, type, relationField)
     res.json({ success: true, inactiveUsers })
   },
   logout: function (req, res) {
@@ -138,15 +132,14 @@ module.exports = {
     try {
       res.clearCookie('refresh_token', {
         httpOnly: true, // Make sure it's HTTP-only
-        secure: process.env.NODE_ENV === 'production', // Secure cookie in production
+        secure: true, // Secure cookie in production
         sameSite: 'None', // For cross-origin cookies (if needed)
         path: '/' // Ensure to clear the cookie from the same path
       })
     } catch (e) {
       console.log('Cookie couldn\'t be cleared, trying with Set-Cookie header for serverless')
       // Set-Cookie header to expire the refresh_token cookie
-      const expiredCookie = `refresh_token=; Max-Age=0; Path=/; Secure=${process.env.NODE_ENV === 'production' ? 'true' : 'false'}; SameSite=None`
-      res.setHeader('Set-Cookie', expiredCookie)
+      res.setHeader('Set-Cookie', 'refresh_token=; Max-Age=0; Path=/; Secure=true; SameSite=None')
     }
 
     // Optionally send a response indicating the user has been logged out
@@ -170,27 +163,25 @@ module.exports = {
         phone_number: true
       }
     })
-    await prisma.cases.update({
-      where: {
-        id: caseId
-      },
-      data: {
-        case_type: caseType
-      }
-    })
+    if (caseId) {
+      await prisma.cases.update({
+        where: {
+          id: caseId
+        },
+        data: {
+          case_type: caseType
+        }
+      })
+    }
     const htmlBody = `
               <p>Hi ${updatedUser.name}, thanks for registering on KADR.live. Your account is now active.</p>
               <p>To login, use below credentials:</p> <br/>
-              <p>Username : ${updatedUser.email} OR ${updatedUser.phone_number}</p> <br/>
+              <p>Username : ${updatedUser.email}</p> <br/>
               <p>Password : ${generatedPassword} <p>`
     await helper.sendEmail(updatedUser.email, htmlBody)
     res.json({ success: true, message: 'User updated successfully.' })
   },
   scheduleMeeting: async function (req, res) {
-    if (req.error) {
-      res.json(req.error)
-      return
-    }
     try {
       const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`
       const response = await axios.post(
@@ -298,7 +289,7 @@ module.exports = {
       }
     })
     if (otpReset) {
-      if (otpReset.otp !== otp) {
+      if (Number(otpReset.otp) !== Number(otp)) {
         res.status(401).json(errorCodes.INVALID_OTP)
         return
       }
@@ -364,10 +355,6 @@ module.exports = {
     res.json({ success: true })
   },
   newCalendarEvent: async function (req, res) {
-    if (req.error) {
-      res.json(req.error)
-      return
-    }
     try {
       const { id, title, description, start, end, type, caseId } = req.body
       const user = await prisma.user.findUnique({
@@ -426,10 +413,6 @@ module.exports = {
     }
   },
   authenticateWithGoogle: async function (req, res) {
-    if (req.error) {
-      res.json(req.error)
-      return
-    }
     const oauth2Client = new google.auth.OAuth2(
       process.env.CLIENT_ID,
       process.env.CLIENT_SECRET,
@@ -467,65 +450,112 @@ module.exports = {
   },
   newUserSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, oppositeName, oppositeEmail, oppositePhone, userType } = req.body.userDetails
-      const uploadFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
+      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, oppositeName, oppositeEmail, oppositePhone } = req.body.userDetails
+      const uploadedFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
       const user = await prisma.user.create({
         data: {
           name,
           email,
           phone_number: phone,
           password_hash: '',
-          user_type: userType.toUpperCase(),
+          user_type: 'CLIENT',
           active: false,
           city,
           state,
-          preferred_language: preferredLanguage,
+          preferred_languages: JSON.stringify([preferredLanguage]),
           pincode,
           is_self_signed_up: true
         }
       })
-      if (userType.toUpperCase() === 'CLIENT') {
-        const oppositePartyUser = await prisma.user.upsert({
-          where: {
-            email: oppositeEmail
-          },
-          update: {
+      const oppositePartyUser = await prisma.user.upsert({
+        where: {
+          email: oppositeEmail
+        },
+        update: {
 
-          },
-          create: {
-            name: oppositeName,
-            email: oppositeEmail,
-            phone_number: oppositePhone,
-            password_hash: '',
-            is_self_signed_up: false,
-            user_type: userType.toUpperCase(),
-            active: false
-          }
-        })
-
-        const tracker = await prisma.caseIdTracker.findFirst()
-        let newCaseId = 1
-        if (tracker) {
-          newCaseId = tracker.lastCaseId + 1
+        },
+        create: {
+          name: oppositeName,
+          email: oppositeEmail,
+          phone_number: oppositePhone,
+          password_hash: '',
+          is_self_signed_up: false,
+          user_type: 'CLIENT',
+          active: false
         }
+      })
 
-        await prisma.cases.create({
-          data: {
-            first_party: user.id,
-            second_party: oppositePartyUser.id,
-            evidence_document_url: uploadFileResponse.stored_url,
-            description,
-            category,
-            caseId: `KDR-${newCaseId}`
-          }
-        })
-
-        await prisma.caseIdTracker.upsert({
-          where: { id: 1 },
-          update: { lastCaseId: newCaseId },
-          create: { lastCaseId: newCaseId }
-        })
+      const tracker = await prisma.caseIdTracker.findFirst()
+      let newCaseId = 1
+      if (tracker) {
+        newCaseId = tracker.lastCaseId + 1
       }
+
+      await prisma.cases.create({
+        data: {
+          first_party: user.id,
+          second_party: oppositePartyUser.id,
+          evidence_document_url: uploadedFileResponse.stored_url,
+          description,
+          category,
+          caseId: `KDR-${newCaseId}`
+        }
+      })
+
+      await prisma.caseIdTracker.upsert({
+        where: { id: 1 },
+        update: { lastCaseId: newCaseId },
+        create: { lastCaseId: newCaseId }
+      })
+
+      const htmlBody = `<p>Hi ${name}, thanks for registering on KADR.live. Your account is under review, and you'll be notified once approved by the KADR team.</p>`
+      await helper.sendEmail(email, htmlBody)
+
+      res.status(201).json({
+        message: 'User created successfully! Your account is under review, and you\'ll be notified once approved by the KADR team.'
+      })
+    } catch (error) {
+      console.log(error)
+      if (error.code === 'P2002' && error.meta.target.includes('email')) {
+        res.status(201).json(errorCodes.YOU_USER_ALREADY_EXISTS)
+      } else {
+        res.status(500).json(errorCodes.INVALID_REQUEST)
+      }
+    }
+  },
+  newMediatorSignup: async function (req, res) {
+    try {
+      const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, mediatorCourseYear, mcpcCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
+
+      let uploadedFileResponse = null
+      if (mcpcCertificateContent) { uploadedFileResponse = await helper.uploadFile(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
+
+      await prisma.user.create({
+        data: {
+          name,
+          email,
+          phone_number: phone,
+          password_hash: '',
+          user_type: 'MEDIATOR',
+          active: false,
+          city,
+          state,
+          preferred_languages: JSON.stringify(preferredLanguages),
+          pincode,
+          is_self_signed_up: true,
+          llb_college: llbCollege,
+          llb_university: llbUniversity,
+          llb_year: llbYear,
+          mediator_course_year: mediatorCourseYear,
+          mcpc_certificate_url: uploadedFileResponse ? uploadedFileResponse.stored_url : '',
+          preferred_area_of_practice: preferredAreaOfPractice,
+          selected_hearing_types: JSON.stringify(selectedHearingTypes),
+          bar_enrollment_no: barEnrollmentNo
+        }
+      })
+
+      await helper.addLanguagesToDatabase(preferredLanguages, prisma)
+
       const htmlBody = `<p>Hi ${name}, thanks for registering on KADR.live. Your account is under review, and you'll be notified once approved by the KADR team.</p>`
       await helper.sendEmail(email, htmlBody)
 
@@ -545,10 +575,7 @@ module.exports = {
     const { username, password } = req.body
     const user = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email: username },
-          { phone_number: username }
-        ]
+        email: username
       }
     })
     if (!user) {
@@ -570,22 +597,18 @@ module.exports = {
     try {
       res.cookie('refresh_token', refreshToken, {
         httpOnly: true, // Cookie is inaccessible to JavaScript on the client-side
-        secure: process.env.NODE_ENV === 'production', // Ensure the cookie is secure in production
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        secure: true, // Ensure the cookie is secure in production
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         sameSite: 'None', // Allow cross-origin cookies (if necessary)
         path: '/'
       })
     } catch (e) {
       console.log('Cookied couldnt set, trying with setHeader')
-      res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=2592000000; Path=/; Secure=${process.env.NODE_ENV === 'production'}`)
+      res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=604800000; Path=/; Secure=true`)
     }
     res.status(201).json({ accessToken })
   },
   getUserData: async function (req, res) {
-    if (req.error) {
-      res.json(req.error)
-      return
-    }
     const userData = {
       'id': req.user.id,
       'type': req.user.type,
@@ -603,21 +626,19 @@ module.exports = {
     if (helper.verifySignature(userData, signature)) {
       res.json({ valid: true })
     } else {
-      res.json({ valid: false })
+      res.status(401).json(errorCodes.UNAUTHORIZED)
     }
   },
   refreshToken: function (req, res) {
     const refreshToken = req.cookies.refresh_token
-
     if (!refreshToken) {
-      return res.status(401).json({ message: 'No refresh token' })
+      return res.status(401).json(errorCodes.NO_REFRESH_TOKEN)
     }
 
     jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, user) => {
       if (err) {
-        return res.status(403).json({ message: 'Invalid refresh token' })
+        return res.status(403).json(errorCodes.REFRESH_TOKEN_EXPIRED)
       }
-
       const newAccessToken = helper.generateAccessToken(user)
 
       res.json({ accessToken: newAccessToken })

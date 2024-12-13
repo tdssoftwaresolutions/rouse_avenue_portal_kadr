@@ -80,7 +80,7 @@ export default {
 <style>
 .alert {
   position: fixed; /* Fixes the alert box to the screen */
-  top: 2rem; /* Aligns it to the top of the viewport */
+  top: 5rem; /* Aligns it to the top of the viewport */
   left: 50%; /* Positions it horizontally at the center */
   transform: translateX(-50%); /* Adjusts for the width of the alert to truly center it */
   z-index: 9999; /* Ensures the alert is above other content */

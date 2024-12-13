@@ -9,6 +9,7 @@
     "build": "vue-cli-service build",
     "watch": "vue-cli-service build --watch",
     "start": "node server.js",
+    "prisma:pull": "npx prisma db pull && npx prisma generate",
     "lint": "vue-cli-service lint",
     "postinstall": "prisma generate"
   },

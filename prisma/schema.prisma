@@ -21,12 +21,21 @@ model user {
   city                           String?        @db.VarChar(100)
   state                          String?        @db.VarChar(100)
   pincode                        String?        @db.Char(6)
-  preferred_language             String?        @db.VarChar(6)
   is_self_signed_up              Boolean        @default(false)
+  llb_college                    String?        @db.VarChar(255)
+  llb_university                 String?        @db.VarChar(255)
+  llb_year                       Int?           @default(0)
+  mediator_course_year           Int?           @default(0)
+  mcpc_certificate_url           String?        @db.VarChar(255)
+  preferred_area_of_practice     String?        @db.VarChar(255)
+  selected_hearing_types         String?        @db.LongText
+  bar_enrollment_no              String?        @db.VarChar(255)
+  preferred_languages            String?        @db.LongText
   cases_cases_first_partyTouser  cases[]        @relation("cases_first_partyTouser")
   cases_cases_second_partyTouser cases[]        @relation("cases_second_partyTouser")
   cases_cases_mediatorTouser     cases[]        @relation("cases_mediatorTouser")
   events                         events[]
+  notes                          notes[]
 }
 
 model cases {
@@ -86,6 +95,17 @@ model otp_resets {
 model available_languages {
   id       String @id @db.VarChar(20)
   language String @db.VarChar(100)
+}
+
+model notes {
+  id        String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  user_id   String    @db.Char(36)
+  note_text String    @db.Text
+  created   DateTime? @default(now()) @db.DateTime(0)
+  updated   DateTime? @default(now()) @db.DateTime(0)
+  user      user      @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_user_id")
+
+  @@index([user_id], map: "fk_user_id")
 }
 
 enum user_user_type {

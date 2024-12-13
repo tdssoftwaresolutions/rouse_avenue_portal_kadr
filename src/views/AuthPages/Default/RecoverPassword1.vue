@@ -18,7 +18,7 @@
     <form v-else class="mt-4">
       <div class="mb-3">
         <label for="exampleInputEmail1">OTP</label>
-        <input v-model="otp" type="text" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter OTP from email">
+        <input v-model="otp" type="number" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter OTP from email">
       </div>
       <div class="mb-3 position-relative">
         <label for="exampleInputPassword1">Password</label>
@@ -52,7 +52,7 @@ export default {
     return {
       showPassword: false,
       emailAddress: '',
-      otp: '',
+      otp: null,
       password: '',
       confirmPassword: '',
       otpOption: false,

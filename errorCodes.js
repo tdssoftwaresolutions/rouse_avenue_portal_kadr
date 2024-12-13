@@ -26,9 +26,21 @@ const ERROR_CODES = {
     errorCode: 'E101',
     message: 'Invalid username or password.'
   },
+  NO_TOKEN_PROVIDED: {
+    error: 'E105',
+    message: 'No token provided, authorization denied'
+  },
   TOKEN_EXPIRED: {
     errorCode: 'E102',
+    message: 'Your session has expired, reauthenticate.'
+  },
+  REFRESH_TOKEN_EXPIRED: {
+    errorCode: 'E103',
     message: 'Your session has expired. Please log in again.'
+  },
+  NO_REFRESH_TOKEN: {
+    errorCode: 'E104',
+    message: 'No refresh token'
   },
 
   // Validation Errors

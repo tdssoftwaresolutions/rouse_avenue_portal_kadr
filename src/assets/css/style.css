@@ -277,7 +277,7 @@ a:hover { text-decoration: none; }
                              Top Menu
 -----------------------------------------------------------------------*/
 .iq-top-navbar .iq-navbar-custom .iq-menu-bt { display: none; }
-.iq-top-navbar { border-radius: 0; margin-bottom: 0; padding: 0; min-height: 73px; position: fixed; top: 0; left: 0; width: 100%; display: inline-block; z-index: 99; background: #ffffff; -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); }
+.iq-top-navbar { border-radius: 0; margin-bottom: 0; padding: 0; min-height: 73px; position: fixed; top: 0; left: 0; width: 100%; display: inline-block; z-index: 2; background: #ffffff; -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1); }
 .iq-top-navbar .iq-navbar-custom .navbar-breadcrumb { display: inline-block; margin: 15px 0 0 30px; float: left; }
 .iq-top-navbar .breadcrumb .breadcrumb-item.active { color: #777D74; }
 .iq-top-navbar .breadcrumb { background: transparent; padding: 0; margin: 0; }

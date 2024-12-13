@@ -32,8 +32,9 @@ export default {
     sofbox.index()
     if (!this.isSessionAvailable()) {
       this.$router.push({ path: '/auth/sign-in' })
+    } else {
+      this.getDashboardContent()
     }
-    this.getDashboardContent()
   },
   methods: {
     isSessionAvailable () {
@@ -59,6 +60,7 @@ export default {
               solid: true
             })
           } else {
+            console.log(response.data)
             this.dashboardContent = response.data.dashboardContent
           }
         })

@@ -7,6 +7,8 @@ const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const errorCodes = require('./errorCodes')
 const axios = require('axios')
+const fs = require('fs')
+const path = require('path')
 
 class Helper {
   static generateRandomPassword (length = 12) {
@@ -42,18 +44,52 @@ class Helper {
     }
   };
 
-  static async getInactiveUsers (prisma, page) {
+  static async addLanguagesToDatabase (languageKeys, prisma) {
+    try {
+      // Path to languages.json
+      const filePath = path.join(__dirname, 'public', 'languages.json')
+
+      // Read and parse the JSON file
+      const languagesJson = JSON.parse(fs.readFileSync(filePath, 'utf8'))
+
+      // Prepare the data for database insertion
+      const languagesToInsert = languageKeys.map((key) => {
+        if (languagesJson.languages[key]) {
+          return {
+            id: key,
+            language: languagesJson.languages[key]
+          }
+        } else {
+          console.warn(`Language key '${key}' not found in JSON.`)
+          return null
+        }
+      }).filter(Boolean) // Remove nulls for missing keys
+
+      // Insert the data into the database
+      await prisma.available_languages.createMany({
+        data: languagesToInsert,
+        skipDuplicates: true // Prevent errors for existing keys
+      })
+
+      console.log('Languages added to database successfully!')
+    } catch (error) {
+      console.error('Error adding languages to database:', error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  };
+
+  static async getInactiveUsers (prisma, page, type, relationField) {
     const perPage = 10
 
     // Calculate the number of items to skip
     const skip = (page - 1) * perPage
-
     let inactiveUsers = await prisma.user.findMany({
       where: {
         AND: [
           { active: false },
           { is_self_signed_up: true },
-          { user_type: 'CLIENT' }
+          { user_type: type }
         ]
       },
       orderBy: {
@@ -62,37 +98,67 @@ class Helper {
       skip, // Skip items for pagination
       take: perPage, // Limit the number of items per page
       select: {
-        'id': true,
-        'name': true,
-        'email': true,
-        'phone_number': true,
-        'city': true,
-        'created_at': true,
-        'state': true,
-        'pincode': true,
-        'preferred_language': true,
-        'cases_cases_first_partyTouser': {
+        id: true,
+        name: true,
+        email: true,
+        phone_number: true,
+        password_hash: true,
+        created_at: true,
+        updated_at: true,
+        user_type: true,
+        active: true,
+        google_token: true,
+        city: true,
+        state: true,
+        pincode: true,
+        is_self_signed_up: true,
+        llb_college: true,
+        llb_university: true,
+        llb_year: true,
+        mediator_course_year: true,
+        mcpc_certificate_url: true,
+        preferred_area_of_practice: true,
+        selected_hearing_types: true,
+        bar_enrollment_no: true,
+        preferred_languages: true,
+        [relationField]: {
           select: {
-            'id': true,
-            'caseId': true,
-            'evidence_document_url': true,
-            'description': true,
-            'category': true,
-            'case_type': true
+            id: true,
+            caseId: true,
+            evidence_document_url: true,
+            description: true,
+            category: true,
+            case_type: true,
+            user_cases_second_partyTouser: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone_number: true
+              }
+            }
           }
         }
       }
     })
     inactiveUsers = inactiveUsers.map(user => {
-      const caseData = user.cases_cases_first_partyTouser[0] || {}
+      const caseData = user[relationField][0] || {}
+      const otherPartyDate = user[relationField][0]?.user_cases_second_partyTouser || {}
       const caseId = caseData.id
+      const userId = user.id
+      const otherPartyUserId = otherPartyDate.id
 
       const flatUser = {
+        ...otherPartyDate,
         ...caseData,
         ...user,
-        caseId
+        caseId,
+        userId,
+        otherPartyUserId
       }
-      delete flatUser.cases_cases_first_partyTouser
+      delete flatUser[relationField]
+      delete flatUser.user_cases_second_partyTouser
+      delete flatUser.id
       return flatUser
     })
 
@@ -102,7 +168,7 @@ class Helper {
         AND: [
           { active: false },
           { is_self_signed_up: true },
-          { user_type: 'CLIENT' }
+          { user_type: type }
         ]
       }
     })
@@ -143,7 +209,7 @@ class Helper {
     const token = req.headers.authorization
 
     if (!token) {
-      req.error = { message: 'No token provided, authorization denied' }
+      req.error = { status: 401, message: errorCodes.NO_TOKEN_PROVIDED }
       return
     }
 
@@ -152,8 +218,9 @@ class Helper {
     try {
       const user = await this.verifyToken(tokenWithoutBearer, SECRET_KEY)
       req.user = user
+      return null
     } catch (err) {
-      req.error = errorCodes.TOKEN_EXPIRED
+      return { status: 401, message: errorCodes.TOKEN_EXPIRED }
     }
   }
 
@@ -173,11 +240,11 @@ class Helper {
   }
 
   static generateAccessToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type, name: user.name }, SECRET_KEY, { expiresIn: '1d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, SECRET_KEY, { expiresIn: '1d' })
   }
 
   static generateRefreshToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type, name: user.name }, REFRESH_SECRET_KEY, { expiresIn: '30d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, REFRESH_SECRET_KEY, { expiresIn: '7d' })
   }
 
   static async sendEmail (emailId, htmlBody) {
