@@ -79,17 +79,32 @@ class Helper {
     }
   };
 
-  static async getInactiveUsers (prisma, page, type, relationField) {
+  static async getMediatorCasesCount (prisma, mediatorId) {
+    return prisma.cases.count({
+      where: {
+        mediator: mediatorId,
+        OR: [
+          { status: 'New' },
+          { status: 'In_Progress' }
+        ]
+      }
+    })
+  }
+
+  static async getMediatorCases (prisma, mediatorId, page) {
+    // const today = new Date()
+    // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+    // const endOfToday = new Date(today.setHours(23, 59, 59, 999))
     const perPage = 10
 
     // Calculate the number of items to skip
     const skip = (page - 1) * perPage
-    let inactiveUsers = await prisma.user.findMany({
+    return prisma.cases.findMany({
       where: {
-        AND: [
-          { active: false },
-          { is_self_signed_up: true },
-          { user_type: type }
+        mediator: mediatorId,
+        OR: [
+          { status: 'New' },
+          { status: 'In_Progress' }
         ]
       },
       orderBy: {
@@ -99,48 +114,122 @@ class Helper {
       take: perPage, // Limit the number of items per page
       select: {
         id: true,
-        name: true,
-        email: true,
-        phone_number: true,
-        password_hash: true,
-        created_at: true,
-        updated_at: true,
-        user_type: true,
-        active: true,
-        google_token: true,
-        city: true,
-        state: true,
-        pincode: true,
-        is_self_signed_up: true,
-        llb_college: true,
-        llb_university: true,
-        llb_year: true,
-        mediator_course_year: true,
-        mcpc_certificate_url: true,
-        preferred_area_of_practice: true,
-        selected_hearing_types: true,
-        bar_enrollment_no: true,
-        preferred_languages: true,
-        [relationField]: {
+        description: true,
+        category: true,
+        case_type: true,
+        caseId: true,
+        evidence_document_url: true,
+        status: true,
+        user_cases_first_partyTouser: {
           select: {
             id: true,
-            caseId: true,
-            evidence_document_url: true,
+            preferred_languages: true,
+            name: true,
+            state: true,
+            city: true
+          }
+        },
+        user_cases_second_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            state: true,
+            city: true
+          }
+        },
+        events: {
+          orderBy: {
+            created_at: 'desc'
+          },
+          select: {
+            id: true,
+            title: true,
             description: true,
-            category: true,
-            case_type: true,
-            user_cases_second_partyTouser: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                phone_number: true
-              }
-            }
+            start_datetime: true,
+            end_datetime: true,
+            type: true,
+            meeting_link: true
           }
         }
       }
     })
+  }
+
+  static async getInactiveUsers (prisma, page, type, relationField) {
+    const perPage = 10
+
+    // Calculate the number of items to skip
+    const skip = (page - 1) * perPage
+
+    let [inactiveUsers, totalInactiveUsers] = await prisma.$transaction([
+      prisma.user.findMany({
+        where: {
+          AND: [
+            { active: false },
+            { is_self_signed_up: true },
+            { user_type: type }
+          ]
+        },
+        orderBy: {
+          created_at: 'desc'
+        },
+        skip, // Skip items for pagination
+        take: perPage, // Limit the number of items per page
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone_number: true,
+          password_hash: true,
+          created_at: true,
+          updated_at: true,
+          user_type: true,
+          active: true,
+          google_token: true,
+          city: true,
+          state: true,
+          pincode: true,
+          is_self_signed_up: true,
+          llb_college: true,
+          llb_university: true,
+          llb_year: true,
+          mediator_course_year: true,
+          mcpc_certificate_url: true,
+          preferred_area_of_practice: true,
+          selected_hearing_types: true,
+          bar_enrollment_no: true,
+          preferred_languages: true,
+          [relationField]: {
+            select: {
+              id: true,
+              caseId: true,
+              evidence_document_url: true,
+              description: true,
+              category: true,
+              case_type: true,
+              user_cases_second_partyTouser: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  phone_number: true
+                }
+              }
+            }
+          }
+        }
+      }),
+      prisma.user.count({
+        where: {
+          AND: [
+            { active: false },
+            { is_self_signed_up: true },
+            { user_type: type }
+          ]
+        }
+      })
+    ])
+
     inactiveUsers = inactiveUsers.map(user => {
       const caseData = user[relationField][0] || {}
       const otherPartyDate = user[relationField][0]?.user_cases_second_partyTouser || {}
@@ -160,17 +249,6 @@ class Helper {
       delete flatUser.user_cases_second_partyTouser
       delete flatUser.id
       return flatUser
-    })
-
-    // Count total inactive users for pagination
-    const totalInactiveUsers = await prisma.user.count({
-      where: {
-        AND: [
-          { active: false },
-          { is_self_signed_up: true },
-          { user_type: type }
-        ]
-      }
     })
 
     // Send the response back to the client

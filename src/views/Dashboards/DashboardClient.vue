@@ -485,7 +485,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;

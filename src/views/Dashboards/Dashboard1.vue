@@ -13,7 +13,6 @@ import { sofbox } from '../../config/pluginInit'
 import DashboardMediator from './DashboardMediator'
 import DashboardClient from './DashboardClient'
 import DashboardAdmin from './DashboardAdmin'
-import axios from 'axios'
 
 export default {
   name: 'Dashboard',
@@ -43,31 +42,12 @@ export default {
       }
       return false
     },
-    getDashboardContent () {
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.$cookies.get('accessToken')}`
+    async getDashboardContent () {
+      const response = await this.$store.dispatch('getDashboardContent')
+      if (response.error) {
+      } else {
+        this.dashboardContent = response.dashboardContent
       }
-      axios
-        .get('/api/getDashboardContent', {
-          headers
-        })
-        .then((response) => {
-          if (response.data.error) {
-            this.$bvToast.toast(response.data.error, {
-              title: 'Error',
-              variant: 'error',
-              solid: true
-            })
-          } else {
-            console.log(response.data)
-            this.dashboardContent = response.data.dashboardContent
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('Error!')
-        })
     }
   }
 }

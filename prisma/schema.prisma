@@ -39,20 +39,21 @@ model user {
 }
 
 model cases {
-  id                            String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  created_at                    DateTime? @default(now()) @db.Timestamp(0)
-  updated_at                    DateTime? @default(now()) @db.Timestamp(0)
-  mediator                      String?   @db.Char(36)
-  first_party                   String?   @db.Char(36)
-  second_party                  String?   @db.Char(36)
-  caseId                        String?   @db.Char(50)
-  evidence_document_url         String?   @db.VarChar(255)
-  description                   String?   @db.Text
-  category                      String?   @db.VarChar(100)
-  case_type                     String?   @db.VarChar(255)
-  user_cases_first_partyTouser  user?     @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
-  user_cases_second_partyTouser user?     @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
-  user_cases_mediatorTouser     user?     @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
+  id                            String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  created_at                    DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at                    DateTime?    @default(now()) @db.Timestamp(0)
+  mediator                      String?      @db.Char(36)
+  first_party                   String?      @db.Char(36)
+  second_party                  String?      @db.Char(36)
+  caseId                        String?      @db.Char(50)
+  evidence_document_url         String?      @db.VarChar(255)
+  description                   String?      @db.Text
+  category                      String?      @db.VarChar(100)
+  case_type                     String?      @db.VarChar(255)
+  status                        cases_status @default(New)
+  user_cases_first_partyTouser  user?        @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
+  user_cases_second_partyTouser user?        @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
+  user_cases_mediatorTouser     user?        @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
   events                        events[]
 
   @@index([mediator], map: "fk_mediator")
@@ -117,4 +118,16 @@ enum user_user_type {
 enum events_type {
   PERSONAL
   KADR
+}
+
+enum cases_status {
+  New
+  In_Progress         @map("In Progress")
+  Closed___Success    @map("Closed - Success")
+  Closed___No_Success @map("Closed - No Success")
+  Cancelled
+  Failed
+  Pending
+  Escalated
+  On_Hold             @map("On Hold")
 }

@@ -17,7 +17,9 @@ const AVAILABLE_LANGUAGES_ENDPOINT = '/getAvailableLanguages'
 const GET_INACTIVE_USERS_ENDPOINT = '/getInactiveUsers'
 const UPDATE_INACTIVE_USER_ENDPOINT = '/updateInactiveUser'
 const REFRESH_TOKEN_ENDPOINT = '/refresh-token'
-
+const SAVE_NOTE_ENDPOINT = '/saveNote'
+const GET_DASHBOARD_CONTENT_ENDPOINT = '/getDashboardContent'
+const DELETE_NOTE_ENDPOINT = '/deleteNote'
 const debug = process.env.NODE_ENV !== 'production'
 
 const apiClient = axios.create({
@@ -101,7 +103,7 @@ export default (router) => {
           store.$router.push({ name: 'dashboard1.home' })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async resetPassword ({ commit }, { emailAddress }) {
@@ -109,7 +111,7 @@ export default (router) => {
           const { data } = await apiClient.post(RESET_PASSWORD_ENDPOINT, { emailAddress })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async logout ({ commit }) {
@@ -117,7 +119,7 @@ export default (router) => {
           const { data } = await apiClient.get(LOGOUT_ENDPOINT)
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async confirmPasswordChange ({ commit }, { emailAddress, otp, password }) {
@@ -125,7 +127,7 @@ export default (router) => {
           const { data } = await apiClient.post(CONFIRM_PASSWORD_CHANGE_ENDPOINT, { emailAddress, otp, password })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async verifySignature ({ commit }, { signature, userData }) {
@@ -133,7 +135,7 @@ export default (router) => {
           const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async newUserSignup ({ commit }, { userDetails }) {
@@ -141,7 +143,7 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { userDetails })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async newMediatorSignup ({ commit }, { userDetails }) {
@@ -149,7 +151,15 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_MEDIATOR_SIGNUP_ENDPOINT, { userDetails })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
+        }
+      },
+      async saveNote ({ commit }, { content, id }) {
+        try {
+          const { data } = await apiClient.post(SAVE_NOTE_ENDPOINT, { content, id })
+          return data
+        } catch (error) {
+          return error.data
         }
       },
       async getUserData ({ commit }) {
@@ -157,7 +167,23 @@ export default (router) => {
           const { data } = await apiClient.get(GET_USER_DATA_ENDPOINT)
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
+        }
+      },
+      async getDashboardContent ({ commit }) {
+        try {
+          const { data } = await apiClient.get(GET_DASHBOARD_CONTENT_ENDPOINT)
+          return data
+        } catch (error) {
+          return error.data
+        }
+      },
+      async deleteNote ({ commit }, { id }) {
+        try {
+          const { data } = await apiClient.post(DELETE_NOTE_ENDPOINT, { id })
+          return data
+        } catch (error) {
+          return error.data
         }
       },
       async updateInactiveUsers ({ commit }, { isActive, caseId, userId, caseType }) {
@@ -165,7 +191,7 @@ export default (router) => {
           const { data } = await apiClient.post(UPDATE_INACTIVE_USER_ENDPOINT, { isActive, caseId, userId, caseType })
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async isEmailExist ({ commit }, { emailAddress }) {
@@ -181,7 +207,7 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}`)
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async getAllLanguages ({ state, commit }) {
@@ -200,7 +226,7 @@ export default (router) => {
           commit('setAllLanguages', jsonData)
           return jsonData
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async getAvailableLanguages ({ state, commit }) {
@@ -213,7 +239,7 @@ export default (router) => {
           commit('setAvailableLanguages', data)
           return data
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       },
       async getStates ({ state, commit }) {
@@ -232,7 +258,7 @@ export default (router) => {
           commit('setAvailableStates', jsonData)
           return jsonData
         } catch (error) {
-          return error.response.data
+          return error.data
         }
       }
     },

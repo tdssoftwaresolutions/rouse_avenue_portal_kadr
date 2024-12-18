@@ -1,26 +1,7 @@
 <template>
     <b-container fluid>
-      <b-modal v-model="isModalVisible" title="User Details"  :size="'lg'" centered>
-        <div>
-          <h5>User Details</h5>
-          <p><strong>Name:</strong> {{ selectedUser.name }}</p>
-          <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
-          <p><strong>Email:</strong> {{ selectedUser.email }}</p>
-          <hr>
-          <h5>Opponent Details</h5>
-          <p><strong>Name:</strong> {{ selectedUser.opponent.name }}</p>
-          <p><strong>Email:</strong> {{ selectedUser.opponent.email }}</p>
-          <p><strong>Phone:</strong> {{ selectedUser.opponent.phone }}</p>
-          <hr>
-          <h5>Case Details</h5>
-          <p><strong>Case ID:</strong> {{ selectedUser.caseId }}</p> <!-- Added Case ID -->
-          <p><strong>Category:</strong> {{ selectedUser.case.category }}</p>
-          <p><strong>Evidence:</strong> <a :href="selectedUser.case.evidence" target="_blank">View Evidence</a></p>
-          <hr>
-          <b-form-textarea v-model="note" placeholder="Enter your notes here..." rows="3"></b-form-textarea>
-          <b-button @click="saveNote" variant="primary" class="mt-2">Save Note</b-button>
-        </div>
-      </b-modal>
+      <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
+      <Spinner :isVisible="loading" />
       <b-row>
         <b-col lg="3" md="12">
           <iq-card class="iq-profile-card text-center">
@@ -59,13 +40,13 @@
               <h4 class="card-title">My Notes</h4>
             </template>
             <template v-slot:headerAction>
-              <a href="#" class="btn btn-primary" @click="onClickNewAdd('')">
+              <a href="#" class="btn btn-primary" @click="onClickNewAdd('','')">
                   Add New
               </a>
             </template>
             <template v-slot:body>
               <div style="height: 400px;overflow-x: scroll; ">
-                <div class="textarea-wrapper" v-for="(note, index) in notes" :key="note.id">
+                <div class="textarea-wrapper" v-for="(note, index) in notes" :key="index">
                   <textarea class="sticky-note" v-model="note.content" @input="onContentChange(index)" :data-index="index"></textarea>
                   <button v-if="note.isModified" class="save-btn" aria-label="Save" @click="onClickSave(index)">
                     <i class="fas fa-save"></i>
@@ -112,18 +93,7 @@
               <h4 class="card-title">My Cases</h4>
             </template>
             <template v-slot:body>
-              <ul class="suggestions-lists m-0 p-0">
-                <li v-for="(item,index) in content.myCases" :key="index" class="d-flex mb-4 align-items-center" @click="onClickCase">
-                  <div class="user-img img-fluid">
-                    <b-img :src="item.image" alt="story-img" rounded="circle" class="avatar-40" />
-                  </div>
-                  <div class="media-support-info ms-3">
-                    <h6>{{ item.caseId }}</h6>
-                    <p class="mb-0">{{ item.case_name }}</p>
-                  </div>
-                  <div class="add-suggestion"><b-link href="javascript:void();"><i class="ri-user-add-line"></i></b-link></div>
-                </li>
-              </ul>
+              <my-cases :cases="content.myCases"></my-cases>
             </template>
           </iq-card>
         </b-col>
@@ -131,6 +101,9 @@
     </b-container>
 </template>
 <script>
+import Alert from '../../components/sofbox/alert/Alert.vue'
+import Spinner from '../../components/sofbox/spinner/spinner.vue'
+import MyCases from '../Tables/MyCases.vue'
 
 export default {
   name: 'DashboardMediator',
@@ -138,46 +111,56 @@ export default {
     user: null,
     content: null
   },
+  components: {
+    Alert, Spinner, MyCases
+  },
   methods: {
-    onClickDelete (index) {
-      this.notes.splice(index, 1)
-    },
-    isSessionAvailable () {
-      if (this.$cookies.get('accessToken')) {
-        return true
+    showAlert (message, type) {
+      this.alert = {
+        message,
+        type,
+        visible: true
       }
-      return false
     },
-    onClickCase () {
-      this.note = this.$cookies.get('notes') || ''
-      this.isModalVisible = true
+    async onClickDelete (index) {
+      if (confirm('Are you sure you want to delete this note?')) {
+        const noteToDelete = this.notes[index]
+        if (noteToDelete.id !== '') {
+          await this.$store.dispatch('deleteNote', {
+            id: noteToDelete.id
+          })
+        }
+        this.notes.splice(index, 1)
+        this.showAlert('Your note has been deleted successfully!', 'success')
+      }
     },
     onContentChange (index) {
-      this.notes[index].isModified = true
+      this.$set(this.notes[index], 'isModified', true)
     },
-    saveNote () {
-      if (this.selectedUser) {
-        this.$cookies.set('notes', this.note)
-        this.$bvToast.toast('Note saved!', {
-          title: 'Success',
-          variant: 'success',
-          solid: true
-        })
-      }
-    },
-    onClickNewAdd (content) {
+    onClickNewAdd (content, id) {
       this.notes.push({
-        id: this.newNoteId++,
+        id,
         content
       })
     },
-    onClickSave (index) {
-      alert('saved' + index)
+    async onClickSave (index) {
+      const note = this.notes[index]
+      if (note.isModified === true) {
+        const response = await this.$store.dispatch('saveNote', {
+          content: note.content,
+          id: note.id
+        })
+        if (!response.errorCode) {
+          this.showAlert('Your note has been successfully saved!', 'success')
+        }
+        this.$set(note, 'isModified', false)
+      }
     }
   },
   mounted () {
     for (let i = 0; i < this.content.notes.length; i++) {
-      this.onClickNewAdd(this.content.notes[i].note_text)
+      const note = this.content.notes[i]
+      this.onClickNewAdd(note.note_text, note.id)
     }
     const ref = this
     document.addEventListener('keydown', function (event) {
@@ -197,27 +180,14 @@ export default {
   },
   data () {
     return {
-      newNoteId: 1,
-      notes: [],
-      isModalVisible: false,
-      selectedUser: {
-        id: 1,
-        name: 'John Doe',
-        phone: '123-456-7890',
-        caseId: '#KDR436988',
-        image: require('../../assets/images/user/03.jpg'),
-        email: 'john.doe@example.com',
-        opponent: { name: 'Jane Doe', phone: '987-654-3210', email: 'jane.doe@example.com' },
-        case: { category: 'Dispute', evidence: 'https://example.com/evidence.pdf' }
+      alert: {
+        visible: false,
+        message: '',
+        timeout: 5000,
+        type: 'primary'
       },
-      note: '',
-      suggestions: [
-        { name: 'Paul Molive', mutual_friend: '#KDR124621', image: require('../../assets/images/user/01.jpg') },
-        { name: 'Paige Turner', mutual_friend: '#KDR975436', image: require('../../assets/images/user/03.jpg') },
-        { name: 'Barb Ackue', mutual_friend: '#KDR987474', image: require('../../assets/images/user/04.jpg') },
-        { name: 'Greta Life', mutual_friend: '#KDR92375', image: require('../../assets/images/user/05.jpg') },
-        { name: 'Ira Membrit', mutual_friend: '#KDR109475', image: require('../../assets/images/user/06.jpg') }
-      ],
+      loading: false,
+      notes: [],
       chart1: {
         chart: {
           height: 80,
@@ -304,7 +274,7 @@ export default {
 }
 </script>
 <style scoped>
-  .textarea-wrapper {
+.textarea-wrapper {
   position: relative;
   display: inline-block;
   width: 100%;

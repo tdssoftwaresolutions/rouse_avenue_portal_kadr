@@ -56,29 +56,28 @@ module.exports = {
           mediators: mediatorUsers
         }
       } else if (user.user_type === 'MEDIATOR') {
-        const [notes, casesWithEvents] = await Promise.all([
+        const [notes, casesWithEvents, casesCount] = await Promise.all([
           prisma.notes.findMany({
             where: {
               user_id: userDetails.id
             },
             select: {
+              id: true,
               note_text: true
             },
             orderBy: {
               created: 'desc'
             }
           }),
-          prisma.cases.findMany({
-            where: {
-              mediator: userDetails.id
-            },
-            select: {
-              id: true,
-              events: {}
-            }
-          })
+          helper.getMediatorCases(prisma, userDetails.id, 1),
+          helper.getMediatorCasesCount(prisma, userDetails.id)
         ])
-        dashboardContent.myCases = casesWithEvents
+        dashboardContent.myCases = {
+          casesWithEvents,
+          total: casesCount,
+          page: 1,
+          perPage: 10
+        }
         dashboardContent.notes = notes
       } else if (user.user_type === 'CLIENT') {
         const cases = await prisma.cases.findMany({
@@ -126,6 +125,31 @@ module.exports = {
     const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
     const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page, type, relationField)
     res.json({ success: true, inactiveUsers })
+  },
+  deleteNote: async function (req, res) {
+    await prisma.notes.delete({
+      where: {
+        id: req.body.id
+      }
+    })
+    res.status(201).json({ succes: true })
+  },
+  saveNote: async function (req, res) {
+    const { content, id } = req.body
+    const user = req.user
+    await prisma.notes.upsert({
+      where: {
+        id
+      },
+      update: {
+        note_text: content
+      },
+      create: {
+        note_text: content,
+        user_id: user.id
+      }
+    })
+    res.status(201).json({ success: true })
   },
   logout: function (req, res) {
     // Clear the refresh token cookie
@@ -498,6 +522,7 @@ module.exports = {
           evidence_document_url: uploadedFileResponse.stored_url,
           description,
           category,
+          status: 'New',
           caseId: `KDR-${newCaseId}`
         }
       })
