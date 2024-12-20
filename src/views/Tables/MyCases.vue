@@ -18,9 +18,9 @@
                 {{data.item.user_cases_first_partyTouser?.name}} vs {{data.item.user_cases_second_partyTouser?.name}}
               </template>
               <template v-slot:cell(action)="data">
-                <b-button variant=" iq-bg-success ms-1 mb-1" size="sm" @click="update(data.item)" >Schedule Meeting</b-button>
-                <b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="mr-1">
-                  Info modal
+                <b-button variant=" iq-bg-success ms-1" size="sm" @click="scheduleMeeting(data.item)" >Schedule Meeting</b-button>
+                <b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="ml-2">
+                  View Details
                 </b-button>
               </template>
             </b-table>
@@ -30,8 +30,7 @@
           </b-col>
         </b-row>
       </b-col>
-      {{selectedUser != null}}
-      <b-modal id="modal-lg" size="lg" title="Large Modal" scrollable>
+      <b-modal id="modal-lg" size="lg" :title="caseTitle" scrollable>
         <view-case-details :caseObject="selectedUser"></view-case-details>
       </b-modal>
     </b-row>
@@ -95,7 +94,7 @@ export default {
       }
     },
     info (item) {
-      console.log(item)
+      this.caseTitle = `Case #${item.caseId}`
       this.selectedUser = item
     },
     showAlert (message, type) {
@@ -108,20 +107,9 @@ export default {
     syncWithProp () {
       this.paginatedData = { ...this.cases }
     },
-    async update (item) {
+    async scheduleMeeting (item) {
       this.loading = true
-      const response = await this.$store.dispatch('updateInactiveUsers', {
-        isActive: item.active,
-        caseId: item.caseId,
-        userId: item.userId,
-        caseType: item.case_type
-      })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-      } else {
-        this.showAlert(response.message, 'success')
-        this.$set(item, 'disabled', true)
-      }
+
       this.loading = false
     },
     async fetchUsers (newPage) {
@@ -130,15 +118,15 @@ export default {
         this.paginatedData = this.casesCache[this.currentPage]
         return
       }
-      const response = await this.$store.dispatch('getInactiveUsers', {
-        page: this.currentPage,
-        type: this.type
+      const response = await this.$store.dispatch('getMyCases', {
+        page: this.currentPage
       })
       if (response.errorCode) {
         this.showAlert(response.message, 'danger')
+      } else {
+        this.casesCache[this.currentPage] = response
+        this.paginatedData = response
       }
-      this.casesCache[this.currentPage] = response.inactiveUsers
-      this.paginatedData = response.inactiveUsers
     }
   },
   data () {
@@ -146,6 +134,7 @@ export default {
       selectedUser: null,
       currentPage: 1,
       perPage: 10,
+      caseTitle: '',
       paginatedData: {},
       columns: [
         { label: 'Case Number', key: 'caseId', class: 'text-left', sortable: true },

@@ -89,18 +89,18 @@
             <div class="table-content">
                 <b-table bordered hover :items="caseObject.events" :fields="caseColumns" responsive="xl" v-if="caseObject.events.length>0">
                     <template v-slot:cell(start_datetime)="data">
-                    {{formatDate(data.item.start_datetime)}}
+                      {{formatDate(data.item.start_datetime)}}
                     </template>
                     <template v-slot:cell(end_datetime)="data">
-                    {{formatDate(data.item.end_datetime)}}
+                      {{formatDate(data.item.end_datetime)}}
                     </template>
                     <template v-slot:cell(meeting_link)="data">
-                    <span v-if="isURL(data.item.meeting_link)">
-                        <a :href="data.item.meeting_link" target="_blank">Join</a>
-                    </span>
+                      <span v-if="isURL(data.item.meeting_link)">
+                          <a :href="data.item.meeting_link" target="_blank">Join</a>
+                      </span>
                     </template>
                     <template v-slot:cell(status)="data">
-                    <b-badge pill :variant="getVariant(getStatus(data.item))">{{getStatus(data.item)}}</b-badge>
+                      <b-badge pill :variant="getVariant(getStatus(data.item))">{{getStatus(data.item)}}</b-badge>
                     </template>
                 </b-table>
                 <div v-else>
@@ -280,6 +280,7 @@ export default {
 .long-description textarea {
   width: 100%;
   resize: none;
+  border: 0px;
 }
 .textarea-wrapper {
   position: relative;

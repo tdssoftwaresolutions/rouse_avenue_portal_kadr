@@ -56,7 +56,7 @@ module.exports = {
           mediators: mediatorUsers
         }
       } else if (user.user_type === 'MEDIATOR') {
-        const [notes, casesWithEvents, casesCount] = await Promise.all([
+        const [notes, casesWithEvents, casesCount, todaysPersonalMeetings] = await Promise.all([
           prisma.notes.findMany({
             where: {
               user_id: userDetails.id
@@ -70,7 +70,8 @@ module.exports = {
             }
           }),
           helper.getMediatorCases(prisma, userDetails.id, 1),
-          helper.getMediatorCasesCount(prisma, userDetails.id)
+          helper.getMediatorCasesCount(prisma, userDetails.id),
+          helper.getTodaysPersonalMeetings(prisma, userDetails.id)
         ])
         dashboardContent.myCases = {
           casesWithEvents,
@@ -79,6 +80,7 @@ module.exports = {
           perPage: 10
         }
         dashboardContent.notes = notes
+        dashboardContent.todaysEvent = helper.getTodaysEvents(casesWithEvents, todaysPersonalMeetings)
       } else if (user.user_type === 'CLIENT') {
         const cases = await prisma.cases.findMany({
           where: {
@@ -125,6 +127,56 @@ module.exports = {
     const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
     const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page, type, relationField)
     res.json({ success: true, inactiveUsers })
+  },
+  getMyCases: async function (req, res) {
+    const [casesWithEvents, casesCount] = await Promise.all([
+      helper.getMediatorCases(prisma, req.user.id, req.query.page),
+      helper.getMediatorCasesCount(prisma, req.user.id)
+    ])
+    res.json({ success: true, casesWithEvents, total: casesCount, page: 1, perPage: 10 })
+  },
+  getCalendarInit: async function (req, res) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id
+      },
+      select: {
+        id: true,
+        google_token: true
+      }
+    })
+    if (user) {
+      if (user.google_token == null) {
+        return res.json(errorCodes.GOOGLE_ACCOUNT_NOT_CONFIGURED)
+      } else {
+        const events = await prisma.events.findMany({
+          where: {
+            created_by: user.id
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            start_datetime: true,
+            end_datetime: true,
+            type: true,
+            meeting_link: true,
+            cases: {
+              select: {
+                id: true,
+                caseId: true
+              }
+            }
+          }
+        })
+        return res.json({
+          events,
+          googleToken: user.google_token
+        })
+      }
+    } else {
+      return res.json(errorCodes.NOT_FOUND)
+    }
   },
   deleteNote: async function (req, res) {
     await prisma.notes.delete({
@@ -381,14 +433,39 @@ module.exports = {
   newCalendarEvent: async function (req, res) {
     try {
       const { id, title, description, start, end, type, caseId } = req.body
-      const user = await prisma.user.findUnique({
-        where: {
-          id: req.user.id
-        },
-        select: {
-          google_token: true
-        }
-      })
+      const [user, lCase] = await Promise.all([
+        prisma.user.findUnique({
+          where: {
+            id: req.user.id
+          },
+          select: {
+            google_token: true
+          }
+        }),
+        caseId == null
+          ? {}
+          : prisma.cases.findUnique({
+            where: {
+              id: caseId
+            },
+            select: {
+              user_cases_first_partyTouser: {
+                select: {
+                  email: true
+                }
+              },
+              user_cases_second_partyTouser: {
+                select: {
+                  email: true
+                }
+              }
+            }
+          })
+      ])
+      let attendees = [{ email: req.user.email }]
+      if (lCase.user_cases_first_partyTouser) { attendees.push({ email: lCase?.user_cases_first_partyTouser?.email }) }
+      if (lCase.user_cases_second_partyTouser) { attendees.push({ email: lCase?.user_cases_second_partyTouser?.email }) }
+
       oauth2Client.setCredentials(JSON.parse(user.google_token))
       const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
       const event = {
@@ -396,11 +473,7 @@ module.exports = {
         description,
         start: { dateTime: start, timeZone: 'Asia/Kolkata' },
         end: { dateTime: end, timeZone: 'Asia/Kolkata' },
-        attendees: [
-          { email: 'tarandeepsync@gmail.com' },
-          { email: 'mebonixservices@gmail.com' },
-          { email: 'support@mebonix.in' }
-        ],
+        attendees,
         conferenceData: {
           createRequest: {
             requestId: id,
@@ -415,11 +488,11 @@ module.exports = {
       })
       await prisma.events.create({
         data: {
-          title: 'Event Title',
-          description: 'Event Description',
+          title,
+          description,
           start_datetime: start,
           end_datetime: end,
-          type,
+          type: type.toUpperCase(),
           meeting_link: response.data.conferenceData.entryPoints[0].uri,
           google_calendar_link: response.data.htmlLink,
           created_by: req.user.id,

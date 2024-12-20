@@ -24,6 +24,8 @@ router.get('/isEmailExist', apiController.isEmailExist)
 router.get('/getInactiveUsers', authMiddleware, apiController.getInactiveUsers)
 router.post('/saveNote', authMiddleware, apiController.saveNote)
 router.post('/deleteNote', authMiddleware, apiController.deleteNote)
+router.get('/getCalendarInit', authMiddleware, apiController.getCalendarInit)
+router.get('/getMyCases', authMiddleware, apiController.getMyCases)
 
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)

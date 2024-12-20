@@ -91,6 +91,68 @@ class Helper {
     })
   }
 
+  static getTodaysEvents (casesWithEvents, personalEvents) {
+    const caseEvents = casesWithEvents.flatMap(caseItem => {
+      return (caseItem.events)
+        .filter(event => {
+          return new Date(event.start_datetime).toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+        })
+        .map(event => ({
+          type: 'KADR',
+          caseNumber: caseItem?.caseId,
+          startDate: event.start_datetime,
+          endDate: event.end_datetime,
+          firstPartyName: caseItem?.user_cases_first_partyTouser?.name || 'N/A',
+          secondPartyName: caseItem?.user_cases_second_partyTouser?.name || 'N/A',
+          meetingLink: event.meeting_link
+        }))
+    })
+    const pEvents = personalEvents.filter(event => {
+      return new Date(event.start_datetime).toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+    })
+      .map(event => ({
+        type: 'PERSONAL',
+        caseNumber: '',
+        startDate: event.start_datetime,
+        endDate: event.end_datetime,
+        firstPartyName: '',
+        secondPartyName: '',
+        meetingLink: event.meeting_link,
+        title: event.title,
+        description: event.description
+      }))
+
+    return caseEvents.concat(pEvents).sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+  }
+
+  static async getTodaysPersonalMeetings (prisma, mediatorId) {
+    const today = new Date()
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+    const endOfToday = new Date(today.setHours(23, 59, 59, 999))
+    return prisma.events.findMany({
+      where: {
+        created_by: mediatorId,
+        type: 'PERSONAL',
+        start_datetime: {
+          gte: startOfToday, // Greater than or equal to the start of today
+          lte: endOfToday // Less than or equal to the end of today
+        }
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        start_datetime: true,
+        end_datetime: true,
+        type: true,
+        meeting_link: true
+      }
+    })
+  }
+
   static async getMediatorCases (prisma, mediatorId, page) {
     // const today = new Date()
     // const startOfToday = new Date(today.setHours(0, 0, 0, 0))

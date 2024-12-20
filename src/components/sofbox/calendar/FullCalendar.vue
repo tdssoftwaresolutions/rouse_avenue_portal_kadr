@@ -16,6 +16,10 @@ export default {
     eventClick: {
       type: Function,
       default: null
+    },
+    dateClick: {
+      type: Function,
+      default: null
     }
   },
   data () {
@@ -63,20 +67,7 @@ export default {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
     handleDateSelect (selectInfo) {
-      let title = prompt('Please enter a new title for your event')
-      let calendarApi = selectInfo.view.calendar
-
-      calendarApi.unselect() // clear date selection
-
-      if (title) {
-        calendarApi.addEvent({
-          id: 1,
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay
-        })
-      }
+      this.dateClick(selectInfo)
     },
     handleEventClick (clickInfo) {
       this.eventClick(clickInfo.event)

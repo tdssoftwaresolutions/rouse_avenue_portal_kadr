@@ -19,16 +19,32 @@
               <h4 class="card-title">Today's Schedule</h4>
             </template>
             <template v-slot:body>
-              <ul class="m-0 p-0 today-schedule">
-                <li class="d-flex">
-                  <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-primary" /></div>
-                  <div class="schedule-text"> <span>Web Design</span>
-                    <span>09:00 to 12:00</span></div>
-                </li>
-                <li class="d-flex">
-                  <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-success" /></div>
-                  <div class="schedule-text"> <span>Participate in Design</span>
-                    <span>09:00 to 12:00</span></div>
+              <ul class="m-0 p-0 today-schedule" style="overflow-y: scroll;max-height: 300px;">
+                <li class="d-flex align-items-center justify-content-between" v-for="(event, index) in content.todaysEvent" :key="index">
+                  <div class="d-flex align-items-center">
+                    <div class="schedule-icon">
+                      <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }" v-if="event.type == 'KADR'"></i>
+                      <i class="ri-checkbox-blank-circle-fill" :style="{ color: personalEventColor }" v-else></i>
+                    </div>
+                    <div class="schedule-text" v-if="event.type == 'KADR'">
+                      <span  style="font-weight: bold">Case #{{ event.caseNumber }}</span>
+                      <span>{{ event.firstPartyName }} vs {{ event.secondPartyName }}</span>
+                      <span>
+                        {{ formatDate(event.startDate) }} to {{ formatDate(event.endDate) }}
+                      </span>
+                    </div>
+                    <div class="schedule-text" v-else>
+                      <span  style="font-weight: bold">{{ event.title }}</span>
+                      <span>
+                        {{ formatDate(event.startDate) }} to {{ formatDate(event.endDate) }}
+                      </span>
+                    </div>
+                  </div>
+                  <a v-if="event.meetingLink != ''" :href="event.meetingLink"
+                    target="_blank"
+                    class="btn btn-primary btn-sm" >
+                    Join Meeting
+                </a>
                 </li>
               </ul>
             </template>
@@ -104,6 +120,8 @@
 import Alert from '../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import MyCases from '../Tables/MyCases.vue'
+const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
+const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
 
 export default {
   name: 'DashboardMediator',
@@ -115,6 +133,14 @@ export default {
     Alert, Spinner, MyCases
   },
   methods: {
+    formatDate (dateString) {
+      const date = new Date(dateString)
+      return date.toLocaleString('en-US', {
+        hour: 'numeric', // '6 PM'
+        minute: 'numeric', // '52'
+        hour12: true // 12-hour clock
+      })
+    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -180,6 +206,8 @@ export default {
   },
   data () {
     return {
+      personalEventColor: PERSONAL_EVENT_COLOR,
+      kadrEventColor: KADR_EVENT_COLOR,
       alert: {
         visible: false,
         message: '',

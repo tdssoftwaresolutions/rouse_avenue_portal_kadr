@@ -20,6 +20,10 @@ const ERROR_CODES = {
     errorCode: 'E005',
     message: 'The requested resource could not be found.'
   },
+  GOOGLE_ACCOUNT_NOT_CONFIGURED: {
+    errorCode: 'E006',
+    message: 'This feature requires you to login with your Gmail account for managing events & scheduling meeting. Please login below'
+  },
 
   // Authentication Errors
   INVALID_CREDENTIALS: {
