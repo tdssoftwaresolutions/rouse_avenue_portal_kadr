@@ -23,6 +23,11 @@ module.exports = {
       const user = await prisma.user.findUnique({
         where: {
           id: userDetails.id
+        },
+        select: {
+          id: true,
+          email: true,
+          user_type: true
         }
       })
       if (!user) {
@@ -82,36 +87,12 @@ module.exports = {
         dashboardContent.notes = notes
         dashboardContent.todaysEvent = helper.getTodaysEvents(casesWithEvents, todaysPersonalMeetings)
       } else if (user.user_type === 'CLIENT') {
-        const cases = await prisma.cases.findMany({
-          where: {
-            OR: [
-              { first_party: userDetails.id },
-              { second_party: userDetails.id }
-            ]
-          },
-          select: {
-            id: true
-          }
-        })
-        if (cases.length === 0) {
-          return res.json(errorCodes.CASES_NOT_FOUND)
-        }
-        const casesWithEvents = await prisma.cases.findMany({
-          where: {
-            mediator: userDetails.id
-          },
-          include: {
-            events: {
-              where: {
-                case_id: {
-                  in: cases.map(c => c.id)
-                }
-              }
-            }
-          }
-        })
+        const [casesWithEvents] = await Promise.all([
+          helper.getClientCases(prisma, userDetails.id, 1)
+        ])
         dashboardContent.myCases = casesWithEvents
-        dashboardContent.cases = cases
+        dashboardContent.todaysEvent = helper.getEventsForToday(casesWithEvents)
+        dashboardContent.user = user
       }
 
       res.json({ success: true, dashboardContent })

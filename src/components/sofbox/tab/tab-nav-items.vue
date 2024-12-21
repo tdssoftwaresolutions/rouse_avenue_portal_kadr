@@ -1,11 +1,21 @@
 <template>
   <li :class="liClass">
-    <a :class="'nav-link '+className" :id="id" :data-toggle="dataToggle" :href="url" :role="role" :aria-controls="ariaControls" :aria-selected="ariaSelected">
+    <a
+      :class="'nav-link ' + className"
+      :id="id"
+      :data-toggle="dataToggle"
+      :href="url"
+      :role="role"
+      :aria-controls="ariaControls"
+      :aria-selected="ariaSelected"
+      @click="handleClick"
+    >
       <slot name="title" v-if="hasTitleSlot"/>
       <template v-else>{{ title }}</template>
     </a>
   </li>
 </template>
+
 <script>
 export default {
   name: 'tab-nav-items',
@@ -18,7 +28,8 @@ export default {
     dataToggle: { type: String, default: 'tab' },
     href: { type: String, default: '' },
     title: { type: String, default: '' },
-    liClass: { type: String, default: 'nav-item' }
+    liClass: { type: String, default: 'nav-item' },
+    clickHandler: { type: Function, required: false } // Add a clickHandler prop
   },
   mounted () {
     if (this.active) {
@@ -39,6 +50,13 @@ export default {
   data () {
     return {
       className: ''
+    }
+  },
+  methods: {
+    handleClick (event) {
+      if (this.clickHandler) {
+        this.clickHandler(event) // Call the clickHandler passed from the parent
+      }
     }
   }
 }

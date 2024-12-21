@@ -25,6 +25,17 @@ const NEW_CALENDAR_EVENT_ENDPOINT = '/newCalendarEvent'
 const GET_MY_CASES_ENDPOINT = '/getMyCases'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
 const debug = process.env.NODE_ENV !== 'production'
+const getDefaultState = () => {
+  return {
+    loader: false,
+    user: null,
+    availableLanguages: null,
+    availableStates: null,
+    allLanguages: null,
+    dashboardContent: null,
+    calendarInit: null
+  }
+}
 
 const apiClient = axios.create({
   baseURL: '/api',
@@ -72,16 +83,11 @@ apiClient.interceptors.response.use(
 
 export default (router) => {
   const store = new Vuex.Store({
-    state: {
-      loader: false,
-      user: null,
-      availableLanguages: null,
-      availableStates: null,
-      allLanguages: null,
-      dashboardContent: null,
-      calendarInit: null
-    },
+    state: getDefaultState(),
     mutations: {
+      RESET_STATE (state) {
+        Object.assign(state, getDefaultState())
+      },
       commitLoader (state, data) {
         state.loader = data
       },
@@ -105,6 +111,9 @@ export default (router) => {
       }
     },
     actions: {
+      resetState ({ commit }) {
+        commit('RESET_STATE')
+      },
       updateLoader (context, payload) {
         context.commit('commitLoader', payload)
       },
@@ -115,7 +124,7 @@ export default (router) => {
           store.$router.push({ name: 'dashboard1.home' })
           return data
         } catch (error) {
-          return { error }
+          return error.response.data
         }
       },
       async resetPassword ({ commit }, { emailAddress }) {
@@ -123,7 +132,7 @@ export default (router) => {
           const { data } = await apiClient.post(RESET_PASSWORD_ENDPOINT, { emailAddress })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async logout ({ commit }) {
@@ -131,7 +140,7 @@ export default (router) => {
           const { data } = await apiClient.get(LOGOUT_ENDPOINT)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async confirmPasswordChange ({ commit }, { emailAddress, otp, password }) {
@@ -139,7 +148,7 @@ export default (router) => {
           const { data } = await apiClient.post(CONFIRM_PASSWORD_CHANGE_ENDPOINT, { emailAddress, otp, password })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async verifySignature ({ commit }, { signature, userData }) {
@@ -147,7 +156,7 @@ export default (router) => {
           const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async newUserSignup ({ commit }, { userDetails }) {
@@ -155,7 +164,7 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { userDetails })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async newMediatorSignup ({ commit }, { userDetails }) {
@@ -163,7 +172,7 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_MEDIATOR_SIGNUP_ENDPOINT, { userDetails })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async saveNote ({ commit }, { content, id }) {
@@ -171,7 +180,7 @@ export default (router) => {
           const { data } = await apiClient.post(SAVE_NOTE_ENDPOINT, { content, id })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async googleAuth ({ commit }) {
@@ -179,7 +188,7 @@ export default (router) => {
           const { data } = await apiClient.get(GOOGLE_AUTH_ENDPOINT)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async newCalendarEvent ({ commit }, { event }) {
@@ -187,7 +196,7 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_CALENDAR_EVENT_ENDPOINT, { ...event })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
 
@@ -196,7 +205,7 @@ export default (router) => {
           const { data } = await apiClient.get(GET_USER_DATA_ENDPOINT)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getDashboardContent ({ state, commit }) {
@@ -208,7 +217,7 @@ export default (router) => {
           commit('setDashboardContent', data)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async deleteNote ({ commit }, { id }) {
@@ -216,7 +225,7 @@ export default (router) => {
           const { data } = await apiClient.post(DELETE_NOTE_ENDPOINT, { id })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async updateInactiveUsers ({ commit }, { isActive, caseId, userId, caseType }) {
@@ -224,7 +233,7 @@ export default (router) => {
           const { data } = await apiClient.post(UPDATE_INACTIVE_USER_ENDPOINT, { isActive, caseId, userId, caseType })
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async isEmailExist ({ commit }, { emailAddress }) {
@@ -232,7 +241,7 @@ export default (router) => {
           const { data } = await apiClient.get(`${IS_EMAIL_EXIST_ENDPOINT}?email=${encodeURIComponent(emailAddress)}`)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getCalendarInit ({ commit, state }) {
@@ -244,7 +253,7 @@ export default (router) => {
           commit('setCalendarInit', data)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getInactiveUsers ({ commit }, { page, type }) {
@@ -252,7 +261,7 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}`)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getMyCases ({ commit }, { page }) {
@@ -260,7 +269,7 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_MY_CASES_ENDPOINT}?page=${encodeURIComponent(page)}`)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getAllLanguages ({ state, commit }) {
@@ -279,7 +288,7 @@ export default (router) => {
           commit('setAllLanguages', jsonData)
           return jsonData
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getAvailableLanguages ({ state, commit }) {
@@ -292,7 +301,7 @@ export default (router) => {
           commit('setAvailableLanguages', data)
           return data
         } catch (error) {
-          return { error }
+          return error
         }
       },
       async getStates ({ state, commit }) {
@@ -311,7 +320,7 @@ export default (router) => {
           commit('setAvailableStates', jsonData)
           return jsonData
         } catch (error) {
-          return { error }
+          return error
         }
       }
     },

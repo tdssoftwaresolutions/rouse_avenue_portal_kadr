@@ -11,7 +11,7 @@
       <div class="mb-3 position-relative">
         <label for="exampleInputPassword1">Password</label>
         <a href="#" @click="onClickForgotPassword" style="float:right">Forgot password?</a>
-        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" @keyup.enter="onClickLogin" >
         <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility" :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
       </div>
       <div class="d-inline-block w-100" style="display:none;">
@@ -85,6 +85,7 @@ export default {
       if (response.errorCode) {
         this.showAlert(response.message, 'danger')
       }
+      this.$store.dispatch('resetState')
       this.loading = false
     },
     onClickSignUp () {

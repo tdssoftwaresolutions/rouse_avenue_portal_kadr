@@ -6,7 +6,7 @@
         <div class="top-logo">
           <router-link :to="homeURL">
             <img :src="logo" class="img-fluid" alt="logo">
-            <span>Sofbox</span>
+            <span>KADR</span>
           </router-link>
         </div>
       </div>
@@ -27,7 +27,7 @@
             <div class="line-menu half end"></div>
           </div>
         </div>
-        <b-collapse id="nav-collapse" is-nav>
+        <b-collapse id="nav-collapse" is-nav style="display: flex !important;justify-content: flex-end;">
           <slot name="responsiveRight" />
         </b-collapse>
         <slot name="right" />

@@ -153,6 +153,114 @@ class Helper {
     })
   }
 
+  static async getClientCases (prisma, clientId, page) {
+    console.log(clientId)
+    // const today = new Date()
+    // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+    // const endOfToday = new Date(today.setHours(23, 59, 59, 999))
+    const perPage = 10
+
+    // Calculate the number of items to skip
+    const skip = (page - 1) * perPage
+    return prisma.cases.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              { first_party: clientId },
+              { second_party: clientId }
+            ]
+          },
+          {
+            OR: [
+              { status: 'New' },
+              { status: 'In_Progress' }
+            ]
+          }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      skip, // Skip items for pagination
+      take: perPage, // Limit the number of items per page
+      select: {
+        id: true,
+        description: true,
+        category: true,
+        case_type: true,
+        caseId: true,
+        evidence_document_url: true,
+        status: true,
+        user_cases_first_partyTouser: {
+          select: {
+            id: true,
+            preferred_languages: true,
+            name: true,
+            state: true,
+            city: true
+          }
+        },
+        user_cases_mediatorTouser: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        user_cases_second_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            state: true,
+            city: true
+          }
+        },
+        events: {
+          orderBy: {
+            created_at: 'desc'
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            start_datetime: true,
+            end_datetime: true,
+            type: true,
+            meeting_link: true
+          }
+        }
+      }
+    })
+  }
+
+  static getEventsForToday (cases) {
+    const today = new Date()
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0)) // Start of today
+    const endOfToday = new Date(today.setHours(23, 59, 59, 999)) // End of today
+
+    // Iterate over the cases array and filter events scheduled for today
+    return cases.flatMap(caseItem => {
+      // Filter events that are within today's date range
+      const eventsToday = caseItem.events.filter(event => {
+        const eventStart = new Date(event.start_datetime)
+        const eventEnd = new Date(event.end_datetime)
+
+        // Check if event start or end time is today
+        return eventStart >= startOfToday && eventEnd <= endOfToday
+      })
+
+      // Return the filtered events along with required case details
+      return eventsToday.map(event => ({
+        ...event,
+        caseId: caseItem.caseId,
+        caseType: caseItem.case_type,
+        caseFirstPartyName: caseItem.user_cases_first_partyTouser?.name,
+        caseSecondPartyName: caseItem.user_cases_second_partyTouser?.name,
+        case_id: caseItem.id // case.id if it's different from caseId
+      }))
+    })
+  }
+
   static async getMediatorCases (prisma, mediatorId, page) {
     // const today = new Date()
     // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
