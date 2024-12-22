@@ -5,15 +5,15 @@
         <div v-if="step === 1">
             <div class="mb-3">
                 <label for="name">Full Name</label>
-                <input type="text" class="form-control capitalize-first-word" id="name" v-model="formData.name" placeholder="Your Full Name" />
+                <input type="text" class="form-control capitalize-first-word" :disabled="existingUser"  id="name" v-model="formData.name" placeholder="Your Full Name" />
             </div>
             <div class="mb-3">
                 <label for="email">Email Address</label>
-                <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="Enter Email" />
+                <input type="email" class="form-control" :disabled="existingUser" id="email" v-model="formData.email" placeholder="Enter Email" />
             </div>
             <div class="mb-3">
                 <label for="phone">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
+                <input type="tel" class="form-control" :disabled="existingUser" id="phone" v-model="formData.phone" placeholder="Phone Number" />
             </div>
             <div class="mb-3">
                 <label for="language">Preferred Language</label>
@@ -43,8 +43,9 @@
             </div>
             <div class="d-flex justify-content-between">
                 <div>
-                <button type="button" class="btn btn-secondary" @click="prevStep(1)">Previous</button>
-                <button type="button" class="btn btn-primary ml" @click="nextStep(1)">Next</button>
+                  <button type="button" class="btn btn-secondary" @click="prevStep(1)">Previous</button>
+                  <button type="button" class="btn btn-primary ml" @click="nextStep(1)" v-if="existingUser === false">Next</button>
+                  <button type="button" class="btn btn-primary ml" @click="submitClientForm" v-else>Submit</button>
                 </div>
                 <div class="align-self-center">
                 <span class="dark-color d-inline-block line-height-2">
@@ -119,7 +120,8 @@ export default {
     Alert, Spinner
   },
   props: {
-    states: []
+    states: [],
+    defaultUser: null
   },
   data () {
     return {
@@ -148,11 +150,18 @@ export default {
         type: 'primary'
       },
       loading: false,
+      existingUser: false,
       availableLanguges: {}
     }
   },
   mounted () {
     this.loadAvailableLanguages()
+    if (this.defaultUser) {
+      this.existingUser = true
+      this.formData.name = this.defaultUser?.name
+      this.formData.email = this.defaultUser?.email
+      this.formData.phone = this.defaultUser?.phone
+    }
   },
   methods: {
     showAlert (message, type) {
@@ -182,51 +191,51 @@ export default {
         this.availableLanguges = response
       }
     },
-    async nextStep (currentStep) {
-      if (currentStep === 1) {
-        if (this.formData.name.trim() === '') {
-          this.showAlert('Enter your full name', 'danger')
-          return
-        }
-        if (this.formData.email.trim() === '') {
-          this.showAlert('Enter email address', 'danger')
-          return
-        }
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-        if (!emailPattern.test(this.formData.email)) {
-          this.showAlert('Invalid email address', 'danger')
-          return
-        }
-        if (this.formData.phone.trim() === '') {
-          this.showAlert('Enter phone number', 'danger')
-          return
-        }
-        const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
-        if (!phonePattern.test(this.formData.phone)) {
-          this.showAlert('Enter valid phone number', 'danger')
-          return
-        }
-        if (this.formData.preferredLanguage.trim() === '') {
-          this.showAlert('Select your preferred language', 'danger')
-          return
-        }
-        if (this.formData.state.trim() === '') {
-          this.showAlert('Select state', 'danger')
-          return
-        }
-        if (this.formData.city.trim() === '') {
-          this.showAlert('Enter city', 'danger')
-          return
-        }
-        if (this.formData.pincode.trim() === '') {
-          this.showAlert('Enter pincode', 'danger')
-          return
-        }
-        const pinCodePattern = /^[1-9][0-9]{5}$/
-        if (!pinCodePattern.test(this.formData.pincode)) {
-          this.showAlert('Enter valid pincode', 'danger')
-          return
-        }
+    async page1Validation () {
+      if (this.formData.name.trim() === '') {
+        this.showAlert('Enter your full name', 'danger')
+        return false
+      }
+      if (this.formData.email.trim() === '') {
+        this.showAlert('Enter email address', 'danger')
+        return false
+      }
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (!emailPattern.test(this.formData.email)) {
+        this.showAlert('Invalid email address', 'danger')
+        return false
+      }
+      if (this.formData.phone.trim() === '') {
+        this.showAlert('Enter phone number', 'danger')
+        return false
+      }
+      const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
+      if (!phonePattern.test(this.formData.phone)) {
+        this.showAlert('Enter valid phone number', 'danger')
+        return false
+      }
+      if (this.formData.preferredLanguage.trim() === '') {
+        this.showAlert('Select your preferred language', 'danger')
+        return false
+      }
+      if (this.formData.state.trim() === '') {
+        this.showAlert('Select state', 'danger')
+        return false
+      }
+      if (this.formData.city.trim() === '') {
+        this.showAlert('Enter city', 'danger')
+        return false
+      }
+      if (this.formData.pincode.trim() === '') {
+        this.showAlert('Enter pincode', 'danger')
+        return false
+      }
+      const pinCodePattern = /^[1-9][0-9]{5}$/
+      if (!pinCodePattern.test(this.formData.pincode)) {
+        this.showAlert('Enter valid pincode', 'danger')
+        return false
+      }
+      if (this.existingUser === false) {
         this.loading = true
         const response = await this.$store.dispatch('isEmailExist', {
           emailAddress: this.formData.email
@@ -234,36 +243,48 @@ export default {
         this.loading = false
         if (response.success) {
           this.showAlert('Email address already exist, please login instead.', 'danger')
-          return
+          return false
         }
-      } else if (currentStep === 2) {
-        if (this.formData.description.trim() === '') {
-          this.showAlert('Enter complaint description', 'danger')
-          return
-        }
-        if (this.formData.category.trim() === '') {
-          this.showAlert('Enter complaint category', 'danger')
-          return
-        }
-        if (this.formData.evidence) {
-          const allowedTypes = [
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'image/jpeg',
-            'image/png'
-          ]
-          const maxSize = 2 * 1024 * 1024
+      }
+      return true
+    },
+    page2Validation () {
+      if (this.formData.description.trim() === '') {
+        this.showAlert('Enter complaint description', 'danger')
+        return false
+      }
+      if (this.formData.category.trim() === '') {
+        this.showAlert('Enter complaint category', 'danger')
+        return false
+      }
+      if (this.formData.evidence) {
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'image/jpeg',
+          'image/png'
+        ]
+        const maxSize = 2 * 1024 * 1024
 
-          if (!allowedTypes.includes(this.formData.evidence.type)) {
-            this.showAlert('Invalid file type. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
-            return
-          }
-          if (this.formData.evidence.size > maxSize) {
-            this.showAlert('File size exceeds 2MB.', 'danger')
-            return
-          }
+        if (!allowedTypes.includes(this.formData.evidence.type)) {
+          this.showAlert('Invalid file type. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
+          return false
         }
+        if (this.formData.evidence.size > maxSize) {
+          this.showAlert('File size exceeds 2MB.', 'danger')
+          return false
+        }
+      }
+      return true
+    },
+    async nextStep (currentStep) {
+      if (currentStep === 1) {
+        const isPage1Valid = await this.page1Validation()
+        if (!isPage1Valid) return
+      } else if (currentStep === 2) {
+        const isPage2Valid = await this.page2Validation()
+        if (!isPage2Valid) return
       }
       this.step++
     },
@@ -289,32 +310,37 @@ export default {
       }
     },
     async submitClientForm () {
-      if (this.formData.oppositeName.trim() === '') {
-        this.showAlert('Enter opposite party name', 'danger')
-        return
+      if (this.existingUser === false) {
+        if (this.formData.oppositeName.trim() === '') {
+          this.showAlert('Enter opposite party name', 'danger')
+          return
+        }
+        if (this.formData.oppositeEmail.trim() === '') {
+          this.showAlert('Enter opposite party email', 'danger')
+          return
+        }
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        if (!emailPattern.test(this.formData.oppositeEmail)) {
+          this.showAlert('Invalid email address', 'danger')
+          return
+        }
+        if (this.formData.oppositePhone.trim() === '') {
+          this.showAlert('Enter opposite party phone', 'danger')
+          return
+        }
+        const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
+        if (!phonePattern.test(this.formData.oppositePhone)) {
+          this.showAlert('Enter valid phone number', 'danger')
+          return
+        }
+      } else {
+        const isValid = await this.page1Validation()
+        if (!isValid) return
       }
-      if (this.formData.oppositeEmail.trim() === '') {
-        this.showAlert('Enter opposite party email', 'danger')
-        return
-      }
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-      if (!emailPattern.test(this.formData.oppositeEmail)) {
-        this.showAlert('Invalid email address', 'danger')
-        return
-      }
-      if (this.formData.oppositePhone.trim() === '') {
-        this.showAlert('Enter opposite party phone', 'danger')
-        return
-      }
-      const phonePattern = /^(?:\+91|0)?[789]\d{9}$/
-      if (!phonePattern.test(this.formData.oppositePhone)) {
-        this.showAlert('Enter valid phone number', 'danger')
-        return
-      }
-
       this.loading = true
       const response = await this.$store.dispatch('newUserSignup', {
-        userDetails: this.formData
+        userDetails: this.formData,
+        existingUser: this.existingUser
       })
       if (response.errorCode) {
         this.showAlert(response.message, 'danger')

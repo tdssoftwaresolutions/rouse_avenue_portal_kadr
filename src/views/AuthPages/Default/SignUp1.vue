@@ -16,7 +16,7 @@
         </div>
         <div v-if="step === 1">
           <!--CLIENT-->
-          <Sign-up-client :states="states" @onBack="onClickBack" v-if="userType === 'client'"></Sign-up-client>
+          <Sign-up-client :defaultUser="defaultUser" :states="states" @onBack="onClickBack" v-if="userType === 'client'"></Sign-up-client>
           <!---MEDIATOR-->
           <Sign-up-mediator :states="states" @onBack="onClickBack" v-else></Sign-up-mediator>
         </div>
@@ -38,11 +38,28 @@ export default {
     return {
       states: [],
       step: 0,
-      userType: ''
+      userType: '',
+      defaultUser: null
     }
   },
-  mounted () {
+  async mounted () {
     this.loadStates()
+    const queryParams = new URLSearchParams(window.location.search)
+    const requestId = queryParams.get('id')
+    if (requestId) {
+      const response = await this.$store.dispatch('getExistingUser', { token: requestId })
+      if (response.errorCode) {
+        this.showAlert(response.message, 'danger')
+      } else {
+        this.step = 1
+        this.userType = 'client'
+        this.defaultUser = {
+          name: response.name,
+          email: response.email,
+          phone: response.phone_number
+        }
+      }
+    }
   },
   methods: {
     showAlert (message, type) {

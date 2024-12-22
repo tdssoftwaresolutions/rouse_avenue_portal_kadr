@@ -172,9 +172,9 @@ export default {
     return {
       categoryOptions: [
         { value: null, text: 'Please select type' },
-        { value: 'mediation', text: 'Mediation' },
-        { value: 'arbitrator', text: 'Arbitrator' },
-        { value: 'counsellor', text: 'Counsellor' }
+        { value: 'Mediation', text: 'Mediation' },
+        { value: 'Arbitrator', text: 'Arbitrator' },
+        { value: 'Counsellor', text: 'Counsellor' }
       ],
       currentPage: 1,
       perPage: 10,

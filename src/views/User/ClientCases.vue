@@ -21,7 +21,7 @@
                 <template v-slot:body>
                   <b-row>
                     <b-col lg="3" md="12">
-                      <iq-card class="iq-profile-card text-center">
+                      <iq-card class="iq-profile-card text-center" v-if="selectedCase.user_cases_mediatorTouser">
                         <template v-slot:headerTitle>
                           <h4 class="card-title">Assigned Mediator</h4>
                         </template>
@@ -33,7 +33,7 @@
                           </div>
                         </template>
                       </iq-card>
-                      <iq-card v-if="userStep == 2">
+                      <iq-card v-if="selectedCase.sub_status == 'Pending Payment'">
                         <template v-slot:headerTitle>
                           <h4 class="card-title">Payment</h4>
                           </template>
@@ -216,6 +216,21 @@
                             </div>
                             <div class="data-row">
                                 <div class="col-6">
+                                    <div class="data-title">Case Status</div>
+                                    <div>
+                                      <b-button pill variant="primary" class="mb-3 ms-1">{{ getFormattedLabel(selectedCase.status) }}</b-button>
+                                    </div>
+                                    <div></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="data-title">Case Sub Status</div>
+                                    <div>
+                                      <b-button pill variant="primary" class="mb-3 ms-1">{{ selectedCase.sub_status }}</b-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-row">
+                                <div class="col-6">
                                     <div class="data-title">Case Category</div>
                                     <div>{{ selectedCase.category }}</div>
                                 </div>
@@ -298,6 +313,7 @@
 <script>
 import SignaturePad from 'signature_pad'
 import { sofbox } from '../../config/pluginInit'
+
 export default {
   name: 'ProfileEdit',
   props: {
@@ -323,6 +339,9 @@ export default {
     }
   },
   methods: {
+    getFormattedLabel (text) {
+      return this.caseStatusMapping[text] || text
+    },
     adjustCanvasSize (canvas) {
       const ratio = Math.max(window.devicePixelRatio || 1, 1)
       if (canvas) {
@@ -341,12 +360,28 @@ export default {
     closePaymentModal () {
       this.showPaymentModal = false
     },
-    processPayment () {
+    async processPayment () {
       alert(
         `Payment Successful! Transaction ID: ${this.transactionId}`
       )
-      this.userStep = 5
-      this.$cookies.set('USERSTEP', 5)
+      const payload = {
+        paymentId: this.transactionId,
+        clientId: this.userid,
+        caseId: this.selectedCase.id,
+        success: true,
+        amount: 1000,
+        currency: 'Rs',
+        reason: 'Mediation payment',
+        paymentMethod: 'Credit Card',
+        referenceId: '1298s7A'
+      }
+      const response = await this.$store.dispatch('setClientPayment', { payload })
+      if (response.error) {
+      } else {
+
+      }
+      // this.userStep = 5
+      // this.$cookies.set('USERSTEP', 5)
       for (let i = 0; i < this.userStep; i++) {
         this.timelineItems[i].color = 'success'
       }
@@ -408,6 +443,17 @@ export default {
   },
   data () {
     return {
+      caseStatusMapping: {
+        New: 'New',
+        In_Progress: 'In Progress',
+        Closed___Success: 'Closed - Success',
+        Closed___No_Success: 'Closed - No Success',
+        Cancelled: 'Cancelled',
+        Failed: 'Failed',
+        Pending: 'Pending',
+        Escalated: 'Escalated',
+        On_Hold: 'On Hold'
+      },
       showAadharModal: false,
       aadharNumber: '',
       aadharOtp: '',

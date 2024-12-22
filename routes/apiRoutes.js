@@ -26,7 +26,8 @@ router.post('/saveNote', authMiddleware, apiController.saveNote)
 router.post('/deleteNote', authMiddleware, apiController.deleteNote)
 router.get('/getCalendarInit', authMiddleware, apiController.getCalendarInit)
 router.get('/getMyCases', authMiddleware, apiController.getMyCases)
-
+router.post('/setClientPayment', authMiddleware, apiController.setClientPayment)
+router.get('/getExistingUser', apiController.getExistingUser)
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)
 router.get('/generatePassword', apiController.generatePassword)

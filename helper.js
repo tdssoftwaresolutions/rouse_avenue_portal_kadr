@@ -1,8 +1,5 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = process.env.SECRET_KEY
-const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY
-const SIGN_SECRET_KEY = process.env.SIGN_SECRET_KEY
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const errorCodes = require('./errorCodes')
@@ -91,6 +88,11 @@ class Helper {
     })
   }
 
+  static generateUniqueSignUpLink (userId) {
+    const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: '30d' })
+    return `${process.env.BASE_URL}/auth/sign-up?id=${token}`
+  }
+
   static getTodaysEvents (casesWithEvents, personalEvents) {
     const caseEvents = casesWithEvents.flatMap(caseItem => {
       return (caseItem.events)
@@ -154,12 +156,7 @@ class Helper {
   }
 
   static async getClientCases (prisma, clientId, page) {
-    console.log(clientId)
-    // const today = new Date()
-    // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
-    // const endOfToday = new Date(today.setHours(23, 59, 59, 999))
     const perPage = 10
-
     // Calculate the number of items to skip
     const skip = (page - 1) * perPage
     return prisma.cases.findMany({
@@ -192,6 +189,7 @@ class Helper {
         caseId: true,
         evidence_document_url: true,
         status: true,
+        sub_status: true,
         user_cases_first_partyTouser: {
           select: {
             id: true,
@@ -441,9 +439,9 @@ class Helper {
     return isMatch
   }
 
-  static verifyToken (token, secretKey) {
+  static verifyToken (token) {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, secretKey, (err, user) => {
+      jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
         if (err) {
           reject(err)
         } else {
@@ -464,7 +462,7 @@ class Helper {
     const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7, token.length) : token
 
     try {
-      const user = await this.verifyToken(tokenWithoutBearer, SECRET_KEY)
+      const user = await this.verifyToken(tokenWithoutBearer)
       req.user = user
       return null
     } catch (err) {
@@ -481,18 +479,18 @@ class Helper {
   static signResponseData (data) {
     // Convert the data to a string, then hash it with the secret key
     const dataString = JSON.stringify(data)
-    const signature = crypto.createHmac('sha256', SIGN_SECRET_KEY)
+    const signature = crypto.createHmac('sha256', process.env.SIGN_SECRET_KEY)
       .update(dataString)
       .digest('hex')
     return signature
   }
 
   static generateAccessToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, SECRET_KEY, { expiresIn: '1d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, process.env.SECRET_KEY, { expiresIn: '1d' })
   }
 
   static generateRefreshToken (user) {
-    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, REFRESH_SECRET_KEY, { expiresIn: '7d' })
+    return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' })
   }
 
   static async sendEmail (emailId, htmlBody) {

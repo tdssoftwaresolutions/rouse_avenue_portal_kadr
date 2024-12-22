@@ -36,25 +36,28 @@ model user {
   cases_cases_mediatorTouser     cases[]        @relation("cases_mediatorTouser")
   events                         events[]
   notes                          notes[]
+  transactions                   transactions[]
 }
 
 model cases {
-  id                            String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  created_at                    DateTime?    @default(now()) @db.Timestamp(0)
-  updated_at                    DateTime?    @default(now()) @db.Timestamp(0)
-  mediator                      String?      @db.Char(36)
-  first_party                   String?      @db.Char(36)
-  second_party                  String?      @db.Char(36)
-  caseId                        String?      @db.Char(50)
-  evidence_document_url         String?      @db.VarChar(255)
-  description                   String?      @db.Text
-  category                      String?      @db.VarChar(100)
-  case_type                     String?      @db.VarChar(255)
-  status                        cases_status @default(New)
-  user_cases_first_partyTouser  user?        @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
-  user_cases_second_partyTouser user?        @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
-  user_cases_mediatorTouser     user?        @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
+  id                            String         @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  created_at                    DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at                    DateTime?      @default(now()) @db.Timestamp(0)
+  mediator                      String?        @db.Char(36)
+  first_party                   String?        @db.Char(36)
+  second_party                  String?        @db.Char(36)
+  caseId                        String?        @db.Char(50)
+  evidence_document_url         String?        @db.VarChar(255)
+  description                   String?        @db.Text
+  category                      String?        @db.VarChar(100)
+  case_type                     String?        @db.VarChar(255)
+  status                        cases_status   @default(New)
+  sub_status                    String?        @db.VarChar(255)
+  user_cases_first_partyTouser  user?          @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
+  user_cases_second_partyTouser user?          @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
+  user_cases_mediatorTouser     user?          @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
   events                        events[]
+  transactions                  transactions[]
 
   @@index([mediator], map: "fk_mediator")
   @@index([first_party], map: "fk_first_party")
@@ -107,6 +110,27 @@ model notes {
   user      user      @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_user_id")
 
   @@index([user_id], map: "fk_user_id")
+}
+
+model transactions {
+  transaction_id   String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  payment_id       String    @db.VarChar(255)
+  client_id        String    @db.Char(36)
+  case_id          String    @db.Char(36)
+  success          Boolean
+  amount           Decimal   @db.Decimal(10, 2)
+  currency         String?   @default("USD") @db.VarChar(10)
+  reason           String?   @db.VarChar(255)
+  payment_method   String?   @db.VarChar(50)
+  reference_id     String?   @db.VarChar(255)
+  transaction_date DateTime? @default(now()) @db.DateTime(0)
+  created_at       DateTime? @default(now()) @db.DateTime(0)
+  updated_at       DateTime? @default(now()) @db.DateTime(0)
+  cases            cases     @relation(fields: [case_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_transactions_case_id")
+  user             user      @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_transactions_user_id")
+
+  @@index([case_id], map: "fk_transactions_case_id")
+  @@index([client_id], map: "fk_transactions_user_id")
 }
 
 enum user_user_type {

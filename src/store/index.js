@@ -20,10 +20,12 @@ const REFRESH_TOKEN_ENDPOINT = '/refresh-token'
 const SAVE_NOTE_ENDPOINT = '/saveNote'
 const GET_DASHBOARD_CONTENT_ENDPOINT = '/getDashboardContent'
 const DELETE_NOTE_ENDPOINT = '/deleteNote'
+const GET_EXISTING_USER_ENDPOINT = '/getExistingUser'
 const GET_CALENDAR_INIT_ENDPOINT = '/getCalendarInit'
 const NEW_CALENDAR_EVENT_ENDPOINT = '/newCalendarEvent'
 const GET_MY_CASES_ENDPOINT = '/getMyCases'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
+const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -48,7 +50,7 @@ const plugin = (router) => (store) => {
 }
 
 apiClient.interceptors.request.use((config) => {
-  const excludedEndpoints = [LOGIN_ENDPOINT, RESET_PASSWORD_ENDPOINT, CONFIRM_PASSWORD_CHANGE_ENDPOINT, NEW_USER_SIGNUP_ENDPOINT, NEW_MEDIATOR_SIGNUP_ENDPOINT, IS_EMAIL_EXIST_ENDPOINT]
+  const excludedEndpoints = [LOGIN_ENDPOINT, GET_EXISTING_USER_ENDPOINT, RESET_PASSWORD_ENDPOINT, CONFIRM_PASSWORD_CHANGE_ENDPOINT, NEW_USER_SIGNUP_ENDPOINT, NEW_MEDIATOR_SIGNUP_ENDPOINT, IS_EMAIL_EXIST_ENDPOINT]
   const isExcluded = excludedEndpoints.some((endpoint) =>
     config.url.includes(endpoint)
   )
@@ -135,6 +137,18 @@ export default (router) => {
           return error
         }
       },
+      async getExistingUser ({ commit }, { token }) {
+        try {
+          const { data } = await apiClient.get(GET_EXISTING_USER_ENDPOINT, {
+            headers: {
+              'Authorization': token
+            }
+          })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
       async logout ({ commit }) {
         try {
           const { data } = await apiClient.get(LOGOUT_ENDPOINT)
@@ -159,9 +173,9 @@ export default (router) => {
           return error
         }
       },
-      async newUserSignup ({ commit }, { userDetails }) {
+      async newUserSignup ({ commit }, { userDetails, existingUser }) {
         try {
-          const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { userDetails })
+          const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { ...userDetails, existingUser })
           return data
         } catch (error) {
           return error
@@ -178,6 +192,14 @@ export default (router) => {
       async saveNote ({ commit }, { content, id }) {
         try {
           const { data } = await apiClient.post(SAVE_NOTE_ENDPOINT, { content, id })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async setClientPayment ({ commit }, { payload }) {
+        try {
+          const { data } = await apiClient.post(SET_CLIENT_PAYMENT_ENDPOINT, { ...payload })
           return data
         } catch (error) {
           return error

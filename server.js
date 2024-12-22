@@ -4,6 +4,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const Helper = require('./helper')
 require('dotenv').config()
 
 app.use(bodyParser.json({ limit: '10mb' }))
@@ -17,6 +18,8 @@ app.use('/api', require('./routes/apiRoutes'))
 
 // Serve static files from the Vue.js app (dist folder)
 app.use(express.static(path.join(__dirname, 'dist')))
+
+console.log(Helper.generateUniqueSignUpLink('1bd5ec11-bf85-11ef-a32f-c843f609474a'))
 
 // Catch-all route to serve the Vue.js app for any other route
 app.get('*', (req, res) => {
