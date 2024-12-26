@@ -16,16 +16,23 @@ app.use(cookieParser())
 
 app.use('/api', require('./routes/apiRoutes'))
 
+// Serve static files from the 'public/home' directory (Static website at kadr.live)
 app.use(express.static(path.join(__dirname, 'public/home')))
-// Serve static files from the Vue.js app (dist folder)
-app.use('/admin/', express.static(path.join(__dirname, 'dist')))
+
+// Serve the Vue.js-based admin app from the 'dist' directory (Dynamic site at kadr.live/admin)
+app.use('/admin', express.static(path.join(__dirname, 'dist')))
+
+// Fallback for all other routes (useful for client-side routing in Vue.js)
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+// Catch-all route for static content (homepage)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', req.url))
+})
 
 console.log(Helper.generateUniqueSignUpLink('1bd5ec11-bf85-11ef-a32f-c843f609474a'))
-
-// Catch-all route to serve the Vue.js app for any other route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'))
-})
 
 // Start the server
 app.listen(port, () => {
