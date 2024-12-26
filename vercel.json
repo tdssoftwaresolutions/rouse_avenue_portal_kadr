@@ -7,10 +7,6 @@
       },
       {
         "source": "/(.*)",
-        "destination": "/public/home/$1"  
-      },
-      {
-        "source": "/admin/(.*)",
         "destination": "/dist/$1"  
       }
     ]

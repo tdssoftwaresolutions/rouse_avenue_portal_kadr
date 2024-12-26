@@ -4,7 +4,7 @@ const path = require('path')
 module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production',
   publicPath: process.env.NODE_ENV === 'production'
-    ? process.env.VUE_BASE_URL + '/admin/'
+    ? process.env.BASE_URL + '/admin/'
     : '/admin/',
   devServer: {
     proxy: {
