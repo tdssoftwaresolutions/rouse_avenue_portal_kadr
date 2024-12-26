@@ -195,6 +195,8 @@ class Helper {
             id: true,
             preferred_languages: true,
             name: true,
+            email: true,
+            phone_number: true,
             state: true,
             city: true
           }
@@ -208,7 +210,10 @@ class Helper {
         user_cases_second_partyTouser: {
           select: {
             id: true,
+            preferred_languages: true,
             name: true,
+            email: true,
+            phone_number: true,
             state: true,
             city: true
           }

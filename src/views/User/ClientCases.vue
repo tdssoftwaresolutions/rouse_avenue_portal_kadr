@@ -29,7 +29,7 @@
                           <div class="iq-team text-center p-0">
                             <img :src="require('../../assets/images/user/07.jpg')"
                                 class="img-fluid mb-3 avatar-120 rounded-circle" alt="">
-                            <h4 class="mb-0">Welcome {{ selectedCase.user_cases_mediatorTouser?.name }}</h4>
+                            <h4 class="mb-0">{{ selectedCase.user_cases_mediatorTouser?.name }}</h4>
                           </div>
                         </template>
                       </iq-card>
@@ -266,7 +266,7 @@
                             <div class="data-row">
                                 <div class="col-6">
                                     <div class="data-title">Phone</div>
-                                    <div>{{ selectedCase.user_cases_second_partyTouser?.phone }}</div>
+                                    <div>{{ selectedCase.user_cases_second_partyTouser?.phone_number }}</div>
                                 </div>
                             </div>
                           </div>
@@ -284,7 +284,7 @@
                             <div class="data-row">
                                 <div class="col-6">
                                     <div class="data-title">Phone</div>
-                                    <div>{{ user_cases_first_partyTouser?.phone }}</div>
+                                    <div>{{ selectedCase.user_cases_first_partyTouser?.phone_number }}</div>
                                 </div>
                             </div>
                           </div>

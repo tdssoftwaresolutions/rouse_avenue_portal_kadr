@@ -7,90 +7,156 @@
             <h4 class='card-title'>Calendar</h4>
           </template>
           <template v-slot:body>
-            <FullCalendar :calendarEvents='events' />
+            <FullCalendar :calendarEvents="events" :eventClick="openDetailsModal" />
           </template>
         </iq-card>
       </b-col>
     </b-row>
-    <b-modal id='eventDetailsModal' title='Event Details' hide-footer>
-      <div v-if='selectedEvent'>
-        <p><strong>Title:</strong> {{ selectedEvent.title }}</p>
-        <p><strong>Start:</strong> {{ selectedEvent.start }}</p>
-        <p v-if='selectedEvent.end'><strong>End:</strong> {{ selectedEvent.end }}</p>
-        <p v-if='selectedEvent.url'><strong>Link:</strong> <a :href='selectedEvent.url' target='_blank'>Open</a></p>
+    <b-modal id="view-appointment-modal-id" cancel-disabled ref="view-appointment-modal" size="lg" title="View Appointment" scrollable hide-footer>
+      <div class="appointment-details" v-if="selectedAppointment != null">
+        <div class="data-row">
+            <div class="col-6">
+                <div class="data-title">Title</div>
+                <div>{{ selectedAppointment.title }}</div>
+            </div>
+            <div class="col-6">
+                <div class="data-title">Meeting link</div>
+                <div> <a :href="selectedAppointment.meetingLink" target="_blank">Join</a></div>
+            </div>
+        </div>
+        <div class="data-row">
+            <div class="col-6">
+                <div class="data-title">Start Time</div>
+                <div>{{ formatDateTime(selectedAppointment.start) }}</div>
+            </div>
+            <div class="col-6">
+                <div class="data-title">End Time</div>
+                <div> {{ formatDateTime(selectedAppointment.end) }} </div>
+            </div>
+        </div>
+
+        <div class="data-row" v-if="selectedAppointment.caseNumber">
+            <div class="col-6">
+                <div class="data-title">Case Id</div>
+                <div>#{{ selectedAppointment.caseNumber }}</div>
+            </div>
+            <div class="col-6">
+
+            </div>
+        </div>
+        <div class="long-description">
+            <div class="data-title">Description</div>
+            <textarea rows="5" readonly :value="selectedAppointment.description">
+            </textarea>
+        </div>
+        <b-button class="btn btn-primary" style="float:right;margin-top: 1rem;background: #0084ff;" @click="$bvModal.hide('view-appointment-modal-id')">Close</b-button>
       </div>
     </b-modal>
   </b-container>
 </template>
 
 <script>
+import { sofbox } from '../../config/pluginInit'
+const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
+
 export default {
   name: 'calendar',
   data () {
     return {
-      selectedEvent: null, // To hold the clicked event details
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2024-12-01',
-          color: '#fc9919'
-        },
-        {
-          title: 'Long Event',
-          start: '2024-12-07',
-          end: '2024-12-10',
-          color: '#ffc107'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2024-12-09T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2024-12-16T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          title: 'Conference',
-          start: '2024-12-11',
-          end: '2024-12-13',
-          color: '#27e3f4'
-        },
-        {
-          title: 'Meeting',
-          start: '2024-12-12T10:30:00',
-          end: '2024-12-12T12:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Lunch',
-          start: '2024-12-12T12:00:00',
-          color: '#777D74'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2024-12-28T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2024-12-28'
-        }
-      ]
+      selectedAppointment: null,
+      events: []
     }
   },
+  mounted () {
+    sofbox.index()
+    this.initCalendar()
+  },
   methods: {
+    async initCalendar () {
+      this.loading = true
+      const response = await this.$store.dispatch('getDashboardContent')
+      if (response.errorCode) {
+
+      } else {
+        response.dashboardContent.myCases.forEach((myCase) => {
+          const caseEvents = myCase.events.map((event) => ({
+            id: event.id,
+            title: event.title,
+            start: event.start_datetime,
+            end: event.end_datetime,
+            color: KADR_EVENT_COLOR,
+            caseId: myCase.id,
+            description: event.description || 'No description provided',
+            type: event.type,
+            meetingLink: event.meeting_link,
+            caseNumber: myCase.caseId
+          }))
+          this.events.push(...caseEvents)
+        })
+      }
+      this.loading = false
+    },
+    formatDateTime (dateString) {
+      const date = new Date(dateString)
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }
+      return new Intl.DateTimeFormat('en-US', options).format(date)
+    },
+    formatTime (dateString) {
+      const date = new Date(dateString)
+      return date.toLocaleString('en-US', {
+        hour: 'numeric', // '6 PM'
+        minute: 'numeric', // '52'
+        hour12: true // 12-hour clock
+      })
+    },
     openDetailsModal (event) {
-      this.selectedEvent = event.event._def.extendedProps
-      this.selectedEvent.title = event.event.title
-      this.selectedEvent.start = event.event.start
-      this.selectedEvent.end = event.event.end
-      this.$bvModal.show('eventDetailsModal')
+      this.selectedAppointment = {
+        title: event.title,
+        start: event.start,
+        end: event.end,
+        link: '',
+        user: '',
+        caseId: event.extendedProps.caseId,
+        type: event.extendedProps.type,
+        id: event.id,
+        meetingLink: event.extendedProps.meetingLink,
+        description: event.extendedProps.description,
+        caseNumber: event.extendedProps.caseNumber
+      }
+      this.$refs['view-appointment-modal'].show()
     }
   }
 }
 </script>
+<style lang="css" scoped>
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .data-row:last-child {
+    border-bottom: none;
+  }
+
+  .data-title {
+    font-weight: bold;
+  }
+  .long-description {
+    padding: 10px;
+  }
+  .long-description textarea {
+    width: 100%;
+    resize: none;
+    border: 0px;
+  }
+</style>

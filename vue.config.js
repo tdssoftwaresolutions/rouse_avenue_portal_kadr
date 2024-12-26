@@ -1,10 +1,11 @@
 const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production',
   publicPath: process.env.NODE_ENV === 'production'
-    ? process.env.VUE_BASE_URL
-    : '/',
+    ? process.env.VUE_BASE_URL + '/admin/'
+    : '/admin/',
   devServer: {
     proxy: {
       '/api': {
@@ -13,11 +14,30 @@ module.exports = {
       }
     }
   },
+  chainWebpack: config => {
+    config.module
+      .rule('eslint')
+      .exclude.add(path.resolve(__dirname, 'public/home'))
+      .end()
+  },
   configureWebpack: {
     plugins: [
       new webpack.ProvidePlugin({
         mapboxgl: 'mapbox-gl'
-      })
+      }),
+      {
+        apply: (compiler) => {
+          compiler.hooks.emit.tapAsync('ExcludeFolderPlugin', (compilation, callback) => {
+            const excludedFolder = 'home'
+            Object.keys(compilation.assets).forEach((asset) => {
+              if (asset.startsWith(excludedFolder)) {
+                delete compilation.assets[asset]
+              }
+            })
+            callback()
+          })
+        }
+      }
     ],
     resolve: {
       alias: {

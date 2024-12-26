@@ -264,7 +264,7 @@ export default {
   },
   async mounted () {
     sofbox.index()
-    this.initCalendar()
+    this.initCalendar(false)
   },
   computed: {
   },
@@ -288,19 +288,22 @@ export default {
       if (response.errorCode) {
 
       } else {
-        const popup = window.open(response.data.url, '_blank', 'width=500,height=600')
+        const ref = this
+        const popup = window.open(response.url, '_blank', 'width=500,height=600')
         const checkPopupClosed = setInterval(() => {
           if (popup.closed) {
             clearInterval(checkPopupClosed)
             console.log('Popup has been closed')
-            this.initCalendar()
+            ref.initCalendar(true)
           }
         }, 500)
       }
     },
-    async initCalendar () {
+    async initCalendar (skipCache) {
+      console.log('init calendar')
       this.loading = true
-      const response = await this.$store.dispatch('getCalendarInit')
+      const response = await this.$store.dispatch('getCalendarInit', { skipCache })
+      console.log(response)
       if (response.errorCode) {
         this.googleAuthError = response.message
         this.$refs['my-modal'].show()

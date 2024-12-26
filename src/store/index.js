@@ -266,9 +266,9 @@ export default (router) => {
           return error
         }
       },
-      async getCalendarInit ({ commit, state }) {
+      async getCalendarInit ({ commit, state }, { skipCache }) {
         try {
-          if (state.calendarInit) {
+          if (!skipCache && state.calendarInit) {
             return state.calendarInit
           }
           const { data } = await apiClient.get(`${GET_CALENDAR_INIT_ENDPOINT}`)

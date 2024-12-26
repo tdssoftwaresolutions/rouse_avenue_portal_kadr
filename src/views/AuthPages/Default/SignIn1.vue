@@ -6,7 +6,7 @@
     <div class="mt-4">
       <div class="mb-3">
         <label for="exampleInputEmail1">Username</label>
-        <input v-model="emailAddress" type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or mobile number">
+        <input v-model="emailAddress" type="email" class="form-control mb-0" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email address">
       </div>
       <div class="mb-3 position-relative">
         <label for="exampleInputPassword1">Password</label>
@@ -74,6 +74,11 @@ export default {
       }
       if (this.password.trim() === '') {
         this.showAlert('Enter password', 'danger')
+        return
+      }
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (!emailPattern.test(this.emailAddress)) {
+        this.showAlert('Invalid email address. Please enter a valid email address in the format \'example@domain.com\'.', 'danger')
         return
       }
 
