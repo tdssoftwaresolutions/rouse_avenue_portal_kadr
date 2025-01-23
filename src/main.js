@@ -10,6 +10,10 @@ import HighchartsVue from 'highcharts-vue'
 import VueCookies from 'vue-cookies'
 import VueScrollProgressBar from '@guillaumebriday/vue-scroll-progress-bar'
 import VueSignaturePad from 'vue-signature-pad'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css' // Snow theme
+import 'quill/dist/quill.bubble.css' // Bubble theme
 
 Vue.use(VueSignaturePad)
 
@@ -25,7 +29,7 @@ Vue.filter('reverse', function (value) {
   return value.slice().reverse()
 })
 Vue.use(HighchartsVue)
-
+Vue.use(VueQuillEditor)
 Vue.use(VueScrollProgressBar)
 Vue.use(VueCookies)
 

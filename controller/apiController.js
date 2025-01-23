@@ -124,6 +124,46 @@ module.exports = {
     ])
     res.json({ success: true, casesWithEvents, total: casesCount, page: 1, perPage: 10 })
   },
+  saveBlog: async function (req, res) {
+    const { blog, status } = req.body
+    const { id } = req.user
+    console.log(blog)
+    console.log(status)
+    console.log(id)
+    helper.saveBlog(prisma, blog, id, status)
+    res.json({ success: true })
+  },
+  getMyBlogs: async function (req, res) {
+    const [myBlogs, blogsCount] = await Promise.all([
+      helper.getMyBlogs(prisma, req.user.id, req.query.page),
+      helper.getBlogsCount(prisma, req.user.id)
+    ])
+    const formattedBlogs = myBlogs.map((blog) => ({
+      id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      author_id: blog.authorId,
+      status: blog.status,
+      created_at: blog.created_at,
+      updated_at: blog.updated_at,
+      categories: blog.blog_categories.map((bt) => ({
+        id: bt.categories.id,
+        name: bt.categories.name
+      })),
+      tags: blog.blog_tags.map((bt) => ({
+        id: bt.tags.id,
+        name: bt.tags.name
+      }))
+    }))
+    res.json({ success: true, formattedBlogs, total: blogsCount, page: 1, perPage: 10 })
+  },
+  getBlogAssets: async function (req, res) {
+    const [blogCategories, blogTags] = await Promise.all([
+      helper.getBlogCategories(prisma),
+      helper.getBlogTags(prisma)
+    ])
+    res.json({ success: true, blogCategories, blogTags })
+  },
   getExistingUser: async function (req, res) {
     const token = req.headers.authorization
     const decryptedContent = await helper.verifyToken(token)
@@ -687,10 +727,11 @@ module.exports = {
   },
   newMediatorSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, mediatorCourseYear, mcpcCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
+      const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, mediatorCourseYear, mcpcCertificateContent, llbCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
 
-      let uploadedFileResponse = null
-      if (mcpcCertificateContent) { uploadedFileResponse = await helper.uploadFile(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
+      let uploadedMCPCFileResponse = null; let uploadedLLbFileResponse = null
+      if (mcpcCertificateContent) { uploadedMCPCFileResponse = await helper.uploadFile(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
+      if (llbCertificateContent) { uploadedLLbFileResponse = await helper.uploadFile(llbCertificateContent, `llb-certificate-${uuidv4()}`) }
 
       await prisma.user.create({
         data: {
@@ -709,8 +750,9 @@ module.exports = {
           llb_university: llbUniversity,
           llb_year: llbYear,
           mediator_course_year: mediatorCourseYear,
-          mcpc_certificate_url: uploadedFileResponse ? uploadedFileResponse.stored_url : '',
-          preferred_area_of_practice: preferredAreaOfPractice,
+          mcpc_certificate_url: uploadedMCPCFileResponse ? uploadedMCPCFileResponse.stored_url : '',
+          llb_certificate_url: uploadedLLbFileResponse ? uploadedLLbFileResponse.stored_url : '',
+          preferred_area_of_practice: JSON.stringify(preferredAreaOfPractice),
           selected_hearing_types: JSON.stringify(selectedHearingTypes),
           bar_enrollment_no: barEnrollmentNo
         }

@@ -16,8 +16,17 @@
                 <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
             </div>
             <div class="mb-3">
-                <label for="language">Preferred Languages</label>
-                <b-form-select  class="form-control" id="language" v-model="formData.preferredLanguages" :options="availableLanguges" multiple :select-size="4" style="height: 80px;"></b-form-select>
+                <label for="language">Preferred Languages (Max 3)</label>
+                <div class="d-flex flex-wrap" style="height: 125px;overflow-y: scroll;">
+                  <div
+                    v-for="(option, index) in availableLanguges"
+                    :key="index"
+                    class="option-card"
+                    :class="{ selected: formData.preferredLanguages.includes(option.value), disabled: formData.preferredLanguages.length >= 3 && !formData.preferredLanguages.includes(option.value) }"
+                    @click="toggleSelection(option)">
+                    {{ option.text }}
+                  </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="state">State</label>
@@ -67,6 +76,16 @@
                 </option>
               </select>
           </div>
+          <div class="mb-3">
+              <label for="llbDegree">Upload LLB Degree Certificate</label>
+              <div class="file-upload">
+              <input type="file" class="form-control-file" id="llbDegree" @change="onUploadLLBDegreeCertificate" />
+              <label for="llbDegree" class="custom-file-upload">
+                  Choose File
+              </label>
+              <span v-if="formData.llbCertificate" class="file-name">{{ formData.llbCertificate.name }}</span>
+              </div>
+          </div>
           <label style="font-weight: bold;margin-bottom: 1rem;margin-top:1rem;">Mediator Course (MCPC)</label>
           <div class="mb-3">
               <label for="mcpcDegreeYear">Year of Completion</label>
@@ -78,10 +97,10 @@
               </select>
           </div>
           <div class="mb-3">
-              <label for="evidence">Upload MCPC Certificate</label>
+              <label for="mcpcCertificate">Upload MCPC Certificate</label>
               <div class="file-upload">
-              <input type="file" class="form-control-file" id="evidence" @change="onUploadMCPCCertificate" />
-              <label for="evidence" class="custom-file-upload">
+              <input type="file" class="form-control-file" id="mcpcCertificate" @change="onUploadMCPCCertificate" />
+              <label for="mcpcCertificate" class="custom-file-upload">
                   Choose File
               </label>
               <span v-if="formData.mcpcCertificate" class="file-name">{{ formData.mcpcCertificate.name }}</span>
@@ -106,16 +125,17 @@
               <input type="text" class="form-control capitalize-first-word" id="barEnrollmentNo" v-model="formData.barEnrollmentNo" placeholder="Bar Enrollment Number" />
             </div>
             <div class="mb-3">
-              <label for="areaOfPractice">Preferred Area of Practice</label>
-              <select class="form-control" id="areaOfPractice" v-model="formData.preferredAreaOfPractice">
-                <option value="" disabled>Select area of expertise</option>
-                <option value="Medation">Medation</option>
-                <option value="Matrimonial">Matrimonial</option>
-                <option value="Civil">Civil</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Labour">Labour</option>
-                <option value="IPR">IPR</option>
-              </select>
+              <label for="areaOfPractice">Preferred Area of Practice  (Max 3)</label>
+              <div class="d-flex flex-wrap" style="height: 60px;overflow-y: scroll;">
+                <div
+                  v-for="(option, index) in availableAreaOfPractice"
+                  :key="index"
+                  class="option-card"
+                  :class="{ selected: formData.preferredAreaOfPractice.includes(option), disabled: formData.preferredAreaOfPractice.length >= 3 && !formData.preferredAreaOfPractice.includes(option) }"
+                  @click="toggleExpertiseSelection(option)">
+                  {{ option }}
+                </div>
+              </div>
             </div>
             <div class="mb-3">
               <label for="areaOfPractice">Available For</label>
@@ -156,6 +176,14 @@
 <script>
 import Alert from '../../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../../components/sofbox/spinner/spinner.vue'
+const allowedTypes = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/jpeg',
+  'image/png'
+]
+const maxSize = 2 * 1024 * 1024
 
 export default {
   name: 'SignUpClient',
@@ -183,7 +211,9 @@ export default {
         mediatorCourseYear: 0,
         mcpcCertificate: null,
         mcpcCertificateContent: null,
-        preferredAreaOfPractice: '',
+        llbCertificate: null,
+        llbCertificateContent: null,
+        preferredAreaOfPractice: [],
         selectedHearingTypes: [],
         barEnrollmentNo: ''
       },
@@ -198,6 +228,13 @@ export default {
         type: 'primary'
       },
       loading: false,
+      availableAreaOfPractice: [
+        'Matrimonial',
+        'Civil',
+        'Commercial',
+        'Labour',
+        'IPR'
+      ],
       availableLanguges: {},
       years: []
     }
@@ -237,8 +274,21 @@ export default {
           console.error('Error reading file:', error)
         }
         reader.readAsDataURL(file)
-        console.log(file)
         this.formData.mcpcCertificate = file
+      }
+    },
+    onUploadLLBDegreeCertificate (event) {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          this.formData.llbCertificateContent = reader.result
+        }
+        reader.onerror = (error) => {
+          console.error('Error reading file:', error)
+        }
+        reader.readAsDataURL(file)
+        this.formData.llbCertificate = file
       }
     },
     async loadAvailableLanguages () {
@@ -252,6 +302,20 @@ export default {
             text: value
           }))
         ]
+      }
+    },
+    toggleSelection (option) {
+      if (this.formData.preferredLanguages.includes(option.value)) {
+        this.formData.preferredLanguages = this.formData.preferredLanguages.filter(item => item !== option.value)
+      } else if (this.formData.preferredLanguages.length < 3) {
+        this.formData.preferredLanguages.push(option.value)
+      }
+    },
+    toggleExpertiseSelection (option) {
+      if (this.formData.preferredAreaOfPractice.includes(option)) {
+        this.formData.preferredAreaOfPractice = this.formData.preferredAreaOfPractice.filter(item => item !== option)
+      } else if (this.formData.preferredAreaOfPractice.length < 3) {
+        this.formData.preferredAreaOfPractice.push(option)
       }
     },
     generateYears () {
@@ -325,24 +389,33 @@ export default {
           this.showAlert('Select LLB Degree Completion Year', 'danger')
           return
         }
-        if (this.formData.mcpcCertificate) {
-          const allowedTypes = [
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'image/jpeg',
-            'image/png'
-          ]
-          const maxSize = 2 * 1024 * 1024
-
-          if (!allowedTypes.includes(this.formData.mcpcCertificate.type)) {
-            this.showAlert('Invalid file type. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
-            return
-          }
-          if (this.formData.mcpcCertificate.size > maxSize) {
-            this.showAlert('File size exceeds 2MB.', 'danger')
-            return
-          }
+        if (!this.formData.llbCertificate) {
+          this.showAlert('Upload the LLB Degree Certificate', 'danger')
+          return
+        }
+        if (!allowedTypes.includes(this.formData.llbCertificate.type)) {
+          this.showAlert('Invalid file type for LLB Degree  Certificate. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
+          return
+        }
+        if (this.formData.llbCertificate.size > maxSize) {
+          this.showAlert('LLB Degree Certificate file size exceeds 2MB.', 'danger')
+          return
+        }
+        if (this.formData.mediatorCourseYear === 0) {
+          this.showAlert('Select MCPC Completion Year', 'danger')
+          return
+        }
+        if (!this.formData.mcpcCertificate) {
+          this.showAlert('Upload the MCPC Certificate', 'danger')
+          return
+        }
+        if (!allowedTypes.includes(this.formData.mcpcCertificate.type)) {
+          this.showAlert('Invalid MCPC Certificate file type. Allowed types: PDF, DOC, DOCX, JPEG, PNG.', 'danger')
+          return
+        }
+        if (this.formData.mcpcCertificate.size > maxSize) {
+          this.showAlert('MCPC Certificate file size exceeds 2MB.', 'danger')
+          return
         }
       }
       this.step++
@@ -359,7 +432,7 @@ export default {
         this.showAlert('Enter bar enrollment number', 'danger')
         return
       }
-      if (this.formData.preferredAreaOfPractice.trim() === '') {
+      if (this.formData.preferredAreaOfPractice.length === 0) {
         this.showAlert('Select your preferred area of practice', 'danger')
         return
       }
@@ -508,4 +581,32 @@ body, html {
   height: 1.25rem;
   margin-top: 0.25rem; /* Proper alignment with label */
 }
+.option-card {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #007bff;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .option-card.selected {
+      background-color: #007bff;
+      color: #fff;
+      border-color: #0056b3;
+    }
+
+    .option-card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .limit-reached {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+    }
 </style>

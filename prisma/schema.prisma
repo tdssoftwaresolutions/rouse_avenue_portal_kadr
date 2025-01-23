@@ -27,10 +27,12 @@ model user {
   llb_year                       Int?           @default(0)
   mediator_course_year           Int?           @default(0)
   mcpc_certificate_url           String?        @db.VarChar(255)
-  preferred_area_of_practice     String?        @db.VarChar(255)
+  preferred_area_of_practice     String?        @db.LongText
   selected_hearing_types         String?        @db.LongText
   bar_enrollment_no              String?        @db.VarChar(255)
   preferred_languages            String?        @db.LongText
+  llb_certificate_url            String?        @db.VarChar(255)
+  blogs                          blogs[]
   cases_cases_first_partyTouser  cases[]        @relation("cases_first_partyTouser")
   cases_cases_second_partyTouser cases[]        @relation("cases_second_partyTouser")
   cases_cases_mediatorTouser     cases[]        @relation("cases_mediatorTouser")
@@ -133,6 +135,53 @@ model transactions {
   @@index([client_id], map: "fk_transactions_user_id")
 }
 
+model blog_categories {
+  blog_id     String     @db.Char(36)
+  category_id String     @db.Char(36)
+  blogs       blogs      @relation(fields: [blog_id], references: [id], onUpdate: Restrict, map: "blog_categories_ibfk_1")
+  categories  categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "blog_categories_ibfk_2")
+
+  @@id([blog_id, category_id])
+  @@index([category_id], map: "category_id")
+}
+
+model blog_tags {
+  blog_id String @db.Char(36)
+  tag_id  String @db.Char(36)
+  blogs   blogs  @relation(fields: [blog_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_1")
+  tags    tags   @relation(fields: [tag_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_2")
+
+  @@id([blog_id, tag_id])
+  @@index([tag_id], map: "tag_id")
+}
+
+model blogs {
+  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  title           String            @db.VarChar(255)
+  content         String            @db.Text
+  author_id       String            @db.Char(36)
+  created_at      DateTime?         @default(now()) @db.DateTime(0)
+  updated_at      DateTime?         @default(now()) @db.DateTime(0)
+  status          blogs_status      @default(Draft)
+  blog_categories blog_categories[]
+  blog_tags       blog_tags[]
+  user            user              @relation(fields: [author_id], references: [id], onUpdate: Restrict, map: "fk_author_id")
+
+  @@index([author_id], map: "fk_author_id")
+}
+
+model categories {
+  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  name            String            @unique(map: "name") @db.VarChar(100)
+  blog_categories blog_categories[]
+}
+
+model tags {
+  id        String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  name      String      @unique(map: "name") @db.VarChar(50)
+  blog_tags blog_tags[]
+}
+
 enum user_user_type {
   ADMIN
   MEDIATOR
@@ -154,4 +203,9 @@ enum cases_status {
   Pending
   Escalated
   On_Hold             @map("On Hold")
+}
+
+enum blogs_status {
+  Draft
+  Published
 }

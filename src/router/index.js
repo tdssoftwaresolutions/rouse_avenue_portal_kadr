@@ -7,6 +7,7 @@ import Default from '../layouts/BlankLayout'
 import Dashboard from '../views/Dashboards/Dashboard1.vue'
 /* Authentic View */
 import AuthLayout1 from '../layouts/AuthLayouts/AuthLayout1'
+import MyBlogs from '../views/Apps/Blog/MyBlogs.vue'
 import SignIn1 from '../views/AuthPages/Default/SignIn1'
 import SignUp1 from '../views/AuthPages/Default/SignUp1'
 import RecoverPassword from '../views/AuthPages/Default/RecoverPassword1'
@@ -50,6 +51,14 @@ const appChildRoute = (prop) => [
     name: prop + '.e-commerce.index',
     meta: { name: 'Product list' },
     component: ECommerceListing
+  }
+]
+
+const blogChildRoutes = (prop) => [
+  {
+    path: 'list',
+    name: prop + '.list',
+    component: MyBlogs
   }
 ]
 
@@ -140,6 +149,12 @@ const routes = [
     name: 'auth1',
     component: AuthLayout1,
     children: authChildRoutes('auth1')
+  },
+  {
+    path: '/blog',
+    name: 'blog',
+    component: Layout1,
+    children: blogChildRoutes('blog')
   },
   {
     path: '/pages',

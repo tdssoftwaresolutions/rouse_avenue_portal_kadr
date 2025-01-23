@@ -35,6 +35,10 @@ app.get('*', (req, res) => {
 console.log(Helper.generateUniqueSignUpLink('1bd5ec11-bf85-11ef-a32f-c843f609474a'))
 
 // Start the server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
+
+server.timeout = 60000 // 60,000 ms = 60 seconds
+server.keepAliveTimeout = 60000 // Keep-alive timeout for connections
+server.headersTimeout = 65000 // Headers timeout should be slightly higher

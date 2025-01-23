@@ -56,7 +56,7 @@
         </div>
         <div v-if="step === 2">
             <div class="mb-3">
-                <label for="description">Complaint Description</label>
+                <label for="description">Describe your dispute in brief</label>
                 <textarea class="form-control" id="description" v-model="formData.description" placeholder="Describe your complaint" style="height:150px"></textarea>
             </div>
             <div class="mb-3">

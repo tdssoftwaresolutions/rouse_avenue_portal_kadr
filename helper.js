@@ -22,7 +22,10 @@ class Helper {
 
   static async uploadFile (fileContent, fileName) {
     try {
-      const response = await axios.post(`${process.env.KADR_WEBSITE_URL}/services/upload.php`, {
+      const axiosInstance = axios.create({
+        timeout: 60000 // 60 seconds
+      })
+      const response = await axiosInstance.post(`${process.env.KADR_WEBSITE_URL}/services/upload.php`, {
         base64string: fileContent,
         filename: fileName
       }, {
@@ -261,6 +264,177 @@ class Helper {
         caseSecondPartyName: caseItem.user_cases_second_partyTouser?.name,
         case_id: caseItem.id // case.id if it's different from caseId
       }))
+    })
+  }
+
+  static async saveBlog (prisma, blogData, authorId, status) {
+    await prisma.$transaction(async (prisma) => {
+      const blog = await prisma.blogs.upsert({
+        where: {
+          id: blogData.id || -1
+        },
+        update: {
+          title: blogData.title, // Fields to update if the record exists
+          content: blogData.content,
+          author_id: authorId,
+          status
+        },
+        create: {
+          title: blogData.title,
+          content: blogData.content,
+          author_id: authorId,
+          status
+        }
+      })
+
+      if (blogData.categories && blogData.categories.length > 0) {
+        const categoryIdsFromRequest = blogData.categories.map((category) => category.id)
+
+        // Fetch existing categories for this blog
+        const existingCategories = await prisma.blog_categories.findMany({
+          where: { blog_id: blog.id }
+        })
+        const existingCategoryIds = existingCategories.map((c) => c.category_id)
+
+        // Add new categories
+        for (const categoryId of categoryIdsFromRequest) {
+          await prisma.blog_categories.upsert({
+            where: {
+              blog_id_category_id: {
+                blog_id: blog.id,
+                category_id: categoryId
+              }
+            },
+            update: {}, // No update needed
+            create: {
+              blog_id: blog.id,
+              category_id: categoryId
+            }
+          })
+        }
+
+        // Remove categories that are no longer in the request
+        const categoryIdsToRemove = existingCategoryIds.filter(
+          (id) => !categoryIdsFromRequest.includes(id)
+        )
+        if (categoryIdsToRemove.length > 0) {
+          await prisma.blog_categories.deleteMany({
+            where: {
+              blog_id: blog.id,
+              category_id: { in: categoryIdsToRemove }
+            }
+          })
+        }
+      }
+      if (blogData.tags && blogData.tags.length > 0) {
+        const newTags = blogData.tags.filter((tag) => tag.id.startsWith('NEW-'))
+        const existingTags = blogData.tags.filter((tag) => !tag.id.startsWith('NEW-'))
+
+        // Create new tags
+        const newTagRecords = await Promise.all(
+          newTags.map(async (tag) => {
+            const existingTag = await prisma.tags.findUnique({
+              where: { name: tag.name }
+            })
+            if (existingTag) {
+              // Reuse the existing tag's ID
+              return existingTag
+            } else {
+              // Create a new tag
+              return prisma.tags.create({
+                data: {
+                  name: tag.name
+                }
+              })
+            }
+          })
+        )
+
+        // Combine new tag IDs with existing ones
+        const tagIdsFromRequest = [
+          ...newTagRecords.map((tag) => tag.id),
+          ...existingTags.map((tag) => tag.id)
+        ]
+
+        // Fetch existing tags for this blog
+        const existingTagsForBlog = await prisma.blog_tags.findMany({
+          where: { blog_id: blog.id }
+        })
+        const existingTagIds = existingTagsForBlog.map((t) => t.tag_id)
+
+        // Add new tags
+        for (const tagId of tagIdsFromRequest) {
+          await prisma.blog_tags.upsert({
+            where: {
+              blog_id_tag_id: {
+                blog_id: blog.id,
+                tag_id: tagId
+              }
+            },
+            update: {}, // No update needed
+            create: {
+              blog_id: blog.id,
+              tag_id: tagId
+            }
+          })
+        }
+
+        // Remove tags that are no longer in the request
+        const tagIdsToRemove = existingTagIds.filter(
+          (id) => !tagIdsFromRequest.includes(id)
+        )
+        if (tagIdsToRemove.length > 0) {
+          await prisma.blog_tags.deleteMany({
+            where: {
+              blog_id: blog.id,
+              tag_id: { in: tagIdsToRemove }
+            }
+          })
+        }
+      }
+    })
+  }
+
+  static async getMyBlogs (prisma, authorId, page) {
+    const perPage = 10
+    const skip = (page - 1) * perPage
+    return prisma.blogs.findMany({
+      where: {
+        author_id: authorId // Filter by the provided authorId
+      },
+      orderBy: {
+        created_at: 'desc' // Sort by created_at in descending order
+      },
+      skip, // Skip records for pagination
+      take: perPage, // Limit the number of records per page
+      include: {
+        blog_categories: {
+          include: {
+            categories: true // Fetch category details
+          }
+        },
+        blog_tags: {
+          include: {
+            tags: true // Fetch tag details
+          }
+        }
+      }
+    })
+  }
+
+  static async getBlogTags (prisma) {
+    return prisma.tags.findMany()
+  }
+
+  static async getBlogCategories (prisma) {
+    return prisma.categories.findMany()
+  }
+
+  static async getBlogsCount (prisma, authorId) {
+    return prisma.blogs.count({
+      where: {
+        author_id: authorId
+      }
     })
   }
 

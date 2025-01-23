@@ -24,6 +24,9 @@ const GET_EXISTING_USER_ENDPOINT = '/getExistingUser'
 const GET_CALENDAR_INIT_ENDPOINT = '/getCalendarInit'
 const NEW_CALENDAR_EVENT_ENDPOINT = '/newCalendarEvent'
 const GET_MY_CASES_ENDPOINT = '/getMyCases'
+const GET_MY_BLOGS_ENDPOINT = '/getMyBlogs'
+const SAVE_BLOG_ENDPOINT = '/saveBlog'
+const GET_BLOG_ASSETS = '/getBlogAssets'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
 const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
 const debug = process.env.NODE_ENV !== 'production'
@@ -289,6 +292,30 @@ export default (router) => {
       async getMyCases ({ commit }, { page }) {
         try {
           const { data } = await apiClient.get(`${GET_MY_CASES_ENDPOINT}?page=${encodeURIComponent(page)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getMyBlogs ({ commit }, { page }) {
+        try {
+          const { data } = await apiClient.get(`${GET_MY_BLOGS_ENDPOINT}?page=${encodeURIComponent(page)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getBlogAssets ({ commit }) {
+        try {
+          const { data } = await apiClient.get(GET_BLOG_ASSETS)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async saveBlog  ({ commit }, { blog, status }) {
+        try {
+          const { data } = await apiClient.post(SAVE_BLOG_ENDPOINT, { blog, status })
           return data
         } catch (error) {
           return error
