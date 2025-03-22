@@ -4,7 +4,6 @@ const app = express()
 const port = process.env.PORT || 3000
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const Helper = require('./helper')
 require('dotenv').config()
 
 app.use(bodyParser.json({ limit: '10mb' }))
@@ -31,8 +30,6 @@ app.get('/admin/*', (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', req.url))
 })
-
-console.log(Helper.generateUniqueSignUpLink('1bd5ec11-bf85-11ef-a32f-c843f609474a'))
 
 // Start the server
 const server = app.listen(port, () => {

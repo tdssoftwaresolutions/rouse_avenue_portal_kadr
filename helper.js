@@ -7,6 +7,18 @@ const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 
+const CaseTypes = Object.freeze({
+  IN_PROGRESS: 'in_progress',
+  CANCELLED: 'cancelled',
+  CLOSED_NO_SUCCESS: 'closed_no_success',
+  CLOSED_SUCCESS: 'closed_success',
+  ESCALATED: 'escalated',
+  FAILED: 'failed',
+  NEW: 'new',
+  ON_HOLD: 'on_hold',
+  PENDING: 'pending'
+})
+
 class Helper {
   static generateRandomPassword (length = 12) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -84,8 +96,8 @@ class Helper {
       where: {
         mediator: mediatorId,
         OR: [
-          { status: 'New' },
-          { status: 'In_Progress' }
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
         ]
       }
     })
@@ -93,7 +105,7 @@ class Helper {
 
   static generateUniqueSignUpLink (userId) {
     const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: '30d' })
-    return `${process.env.BASE_URL}/auth/sign-up?id=${token}`
+    return `${process.env.BASE_URL}/admin/auth/sign-up?id=${token}`
   }
 
   static getTodaysEvents (casesWithEvents, personalEvents) {
@@ -158,6 +170,64 @@ class Helper {
     })
   }
 
+  static async getClientNotifications (prisma, clientId) {
+    return prisma.notifications.findMany({
+      where: {
+        user_id: clientId
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      select: {
+        title: true,
+        description: true,
+        created_at: true
+      }
+    })
+  }
+
+  static async getCaseEvents (prisma) {
+    return prisma.case_events.findMany({
+      orderBy: {
+        sequence: 'asc'
+      },
+      select: {
+        id: true,
+        status_id: true,
+        sub_status_id: true,
+        title: true,
+        description: true,
+        sequence: true
+      }
+    })
+  }
+
+  static mergeCaseHistory (myCases, caseEvents) {
+    return myCases.map(caseItem => {
+      const caseHistoryMap = new Map(
+        caseItem.case_history.map(history => [history.case_event_id, history.created_at])
+      )
+
+      // Find the sequence number of the current event
+      let currentSequence = null
+      caseEvents.forEach(event => {
+        if (`${event.status_id}__${event.sub_status_id}` === `${caseItem.case_statuses.id}__${caseItem.case_sub_statuses.id}`) {
+          currentSequence = event.sequence - 1
+        }
+      })
+      console.log(caseHistoryMap)
+      console.log(caseEvents)
+      // Merge caseEvents with caseHistory
+      const updatedCaseHistory = caseEvents.map(event => ({
+        ...event,
+        created_date: caseHistoryMap.get(event.id) || null,
+        completed: currentSequence !== null && event.sequence <= currentSequence
+      }))
+
+      return { ...caseItem, case_history: updatedCaseHistory }
+    })
+  }
+
   static async getClientCases (prisma, clientId, page) {
     const perPage = 10
     // Calculate the number of items to skip
@@ -173,8 +243,8 @@ class Helper {
           },
           {
             OR: [
-              { status: 'New' },
-              { status: 'In_Progress' }
+              { status: CaseTypes.NEW },
+              { status: CaseTypes.IN_PROGRESS }
             ]
           }
         ]
@@ -191,8 +261,18 @@ class Helper {
         case_type: true,
         caseId: true,
         evidence_document_url: true,
-        status: true,
-        sub_status: true,
+        case_statuses: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        case_sub_statuses: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
         user_cases_first_partyTouser: {
           select: {
             id: true,
@@ -234,6 +314,16 @@ class Helper {
             type: true,
             meeting_link: true
           }
+        },
+        case_history: {
+          orderBy: {
+            created_at: 'desc'
+          },
+          select: {
+            id: true,
+            case_event_id: true,
+            created_at: true
+          }
         }
       }
     })
@@ -271,7 +361,7 @@ class Helper {
     await prisma.$transaction(async (prisma) => {
       const blog = await prisma.blogs.upsert({
         where: {
-          id: blogData.id || -1
+          id: blogData.id || '-1'
         },
         update: {
           title: blogData.title, // Fields to update if the record exists
@@ -395,6 +485,102 @@ class Helper {
     })
   }
 
+  static async getBlogCountPerCategory (prisma) {
+    return prisma.categories.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: {
+            blog_categories: true
+          }
+        }
+      }
+    })
+  }
+
+  static async getTop3LatestBlogs (prisma) {
+    return prisma.blogs.findMany({
+      orderBy: {
+        created_at: 'desc'
+      },
+      take: 3
+    })
+  }
+
+  static async getBlog (prisma, blogId) {
+    return prisma.blogs.findUnique({
+      where: {
+        id: blogId
+      },
+      include: {
+        user: true,
+        blog_categories: {
+          include: {
+            categories: true // Fetch category details
+          }
+        },
+        blog_tags: {
+          include: {
+            tags: true // Fetch tag details
+          }
+        }
+      }
+    })
+  }
+
+  static async getAllBlogs (prisma, page, search, category, author, tag) {
+    const perPage = 10
+    const skip = (page - 1) * perPage
+    const filters = {
+      status: 'Published'
+    }
+    if (search) {
+      filters.OR = [
+        { content: { contains: search } },
+        { title: { contains: search } }
+      ]
+    }
+    if (category) {
+      filters.blog_categories = {
+        some: {
+          category_id: category
+        }
+      }
+    }
+    if (author) {
+      filters.author_id = author
+    }
+    if (tag) {
+      filters.blog_tags = {
+        some: {
+          tag_id: tag
+        }
+      }
+    }
+    return prisma.blogs.findMany({
+      where: filters,
+      orderBy: {
+        created_at: 'desc' // Sort by created_at in descending order
+      },
+      skip, // Skip records for pagination
+      take: perPage, // Limit the number of records per page
+      include: {
+        user: true,
+        blog_categories: {
+          include: {
+            categories: true // Fetch category details
+          }
+        },
+        blog_tags: {
+          include: {
+            tags: true // Fetch tag details
+          }
+        }
+      }
+    })
+  }
+
   static async getMyBlogs (prisma, authorId, page) {
     const perPage = 10
     const skip = (page - 1) * perPage
@@ -438,6 +624,38 @@ class Helper {
     })
   }
 
+  static async getAllBlogsCount (prisma, search, category, author, tag) {
+    const filters = {
+      status: 'Published'
+    }
+    if (search) {
+      filters.OR = [
+        { content: { contains: search } },
+        { title: { contains: search } }
+      ]
+    }
+    if (category) {
+      filters.blog_categories = {
+        some: {
+          category_id: category
+        }
+      }
+    }
+    if (author) {
+      filters.author_id = author
+    }
+    if (tag) {
+      filters.blog_tags = {
+        some: {
+          tag_id: tag
+        }
+      }
+    }
+    return prisma.blogs.count({
+      where: filters
+    })
+  }
+
   static async getMediatorCases (prisma, mediatorId, page) {
     // const today = new Date()
     // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
@@ -450,8 +668,8 @@ class Helper {
       where: {
         mediator: mediatorId,
         OR: [
-          { status: 'New' },
-          { status: 'In_Progress' }
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
         ]
       },
       orderBy: {
@@ -543,6 +761,8 @@ class Helper {
           mediator_course_year: true,
           mcpc_certificate_url: true,
           preferred_area_of_practice: true,
+          llb_certificate_url: true,
+          profile_picture_url: true,
           selected_hearing_types: true,
           bar_enrollment_no: true,
           preferred_languages: true,

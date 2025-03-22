@@ -354,7 +354,7 @@ header #menu-btn.is-active .line:nth-child(3) { -webkit-transform: translateY(-9
 /*---------------------------------------------------------------------
                           Background Overlay Color
 -----------------------------------------------------------------------*/
-.iq-bg-over { background: #eff1fe ; }
+.iq-bg-over { background: url('/images/blog/pexels-photo-3695297.jpeg');background-size: cover;background-repeat: no-repeat;}
 .breadcrumb-bg { position: relative; }
 .breadcrumb-bg:before, .breadcrumb-ui:before ,.breadcrumb-video::before{ content: ""; height: 100%; left: 0; position: absolute; top: 0; width: 100%; z-index: 0; background: rgba(2, 13, 30, 0.9); display: block !important; }
 .breadcrumb-video::before{z-index: 1;}
@@ -463,10 +463,10 @@ article.hentry .iq-blog-detail .blog-content .page-links a:hover { color: #fff; 
 /*pagination-nav*/
 .page-numbers { display: -ms-flexbox; display: flex; padding-left: 0; list-style: none; padding: 0; margin: 0; }
 .page-numbers li .page-numbers { position: relative; display: block; padding: 5px 17px; margin-left: 5px; color: #1e1e1e; background-color: #fff; border: 1px solid #eff1fe; border-radius: 4px; }
-.page-numbers li .page-numbers:hover { z-index: 2; color: #fff; text-decoration: none; background-color: var(--primary-color); border-color: var(--primary-color); }
+.page-numbers li .page-numbers:hover { z-index: 2; color: #fff; text-decoration: none; background-color: #b0591e; border-color: #b0591e; }
 .page-numbers li .page-numbers:focus { z-index: 2; outline: 0; box-shadow: none; }
 .page-numbers li .page-numbers:not(:disabled):not(.disabled) { cursor: pointer }
-.page-numbers li .page-numbers.current {width: 45px; height: 45px; z-index: 1; color: #fff; -webkit-transition: all 0.5s ease-out 0s; -moz-transition: all 0.5s ease-out 0s; -ms-transition: all 0.5s ease-out 0s; -o-transition: all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; background: var(--primary-color); border-color: var(--primary-color); }
+.page-numbers li .page-numbers.current {width: 45px; height: 45px; z-index: 1; color: #fff; -webkit-transition: all 0.5s ease-out 0s; -moz-transition: all 0.5s ease-out 0s; -ms-transition: all 0.5s ease-out 0s; -o-transition: all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; background: #b0591e; border-color: #b0591e; }
 
 
 
@@ -1780,7 +1780,7 @@ contact us social
 .breadcrumb li { display: inline-block; word-break: break-all; }
 .iq-breadcrumb { padding: 100px 0; background: #eff1fe; }
 .iq-breadcrumb-two { padding: 45px 0; position: relative; z-index: 2; }
-.iq-breadcrumb-one { display: block; padding: 150px 0 80px; z-index: 9; position: relative; }
+.iq-breadcrumb-one { display: block; padding: 183px 0 80px; z-index: 9; position: relative; }
 .iq-breadcrumb-one ol li a { color: var(--primary-color); text-decoration: none; }
 .iq-breadcrumb-one ol li { list-style: none; display: inline-block; }
 .iq-breadcrumb-one .breadcrumb-item+.breadcrumb-item::before { content: ">"; color: var(--primary-color); }
@@ -2729,7 +2729,9 @@ footer .menu li a.anchor{color: #ffffff !important}
 .fa1{font-size: 20px;line-height: 32px;text-align: center}
 .spanpadding{padding-left: 15px;}
 .iq-blog-detail .iq-blog-meta li{background: #313e5b ;}
-.iq-blog-detail .iq-blog-meta li:hover{background-color: #1230c6 !important;}
+.iq-blog-detail .iq-blog-meta li:hover{background-color:#b0591e !important}
+.iq-blog-detail .iq-blog-meta li:hover a { color: white !important;}
+.iq-blog-detail .iq-blog-meta li:hover span { color: white !important;}
 .iq-blog-detail .iq-blog-meta li a.anchor{color: #ffffff;}
 
 

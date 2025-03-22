@@ -21,6 +21,27 @@
                 <template v-slot:body>
                   <b-row>
                     <b-col lg="3" md="12">
+                      <!-- When Status is In Progress and Sub Status is Notice Sent to Opposite Party -->
+                      <div v-if="selectedCase.case_statuses?.id == 'in_progress' && selectedCase.case_sub_statuses?.id =='notice_sent_to_opposite_party'">
+                        <iq-card class="iq-profile-card text-center" v-if="userid ===  selectedCase.user_cases_second_partyTouser?.id">
+                          <template v-slot:headerTitle>
+                            <h4 class="card-title">Accept Mediation</h4>
+                          </template>
+                          <template v-slot:body>
+                            <p>I have reviewed the case details and would like to go ahead with the mediation process.</p>
+                            <button @click="onClickAcceptMediationRequest(selectedCase.id)" class="btn btn-primary">I Accept</button>
+                          </template>
+                        </iq-card>
+                        <iq-card class="iq-profile-card text-center" v-if="userid ===  selectedCase.user_cases_first_partyTouser?.id">
+                          <template v-slot:headerTitle>
+                            <h4 class="card-title">Notice Sent to opposite party</h4>
+                          </template>
+                          <template v-slot:body>
+                            <p>Kadr has sent the notice to the opposite party for the mediation. We'll notify you once they accept it.</p>
+                          </template>
+                        </iq-card>
+                      </div>
+
                       <iq-card class="iq-profile-card text-center" v-if="selectedCase.user_cases_mediatorTouser">
                         <template v-slot:headerTitle>
                           <h4 class="card-title">Assigned Mediator</h4>
@@ -33,13 +54,13 @@
                           </div>
                         </template>
                       </iq-card>
-                      <iq-card v-if="selectedCase.sub_status == 'Pending Payment'">
+                      <iq-card v-if="selectedCase.case_sub_statuses && selectedCase.case_sub_statuses.id == 'pending_notice_payment'">
                         <template v-slot:headerTitle>
                           <h4 class="card-title">Payment</h4>
                           </template>
                           <template v-slot:body>
-                            <p>Make a payment of Rs.1000/- to get started with your mediation</p>
-                            <p>Mediator will be assigned to you post payment</p>
+                            <p>Please make a payment of Rs.1000/- to get started with your mediation</p>
+                            <p>Notice will be send to opposite party post payment</p>
                             <button @click="openPaymentModal" class="btn btn-primary">Make Payment</button>
                           </template>
                       </iq-card>
@@ -217,23 +238,17 @@
                             <div class="data-row">
                                 <div class="col-6">
                                     <div class="data-title">Case Status</div>
-                                    <div>
-                                      <b-button pill variant="primary" class="mb-3 ms-1">{{ getFormattedLabel(selectedCase.status) }}</b-button>
+                                    <div v-if="selectedCase.case_statuses">
+                                      <b-button pill variant="primary" class="mb-3 ms-1">{{selectedCase.case_statuses.name }}</b-button>
                                     </div>
                                     <div></div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="data-title">Case Sub Status</div>
-                                    <div>
-                                      <b-button pill variant="primary" class="mb-3 ms-1">{{ selectedCase.sub_status }}</b-button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="data-row">
-                                <div class="col-6">
                                     <div class="data-title">Case Category</div>
                                     <div>{{ selectedCase.category }}</div>
                                 </div>
+                            </div>
+                            <div class="data-row">
                                 <div class="col-6">
                                     <div class="data-title">Evidence</div>
                                     <div  v-if="selectedCase.evidence_document_url"> <a :href="selectedCase.evidence_document_url" target="_blank">Link to document</a></div>
@@ -297,7 +312,7 @@
                           <h4 class="card-title">Timeline</h4>
                         </template>
                         <template v-slot:body>
-                          <TimeLine :items="timelineItems" />
+                          <TimeLine :items="selectedCase.case_history" />
                         </template>
                       </iq-card>
                     </b-col>
@@ -315,7 +330,7 @@ import SignaturePad from 'signature_pad'
 import { sofbox } from '../../config/pluginInit'
 
 export default {
-  name: 'ProfileEdit',
+  name: 'ClientCases',
   props: {
     content: {
       type: Object,
@@ -334,13 +349,16 @@ export default {
       this.signaturePad = new SignaturePad(canvas)
     })
     this.selectedCase = this.content.myCases[0]
-    for (let i = 0; i < this.userStep; i++) {
-      this.timelineItems[i].color = 'success'
-    }
+    console.log(this.selectedCase)
   },
   methods: {
-    getFormattedLabel (text) {
-      return this.caseStatusMapping[text] || text
+    async onClickAcceptMediationRequest (caseId) {
+      const response = await this.$store.dispatch('acceptMediationRequest', { caseId })
+      if (response.error) {
+
+      } else {
+        alert('Thanks for accepting the mediation request')
+      }
     },
     adjustCanvasSize (canvas) {
       const ratio = Math.max(window.devicePixelRatio || 1, 1)
@@ -377,15 +395,10 @@ export default {
       }
       const response = await this.$store.dispatch('setClientPayment', { payload })
       if (response.error) {
-      } else {
 
+      } else {
+        this.closePaymentModal()
       }
-      // this.userStep = 5
-      // this.$cookies.set('USERSTEP', 5)
-      for (let i = 0; i < this.userStep; i++) {
-        this.timelineItems[i].color = 'success'
-      }
-      this.closePaymentModal()
     },
     onClickMeeting () {
       this.userStep = 6
@@ -443,17 +456,6 @@ export default {
   },
   data () {
     return {
-      caseStatusMapping: {
-        New: 'New',
-        In_Progress: 'In Progress',
-        Closed___Success: 'Closed - Success',
-        Closed___No_Success: 'Closed - No Success',
-        Cancelled: 'Cancelled',
-        Failed: 'Failed',
-        Pending: 'Pending',
-        Escalated: 'Escalated',
-        On_Hold: 'On Hold'
-      },
       showAadharModal: false,
       aadharNumber: '',
       aadharOtp: '',
@@ -463,76 +465,7 @@ export default {
       selectedCase: { data: true },
       showPaymentModal: false,
       transactionId: '',
-      userStep: 2,
-      timelineItems: [
-        {
-          color: '',
-          title: 'Registration',
-          right: '16 September 2024',
-          description: 'Registration on our portal kADR.live',
-          child: {
-            type: 'img',
-            items: [
-            ]
-          }
-        },
-        {
-          color: '',
-          title: 'Other party details',
-          right: '20 October 2024',
-          description: 'Notice for mediation to another party through email',
-          child: {
-            type: 'img',
-            items: [
-            ]
-          }
-        },
-        {
-          color: '',
-          title: 'Payment',
-          right: '22 October 2024',
-          description: 'Payment to initiate mediation',
-          child: {
-            type: 'img',
-            items: [
-            ]
-          }
-        },
-        {
-          color: '',
-          title: 'Mediator Assignment',
-          right: '22 October 2024',
-          description: 'Assignment of Mediator',
-          child: {
-            type: 'img',
-            items: [
-              require('../../assets/images/user/05.jpg')
-            ]
-          }
-        },
-        {
-          color: '',
-          title: 'Client Call Scheduled',
-          right: '19 November 2019',
-          description: 'Call scheduled with you and customer',
-          child: {
-            type: 'img',
-            items: [
-            ]
-          }
-        },
-        {
-          color: '',
-          title: 'Mediation Agreement',
-          right: '15 November 2019',
-          description: 'Mediation agreement signed between both parties',
-          child: {
-            type: 'img',
-            items: [
-            ]
-          }
-        }
-      ]
+      userStep: 2
     }
   }
 }

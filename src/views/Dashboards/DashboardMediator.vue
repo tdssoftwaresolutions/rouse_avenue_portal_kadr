@@ -7,8 +7,8 @@
           <iq-card class="iq-profile-card text-center">
             <template v-slot:body>
               <div class="iq-team text-center p-0">
-                <img :src="require('../../assets/images/user/1.jpg')"
-                    class="img-fluid mb-3 avatar-120 rounded-circle" alt="">
+                <img v-if="content.user.profile_picture_url" :src="content.user.profile_picture_url" class="img-fluid mb-3 avatar-120 rounded-circle" alt="" style="object-fit: cover;"/>
+                <img v-else :src="require('../../assets/images/user/1.jpg')" class="img-fluid mb-3 avatar-120 rounded-circle" alt=""/>
                 <h4 class="mb-0">Welcome {{ user.name }}</h4>
                 <p class="d-inline-block w-100">{{ user.email }}</p>
               </div>

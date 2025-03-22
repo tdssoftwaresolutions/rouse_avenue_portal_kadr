@@ -31,8 +31,14 @@ router.post('/setClientPayment', authMiddleware, apiController.setClientPayment)
 router.get('/getExistingUser', apiController.getExistingUser)
 router.post('/saveBlog', authMiddleware, apiController.saveBlog)
 router.get('/getBlogAssets', apiController.getBlogAssets)
+router.post('/acceptMediationRequest', authMiddleware, apiController.acceptMediationRequest)
+
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)
 router.get('/generatePassword', apiController.generatePassword)
 
+// Static website APIs
+router.get('/getBlogs', apiController.geAllBlogs)
+router.get('/getPublicBlogAssets', apiController.getPublicBlogAssets)
+router.get('/getBlog', apiController.getBlog)
 module.exports = router

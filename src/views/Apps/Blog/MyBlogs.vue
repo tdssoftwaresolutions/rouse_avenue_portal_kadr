@@ -30,6 +30,9 @@
                 <template v-slot:cell(title)="data">
                   <a href="#" @click="onClickBlog(data.item)">{{ data.item.title }}</a>
                 </template>
+                <template v-slot:cell(created_at)="data">
+                  {{ data.item.created_at }}
+                </template>
                 <template v-slot:cell(categories)="data">
                   <b-badge v-for="category in data.item.categories" class="margin-left" :key="category.id" pill variant="success">{{ category.name }}</b-badge>
                 </template>
@@ -190,6 +193,20 @@ export default {
     this.fetchBlogs(1)
   },
   methods: {
+    formatDateTime (dateString) {
+      console.log(dateString)
+      const date = new Date(dateString)
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }
+      return new Intl.DateTimeFormat('en-US', options).format(date)
+    },
     toggleSelection (option) {
       console.log(option)
       if (this.selectedBlog.categories.some(category => category.id === option.id)) {
@@ -197,7 +214,6 @@ export default {
       } else if (this.selectedBlog.categories.length < 3) {
         this.selectedBlog.categories.push(option)
       }
-      console.log(this.selectedBlog.categories)
     },
     searchTags () {
       if (this.newTag.trim() === '') {
@@ -233,28 +249,47 @@ export default {
       this.selectedBlog.tags.splice(index, 1)
     },
     async saveToDraft () {
+      this.loading = true
       const response = await this.$store.dispatch('saveBlog', {
         blog: this.selectedBlog,
         status: 'Draft'
       })
       if (response.errorCode) {
         this.showAlert(response.message, 'danger')
+        this.loading = false
       } else {
-
+        this.showAlert('Blog saved to draft!', 'success')
+        this.loading = false
+        if (!this.selectedBlog.id) {
+          this.selectedBlog.created_at = new Date().toISOString()
+          this.selectedBlog.status = 'Draft'
+          this.paginatedData.formattedBlogs.unshift(this.selectedBlog)
+        }
+        this.cancel()
       }
     },
     cancel () {
       this.page = 'HOME'
     },
     async publishBlog () {
+      this.loading = true
       const response = await this.$store.dispatch('saveBlog', {
         blog: this.selectedBlog,
         status: 'Published'
       })
       if (response.errorCode) {
         this.showAlert(response.message, 'danger')
+        this.loading = false
       } else {
-
+        this.showAlert('Blog published succesfully!', 'success')
+        this.loading = false
+        if (!this.selectedBlog.id) {
+          this.selectedBlog.created_at = new Date().toISOString()
+          this.selectedBlog.status = 'Published'
+          this.paginatedData.formattedBlogs.unshift(this.selectedBlog)
+        }
+        console.log(this.paginatedData)
+        this.cancel()
       }
     },
     onClickBlog (blogRecord) {
@@ -397,7 +432,6 @@ export default {
       },
       columns: [
         { label: 'Title', key: 'title', class: 'text-left', sortable: true },
-        { label: 'Description', key: 'content', class: 'text-left', sortable: true },
         { label: 'Date', key: 'created_at', class: 'text-left', sortable: true },
         { label: 'Categories', key: 'categories', class: 'text-left', sortable: true },
         { label: 'Tags', key: 'tags', class: 'text-left', sortable: true },

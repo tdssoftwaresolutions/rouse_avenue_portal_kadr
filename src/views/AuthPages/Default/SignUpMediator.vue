@@ -8,6 +8,16 @@
                 <input type="text" class="form-control capitalize-first-word" id="name" v-model="formData.name" placeholder="Your Full Name" />
             </div>
             <div class="mb-3">
+              <label for="profileLogo">Upload Profile Picture</label>
+              <div class="file-upload">
+                <input type="file" class="form-control-file" id="profileLogo" @change="handlProfilePictureUpload" accept="image/*"/>
+                <label for="profileLogo" class="custom-file-upload">
+                    Choose File
+                </label>
+                <img v-if="formData.profilePictureContent" @click="onClickProfilePicture(formData.profilePictureContent)" :src="formData.profilePictureContent" alt="Profile Logo Preview" class="img-thumbnail" style="margin-left: 2rem;width:50px;height:50px;cursor: pointer;"/>
+              </div>
+            </div>
+            <div class="mb-3">
                 <label for="email">Email Address</label>
                 <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="Enter Email" />
             </div>
@@ -214,6 +224,8 @@ export default {
         llbCertificate: null,
         llbCertificateContent: null,
         preferredAreaOfPractice: [],
+        profilePicture: null,
+        profilePictureContent: null,
         selectedHearingTypes: [],
         barEnrollmentNo: ''
       },
@@ -244,6 +256,28 @@ export default {
     this.generateYears()
   },
   methods: {
+    onClickProfilePicture (picture) {
+      const popupWidth = 400
+      const popupHeight = 400
+      const popupFeatures = `width=${popupWidth},height=${popupHeight},left=200,top=100,toolbar=no,menubar=no,scrollbars=no,resizable=no`
+
+      const popupWindow = window.open('', 'ImagePopup', popupFeatures)
+      if (popupWindow) {
+        popupWindow.document.write(`
+          <html>
+            <head>
+              <title>Profile Image</title>
+            </head>
+            <body style="text-align:center; margin:0; padding:20px;">
+              <img src="${picture}" alt="Profile Image" style="max-width:100%; height:auto;" />
+            </body>
+          </html>
+        `)
+        popupWindow.document.close()
+      } else {
+        alert('Please allow popups to open the image.')
+      }
+    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -261,6 +295,20 @@ export default {
         type,
         visible: true,
         timeout
+      }
+    },
+    handlProfilePictureUpload (event) {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          this.formData.profilePictureContent = reader.result
+        }
+        reader.onerror = (error) => {
+          console.error('Error reading file:', error)
+        }
+        reader.readAsDataURL(file)
+        this.formData.profilePicture = file
       }
     },
     onUploadMCPCCertificate (event) {

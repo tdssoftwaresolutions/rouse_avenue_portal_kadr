@@ -9,13 +9,25 @@ const accountId = process.env.ZOOM_ACCOUNT_ID
 const errorCodes = require('../errorCodes')
 const { google } = require('googleapis')
 const { v4: uuidv4 } = require('uuid')
+const striptags = require('striptags')
 const CaseSubTypes = Object.freeze({
-  PENDING_PAYMENT: 'Pending Payment',
-  WAITING_FOR_MEDIATOR: 'Waiting for mediator assignment',
-  WAITING_FOR_OTHER_PARTY: 'Waiting for other party to accept',
-  NOTICE_SENT: 'Notice has been sent to other party',
-  MEETING_SCHEDULED: 'Meeting scheduled',
-  WAITING_FOR_SIGNATURE: 'Waiting for signature on agreement'
+  MEDIATOR_ASSIGNED: 'mediator_assigned',
+  MEETING_SCHEDULED: 'meeting_scheduled',
+  NOTICE_SENT_TO_OPPOSITE_PARTY: 'notice_sent_to_opposite_party',
+  PENDING_MEDIATION_AGREEMENT_SIGN: 'pending_mediation_agreement_sign',
+  PENDING_MEDIATION_PAYMENT: 'pending_mediation_payment',
+  PENDING_NOTICE_PAYMENT: 'pending_notice_payment'
+})
+const CaseTypes = Object.freeze({
+  FAILED: 'failed',
+  IN_PROGRESS: 'in_progress',
+  CANCELLED: 'cancelled',
+  CLOSED_NO_SUCCESS: 'closed_no_success',
+  CLOSED_SUCCESS: 'closed_success',
+  ESCALATED: 'escalated',
+  NEW: 'new',
+  ON_HOLD: 'on_hold',
+  PENDING: 'pending'
 })
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -35,7 +47,8 @@ module.exports = {
         select: {
           id: true,
           email: true,
-          user_type: true
+          user_type: true,
+          profile_picture_url: true
         }
       })
       if (!user) {
@@ -94,11 +107,16 @@ module.exports = {
         }
         dashboardContent.notes = notes
         dashboardContent.todaysEvent = helper.getTodaysEvents(casesWithEvents, todaysPersonalMeetings)
+        dashboardContent.user = user
       } else if (user.user_type === 'CLIENT') {
-        const [casesWithEvents] = await Promise.all([
-          helper.getClientCases(prisma, userDetails.id, 1)
+        const [casesWithEvents, clientNotifications, caseEvents] = await Promise.all([
+          helper.getClientCases(prisma, userDetails.id, 1),
+          helper.getClientNotifications(prisma, userDetails.id),
+          helper.getCaseEvents(prisma)
         ])
-        dashboardContent.myCases = casesWithEvents
+
+        dashboardContent.myCases = helper.mergeCaseHistory(casesWithEvents, caseEvents)
+        dashboardContent.notifications = clientNotifications
         dashboardContent.todaysEvent = helper.getEventsForToday(casesWithEvents)
         dashboardContent.user = user
       }
@@ -133,6 +151,58 @@ module.exports = {
     helper.saveBlog(prisma, blog, id, status)
     res.json({ success: true })
   },
+  getBlog: async function (req, res) {
+    const [blog, top3LatestBlog] = await Promise.all([
+      helper.getBlog(prisma, req.query.id),
+      helper.getTop3LatestBlogs(prisma)
+    ])
+    const formattedBlog = {
+      id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      author_id: blog.user.id,
+      author_name: blog.user.name,
+      created_at: blog.created_at,
+      categories: blog.blog_categories.map((bt) => ({
+        id: bt.categories.id,
+        name: bt.categories.name
+      })),
+      tags: blog.blog_tags.map((bt) => ({
+        id: bt.tags.id,
+        name: bt.tags.name
+      }))
+    }
+    res.json({ blog: formattedBlog, top3LatestBlog })
+  },
+  geAllBlogs: async function (req, res) {
+    const { page, search, category, author, tag } = req.query
+    const [allBlogs, blogsCount] = await Promise.all([
+      helper.getAllBlogs(prisma, page, search, category, author, tag),
+      helper.getAllBlogsCount(prisma, search, category, author, tag)
+    ])
+    const formattedBlogs = allBlogs.map((blog) => {
+      const strippedContent = striptags(blog.content) // Remove HTML tags
+      const lines = strippedContent.split('\n') // Split into lines
+      const limitedContent = lines.slice(0, 5).join('') + '....' // Limit to first 5 lin
+      return {
+        id: blog.id,
+        title: blog.title,
+        content: limitedContent,
+        author_id: blog.user.id,
+        author_name: blog.user.name,
+        created_at: blog.created_at,
+        categories: blog.blog_categories.map((bt) => ({
+          id: bt.categories.id,
+          name: bt.categories.name
+        })),
+        tags: blog.blog_tags.map((bt) => ({
+          id: bt.tags.id,
+          name: bt.tags.name
+        }))
+      }
+    })
+    res.json({ blogs: formattedBlogs, total: blogsCount, page: 1, perPage: 10 })
+  },
   getMyBlogs: async function (req, res) {
     const [myBlogs, blogsCount] = await Promise.all([
       helper.getMyBlogs(prisma, req.user.id, req.query.page),
@@ -156,6 +226,12 @@ module.exports = {
       }))
     }))
     res.json({ success: true, formattedBlogs, total: blogsCount, page: 1, perPage: 10 })
+  },
+  getPublicBlogAssets: async function (req, res) {
+    const [blogCountPerCategory] = await Promise.all([
+      helper.getBlogCountPerCategory(prisma)
+    ])
+    res.json({ blogCountPerCategory })
   },
   getBlogAssets: async function (req, res) {
     const [blogCategories, blogTags] = await Promise.all([
@@ -197,14 +273,42 @@ module.exports = {
         transaction_date: new Date()
       }
     })
-    await prisma.cases.update({
+
+    const caseDetails = await prisma.cases.findUnique({
+      where: {
+        id: caseId
+      },
+      select: {
+        user_cases_second_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        user_cases_first_partyTouser: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+
+    const uniqueSignUpLink = helper.generateUniqueSignUpLink(caseDetails.user_cases_second_partyTouser.id)
+
+    const htmlBody = `
+    <p>Hi ${caseDetails.user_cases_second_partyTouser.name}, we have recieved a mediation request from ${caseDetails.user_cases_first_partyTouser.name} on kADR.live.</p>
+    <p>To go ahead and start the mediation, please click on below links <br/> Link to register - ${uniqueSignUpLink}</p>`
+    await helper.sendEmail(caseDetails.user_cases_second_partyTouser.email, htmlBody)
+
+    /** await prisma.cases.update({
       where: {
         id: caseId
       },
       data: {
-        sub_status: CaseSubTypes.NOTICE_SENT
+        sub_status: CaseSubTypes.NOTICE_SENT_TO_OPPOSITE_PARTY
       }
-    })
+    }) */
     res.json({ success: true })
   },
   getCalendarInit: async function (req, res) {
@@ -315,23 +419,31 @@ module.exports = {
       let caseSubStatus = ''
       switch (caseType) {
         case 'Mediation':
-          caseSubStatus = CaseSubTypes.PENDING_PAYMENT
+          caseSubStatus = CaseSubTypes.PENDING_MEDIATION_PAYMENT
           break
         case 'Arbitrator':
-          caseSubStatus = CaseSubTypes.PENDING_PAYMENT
+          caseSubStatus = CaseSubTypes.PENDING_MEDIATION_PAYMENT
           break
         case 'Counsellor':
           caseSubStatus = ''
           break
       }
-      await prisma.cases.update({
+      const newCase = await prisma.cases.update({
         where: {
           id: caseId
         },
         data: {
           case_type: caseType,
-          status: 'In_Progress',
+          status: CaseTypes.IN_PROGRESS,
           sub_status: caseSubStatus
+        }
+      })
+
+      await prisma.case_history.create({
+        data: {
+          case_id: newCase.id,
+          status: newCase.status,
+          sub_status: newCase.sub_status
         }
       })
     }
@@ -596,6 +708,45 @@ module.exports = {
       res.status(500).send('Authentication failed')
     }
   },
+
+  acceptMediationRequest: async function (req, res) {
+    const { caseId } = req.body
+    const { id } = req.user
+    const caseRecord = await prisma.cases.findUnique({
+      where: { id: caseId }, select: { second_party: true, first_party: true }
+    })
+    if (caseRecord.second_party !== id) {
+      res.json({ success: false, message: 'Invalid Request' })
+    }
+
+    await prisma.cases.update({
+      where: {
+        id: caseId
+      },
+      data: {
+        status: CaseTypes.IN_PROGRESS,
+        sub_status: CaseSubTypes.PENDING_MEDIATION_PAYMENT
+      }
+    })
+
+    await prisma.notifications.create({
+      data: {
+        user_id: caseRecord.first_party,
+        title: 'Opposite party has accepted the mediation request',
+        description: 'Opposite party has accepted the mediation request, please go ahead and make the payment to start the mediation'
+      }
+    })
+
+    await prisma.notifications.create({
+      data: {
+        user_id: caseRecord.second_party,
+        title: 'Opposite party has accepted the mediation request',
+        description: 'Opposite party has accepted the mediation request, please go ahead and make the payment to start the mediation'
+      }
+    })
+
+    res.jsong({ success: true })
+  },
   authenticateWithGoogle: async function (req, res) {
     const scopes = [
       'https://www.googleapis.com/auth/calendar.events',
@@ -628,7 +779,7 @@ module.exports = {
   },
   newUserSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, oppositeName, oppositeEmail, oppositePhone, existingUser } = req.body
+      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, /** profilePictureContent,**/ oppositeName, oppositeEmail, oppositePhone, existingUser } = req.body
       const userRequestData = {
         name,
         email,
@@ -664,7 +815,8 @@ module.exports = {
           message: 'You are all set! Please check your email for the next steps.'
         })
       } else {
-        const uploadedFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
+        let uploadedFileResponse = null
+        if (evidenceContent) uploadedFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
         const user = await prisma.user.create({
           data: userRequestData
         })
@@ -696,10 +848,10 @@ module.exports = {
           data: {
             first_party: user.id,
             second_party: oppositePartyUser.id,
-            evidence_document_url: uploadedFileResponse.stored_url,
+            evidence_document_url: uploadedFileResponse ? uploadedFileResponse.stored_url : '',
             description,
             category,
-            status: 'New',
+            status: CaseTypes.NEW,
             caseId: `KDR-${newCaseId}`
           }
         })
@@ -727,11 +879,12 @@ module.exports = {
   },
   newMediatorSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, mediatorCourseYear, mcpcCertificateContent, llbCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
+      const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, profilePictureContent, mediatorCourseYear, mcpcCertificateContent, llbCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
 
-      let uploadedMCPCFileResponse = null; let uploadedLLbFileResponse = null
+      let uploadedMCPCFileResponse = null; let uploadedLLbFileResponse = null; let uploadedProfilePictureResponse = null
       if (mcpcCertificateContent) { uploadedMCPCFileResponse = await helper.uploadFile(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
       if (llbCertificateContent) { uploadedLLbFileResponse = await helper.uploadFile(llbCertificateContent, `llb-certificate-${uuidv4()}`) }
+      if (profilePictureContent) { uploadedProfilePictureResponse = await helper.uploadFile(profilePictureContent, `profile-picture-${uuidv4()}`) }
 
       await prisma.user.create({
         data: {
@@ -752,6 +905,7 @@ module.exports = {
           mediator_course_year: mediatorCourseYear,
           mcpc_certificate_url: uploadedMCPCFileResponse ? uploadedMCPCFileResponse.stored_url : '',
           llb_certificate_url: uploadedLLbFileResponse ? uploadedLLbFileResponse.stored_url : '',
+          profile_picture_url: uploadedProfilePictureResponse ? uploadedProfilePictureResponse.stored_url : '',
           preferred_area_of_practice: JSON.stringify(preferredAreaOfPractice),
           selected_hearing_types: JSON.stringify(selectedHearingTypes),
           bar_enrollment_no: barEnrollmentNo
@@ -807,7 +961,7 @@ module.exports = {
         path: '/'
       })
     } catch (e) {
-      console.log('Cookied couldnt set, trying with setHeader')
+      console.log('Cookie couldnt set, trying with setHeader')
       res.setHeader('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Max-Age=604800000; Path=/; Secure=true`)
     }
     res.status(201).json({ accessToken })

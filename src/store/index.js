@@ -27,6 +27,7 @@ const GET_MY_CASES_ENDPOINT = '/getMyCases'
 const GET_MY_BLOGS_ENDPOINT = '/getMyBlogs'
 const SAVE_BLOG_ENDPOINT = '/saveBlog'
 const GET_BLOG_ASSETS = '/getBlogAssets'
+const ACCEPT_MEDIATION_REQUEST = '/acceptMediationRequest'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
 const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
 const debug = process.env.NODE_ENV !== 'production'
@@ -44,7 +45,7 @@ const getDefaultState = () => {
 
 const apiClient = axios.create({
   baseURL: '/api',
-  timeout: 5000
+  timeout: 100000
 })
 
 const plugin = (router) => (store) => {
@@ -171,6 +172,14 @@ export default (router) => {
       async verifySignature ({ commit }, { signature, userData }) {
         try {
           const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async acceptMediationRequest ({ commit }, { caseId }) {
+        try {
+          const { data } = await apiClient.post(ACCEPT_MEDIATION_REQUEST, { caseId })
           return data
         } catch (error) {
           return error
