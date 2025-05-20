@@ -17,6 +17,12 @@
               <template v-slot:cell(case_type)="data">
                 <b-form-select v-model="data.item.case_type" :options="categoryOptions" :disabled="data.item.disabled"></b-form-select>
               </template>
+              <template v-slot:cell(preferred_area_of_practice)="data">
+                  <span v-if="isArrayValue(data.item.preferred_area_of_practice)">
+                      {{convertToCommaSeparated(data.item.preferred_area_of_practice)}}
+                  </span>
+                  <span v-else>{{data.item.preferred_area_of_practice }}</span>
+              </template>
               <template v-slot:cell(created_at)="data">
                 {{formatDate(data.item.created_at)}}
               </template>
@@ -38,7 +44,10 @@
                         <span v-if="isURL(value)">
                           <a :href="value" target="_blank">Click here to view</a>
                         </span>
-                        <span v-else>{{ value }}</span>
+                        <span v-else-if="isArrayValue(value)">
+                          {{convertToCommaSeparated(value)}}
+                        </span>
+                        <span v-else>{{ capitalizeWord(value) }}</span>
                       </span>
                     </li>
                   </ul>
@@ -97,6 +106,34 @@ export default {
     }
   },
   methods: {
+    isArrayValue (value) {
+      try {
+        const parsed = JSON.parse(value)
+        return Array.isArray(parsed)
+      } catch (e) {
+        return false
+      }
+    },
+    capitalizeWord (str) {
+      if (!str) return ''
+      if (typeof str !== 'string') return str
+      // alert(typeof str)
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    },
+    convertToCommaSeparated (value) {
+      try {
+        const parsed = JSON.parse(value)
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(', ')
+        } else {
+          return ''
+        }
+      } catch (e) {
+        return ''
+      }
+    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -127,7 +164,7 @@ export default {
       return urlPattern.test(value)
     },
     filteredItem (item) {
-      const irrelevantKeys = ['_showDetails', 'case_type', 'userId', 'created_at', 'active', 'otherPartyUserId', 'caseId']
+      const irrelevantKeys = ['_showDetails', 'case_type', 'userId', 'created_at', 'active', 'otherPartyUserId', 'caseId', 'updated_at', 'is_self_signed_up']
       return Object.fromEntries(
         Object.entries(item).filter(([key, value]) => !irrelevantKeys.includes(key) && value !== null && value !== 0)
       )
@@ -136,6 +173,14 @@ export default {
       this.paginatedData = { ...this.users }
     },
     async update (item) {
+      if (!item.case_type) {
+        this.showAlert('Please select Case Type', 'danger')
+        return
+      }
+      if (item.active === false) {
+        this.showAlert('Please activate this user', 'danger')
+        return
+      }
       this.loading = true
       const response = await this.$store.dispatch('updateInactiveUsers', {
         isActive: item.active,

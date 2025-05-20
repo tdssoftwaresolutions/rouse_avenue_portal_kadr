@@ -56,18 +56,21 @@ module.exports = {
       }
 
       if (user.user_type === 'ADMIN') {
-        const inactiveUsers = await helper.getInactiveUsers(prisma, 1, 'CLIENT', 'cases_cases_first_partyTouser')
-        const inactiveMediators = await helper.getInactiveUsers(prisma, 1, 'MEDIATOR', 'cases_cases_mediatorTouser')
+        const inactiveUsers = await helper.getUsers(false, prisma, 1, 'CLIENT', 'cases_cases_first_partyTouser')
+        const inactiveMediators = await helper.getUsers(false, prisma, 1, 'MEDIATOR', 'cases_cases_mediatorTouser')
         const counts = await prisma.$transaction([
           prisma.cases.count(),
           prisma.user.count({
             where: {
-              user_type: 'CLIENT'
+              user_type: 'CLIENT',
+              active: true
             }
           }),
           prisma.user.count({
             where: {
-              user_type: 'MEDIATOR'
+              user_type: 'MEDIATOR',
+              active: true
+
             }
           })
         ])
@@ -132,7 +135,7 @@ module.exports = {
   getInactiveUsers: async function (req, res) {
     const type = req.query.type
     const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
-    const inactiveUsers = await helper.getInactiveUsers(prisma, req.query.page, type, relationField)
+    const inactiveUsers = await helper.getUsers(false, prisma, req.query.page, type, relationField)
     res.json({ success: true, inactiveUsers })
   },
   getMyCases: async function (req, res) {
@@ -425,7 +428,7 @@ module.exports = {
           caseSubStatus = CaseSubTypes.PENDING_MEDIATION_PAYMENT
           break
         case 'Counsellor':
-          caseSubStatus = ''
+          caseSubStatus = CaseSubTypes.PENDING_MEDIATION_PAYMENT
           break
       }
       const newCase = await prisma.cases.update({
@@ -439,11 +442,17 @@ module.exports = {
         }
       })
 
+      const caseEvent = await prisma.case_events.findFirst({
+        where: {
+          status_id: newCase.status,
+          sub_status_id: newCase.sub_status
+        }
+      })
+
       await prisma.case_history.create({
         data: {
           case_id: newCase.id,
-          status: newCase.status,
-          sub_status: newCase.sub_status
+          case_event_id: caseEvent.id
         }
       })
     }
@@ -779,7 +788,9 @@ module.exports = {
   },
   newUserSignup: async function (req, res) {
     try {
-      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, /** profilePictureContent,**/ oppositeName, oppositeEmail, oppositePhone, existingUser } = req.body
+      const { name, email, phone, city, state, pincode, description, category, preferredLanguage, evidenceContent, profilePictureContent, oppositeName, oppositeEmail, oppositePhone, existingUser } = req.body
+      let uploadedProfilePictureResponse = null
+      if (profilePictureContent) { uploadedProfilePictureResponse = await helper.deployToS3Bucket(profilePictureContent, `profile-picture-${uuidv4()}`) }
       const userRequestData = {
         name,
         email,
@@ -790,6 +801,7 @@ module.exports = {
         city,
         state,
         preferred_languages: JSON.stringify([preferredLanguage]),
+        profile_picture_url: uploadedProfilePictureResponse || '',
         pincode,
         is_self_signed_up: true
       }
@@ -816,7 +828,7 @@ module.exports = {
         })
       } else {
         let uploadedFileResponse = null
-        if (evidenceContent) uploadedFileResponse = await helper.uploadFile(evidenceContent, `evidence-${uuidv4()}`)
+        if (evidenceContent) uploadedFileResponse = await helper.deployToS3Bucket(evidenceContent, `evidence-${uuidv4()}`)
         const user = await prisma.user.create({
           data: userRequestData
         })
@@ -848,7 +860,7 @@ module.exports = {
           data: {
             first_party: user.id,
             second_party: oppositePartyUser.id,
-            evidence_document_url: uploadedFileResponse ? uploadedFileResponse.stored_url : '',
+            evidence_document_url: uploadedFileResponse || '',
             description,
             category,
             status: CaseTypes.NEW,
@@ -882,9 +894,9 @@ module.exports = {
       const { name, email, phone, city, state, pincode, preferredLanguages, llbCollege, llbUniversity, llbYear, profilePictureContent, mediatorCourseYear, mcpcCertificateContent, llbCertificateContent, preferredAreaOfPractice, selectedHearingTypes, barEnrollmentNo } = req.body.userDetails
 
       let uploadedMCPCFileResponse = null; let uploadedLLbFileResponse = null; let uploadedProfilePictureResponse = null
-      if (mcpcCertificateContent) { uploadedMCPCFileResponse = await helper.uploadFile(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
-      if (llbCertificateContent) { uploadedLLbFileResponse = await helper.uploadFile(llbCertificateContent, `llb-certificate-${uuidv4()}`) }
-      if (profilePictureContent) { uploadedProfilePictureResponse = await helper.uploadFile(profilePictureContent, `profile-picture-${uuidv4()}`) }
+      if (mcpcCertificateContent) { uploadedMCPCFileResponse = await helper.deployToS3Bucket(mcpcCertificateContent, `mcpc-certificate-${uuidv4()}`) }
+      if (llbCertificateContent) { uploadedLLbFileResponse = await helper.deployToS3Bucket(llbCertificateContent, `llb-certificate-${uuidv4()}`) }
+      if (profilePictureContent) { uploadedProfilePictureResponse = await helper.deployToS3Bucket(profilePictureContent, `profile-picture-${uuidv4()}`) }
 
       await prisma.user.create({
         data: {
@@ -903,9 +915,9 @@ module.exports = {
           llb_university: llbUniversity,
           llb_year: llbYear,
           mediator_course_year: mediatorCourseYear,
-          mcpc_certificate_url: uploadedMCPCFileResponse ? uploadedMCPCFileResponse.stored_url : '',
-          llb_certificate_url: uploadedLLbFileResponse ? uploadedLLbFileResponse.stored_url : '',
-          profile_picture_url: uploadedProfilePictureResponse ? uploadedProfilePictureResponse.stored_url : '',
+          mcpc_certificate_url: uploadedMCPCFileResponse || '',
+          llb_certificate_url: uploadedLLbFileResponse || '',
+          profile_picture_url: uploadedProfilePictureResponse || '',
           preferred_area_of_practice: JSON.stringify(preferredAreaOfPractice),
           selected_hearing_types: JSON.stringify(selectedHearingTypes),
           bar_enrollment_no: barEnrollmentNo
@@ -1001,5 +1013,29 @@ module.exports = {
 
       res.json({ accessToken: newAccessToken })
     })
+  },
+  getActiveUsers: async function (req, res) {
+    try {
+      const { page = 1, type } = req.query
+
+      if (type) {
+        // Fetch data for a specific user type
+        const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
+        const activeUsers = await helper.getUsers(true, prisma, page, type, relationField)
+        res.json({ success: true, users: activeUsers.users, total: activeUsers.total })
+      } else {
+        // Fetch both clients and mediators
+        const [activeClients, activeMediators] = await Promise.all([
+          helper.getUsers(true, prisma, page, 'CLIENT', 'cases_cases_first_partyTouser'),
+          helper.getUsers(true, prisma, page, 'MEDIATOR', 'cases_cases_mediatorTouser')
+        ])
+
+        const combinedUsers = [...activeClients.users, ...activeMediators.users]
+        res.json({ success: true, users: combinedUsers, total: combinedUsers.length })
+      }
+    } catch (error) {
+      console.error('Error fetching active users:', error)
+      res.status(500).json({ success: false, message: 'Failed to fetch active users' })
+    }
   }
 }

@@ -19,6 +19,8 @@
   "dependencies": {
     "@amcharts/amcharts4": "^4.7.18",
     "@amcharts/amcharts4-geodata": "^4.1.9",
+    "@aws-sdk/client-s3": "^3.774.0",
+    "@aws-sdk/s3-request-presigner": "^3.774.0",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",

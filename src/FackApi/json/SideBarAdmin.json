@@ -10,6 +10,18 @@
       "class_name": "",
       "is_icon_class": false,
       "icon": "ri-home-4-line"
+    },
+    {
+      "title": "Clients & Experts",
+      "name": "app.users",
+      "is_heading": false,
+      "is_active": false,
+      "link": {
+        "name": "app.users"
+      },
+      "class_name": "",
+      "is_icon_class": false,
+      "icon": "ri-home-4-line"
     }
   ]
   

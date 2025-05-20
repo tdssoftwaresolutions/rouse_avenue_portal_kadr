@@ -4,7 +4,7 @@
         <Spinner :isVisible="loading" />
         <div v-if="step === 1">
             <div class="mb-3">
-                <label for="name">Full Name</label>
+                <label for="name">Full Name <span class="text-danger">*</span></label>
                 <input type="text" class="form-control capitalize-first-word" :disabled="existingUser"  id="name" v-model="formData.name" placeholder="Your Full Name" />
             </div>
             <div class="mb-3">
@@ -18,15 +18,15 @@
               </div>
             </div>
             <div class="mb-3">
-                <label for="email">Email Address</label>
+                <label for="email">Email Address <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" :disabled="existingUser" id="email" v-model="formData.email" placeholder="Enter Email" />
             </div>
             <div class="mb-3">
-                <label for="phone">Phone Number</label>
+                <label for="phone">Phone Number <span class="text-danger">*</span></label>
                 <input type="tel" class="form-control" :disabled="existingUser" id="phone" v-model="formData.phone" placeholder="Phone Number" />
             </div>
             <div class="mb-3">
-                <label for="language">Preferred Language</label>
+                <label for="language">Preferred Language <span class="text-danger">*</span></label>
                 <select id="language" v-model="formData.preferredLanguage" class="form-control">
                 <option value="">Select Language</option>
                 <option v-for="(item, index) in availableLanguges" :key="index" :value="item.id">
@@ -35,7 +35,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="state">State</label>
+                <label for="state">State <span class="text-danger">*</span></label>
                 <select id="state" v-model="formData.state" class="form-control">
                 <option value="">Select State</option>
                 <option v-for="(item, index) in states" :key="index" :value="item">
@@ -44,11 +44,11 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="city">City</label>
+                <label for="city">City <span class="text-danger">*</span></label>
                 <input type="text" class="form-control capitalize-first-word" id="city" v-model="formData.city" placeholder="City" />
             </div>
             <div class="mb-3">
-                <label for="pincode">Pin Code</label>
+                <label for="pincode">Pin Code <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="pincode" v-model="formData.pincode" placeholder="Pin Code" />
             </div>
             <div class="d-flex justify-content-between">
@@ -66,11 +66,11 @@
         </div>
         <div v-if="step === 2">
             <div class="mb-3">
-                <label for="description">Describe your dispute in brief</label>
+                <label for="description">Describe your dispute in brief <span class="text-danger">*</span></label>
                 <textarea class="form-control" id="description" v-model="formData.description" placeholder="Describe your complaint" style="height:150px"></textarea>
             </div>
             <div class="mb-3">
-                <label for="category">Complaint Category</label>
+                <label for="category">Complaint Category <span class="text-danger">*</span></label>
                 <select class="form-control" id="category" v-model="formData.category">
                   <option value="" disabled>Select Category</option>
                   <option value="Payment related">Payment Related</option>
@@ -104,15 +104,15 @@
         </div>
         <div v-if="step === 3">
             <div class="mb-3">
-                <label for="oppositeName">Opposite Party Name</label>
+                <label for="oppositeName">Opposite Party Name <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="oppositeName" v-model="formData.oppositeName" placeholder="Name" />
             </div>
             <div class="mb-3">
-                <label for="oppositeEmail">Opposite Party Email</label>
+                <label for="oppositeEmail">Opposite Party Email <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" id="oppositeEmail" v-model="formData.oppositeEmail" placeholder="Email" />
             </div>
             <div class="mb-3">
-                <label for="oppositePhone">Opposite Party Phone</label>
+                <label for="oppositePhone">Opposite Party Phone <span class="text-danger">*</span></label>
                 <input type="tel" class="form-control" id="oppositePhone" v-model="formData.oppositePhone" placeholder="Phone" />
             </div>
             <button type="button" class="btn btn-secondary" @click="prevStep(3)">Previous</button>

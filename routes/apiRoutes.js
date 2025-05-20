@@ -36,6 +36,7 @@ router.post('/acceptMediationRequest', authMiddleware, apiController.acceptMedia
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)
 router.get('/generatePassword', apiController.generatePassword)
+router.get('/getActiveUsers', authMiddleware, apiController.getActiveUsers)
 
 // Static website APIs
 router.get('/getBlogs', apiController.geAllBlogs)

@@ -103,7 +103,6 @@ export default {
         { label: 'Name', key: 'name', class: 'text-left', sortable: true },
         { label: 'Email', key: 'email', class: 'text-left' },
         { label: 'Case Category', key: 'category', class: 'text-left', sortable: true },
-        { label: 'Created At', key: 'created_at', class: 'text-left', sortable: true },
         { label: 'Case Type', key: 'case_type', class: 'text-center', sortable: true },
         { label: 'Is Active', key: 'active', class: 'text-center' },
         { label: 'Action', key: 'action', class: 'text-center' }

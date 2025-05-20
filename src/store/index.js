@@ -15,6 +15,7 @@ const GET_USER_DATA_ENDPOINT = '/getUserData'
 const VERIFY_SIGNATURE_ENDPOINT = '/verify-signature'
 const AVAILABLE_LANGUAGES_ENDPOINT = '/getAvailableLanguages'
 const GET_INACTIVE_USERS_ENDPOINT = '/getInactiveUsers'
+const GET_ACTIVE_USERS_ENDPOINT = '/getActiveUsers'
 const UPDATE_INACTIVE_USER_ENDPOINT = '/updateInactiveUser'
 const REFRESH_TOKEN_ENDPOINT = '/refresh-token'
 const SAVE_NOTE_ENDPOINT = '/saveNote'
@@ -293,6 +294,15 @@ export default (router) => {
       async getInactiveUsers ({ commit }, { page, type }) {
         try {
           const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getActiveUsers ({ commit }, { page, type }) {
+        try {
+          const params = type ? `?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}` : `?page=${encodeURIComponent(page)}`
+          const { data } = await apiClient.get(`${GET_ACTIVE_USERS_ENDPOINT}${params}`)
           return data
         } catch (error) {
           return error

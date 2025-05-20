@@ -8,7 +8,7 @@ datasource db {
 }
 
 model user {
-  id                             String          @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id                             String          @id @default(uuid()) @db.Char(36)
   name                           String          @db.VarChar(255)
   email                          String          @unique(map: "email") @db.VarChar(255)
   phone_number                   String?         @db.VarChar(20)
@@ -44,7 +44,7 @@ model user {
 }
 
 model cases {
-  id                            String             @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id                            String             @id @default(uuid()) @db.Char(36)
   created_at                    DateTime?          @default(now()) @db.Timestamp(0)
   updated_at                    DateTime?          @default(now()) @db.Timestamp(0)
   mediator                      String?            @db.Char(36)
@@ -79,7 +79,7 @@ model caseIdTracker {
 }
 
 model events {
-  id                   String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id                   String      @id @default(uuid()) @db.Char(36)
   title                String      @db.VarChar(255)
   description          String?     @db.Text
   start_datetime       DateTime    @db.DateTime(0)
@@ -111,7 +111,7 @@ model available_languages {
 }
 
 model notes {
-  id        String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id        String    @id @default(uuid()) @db.Char(36)
   user_id   String    @db.Char(36)
   note_text String    @db.Text
   created   DateTime? @default(now()) @db.DateTime(0)
@@ -122,7 +122,7 @@ model notes {
 }
 
 model transactions {
-  transaction_id   String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  transaction_id   String    @id @default(uuid()) @db.Char(36)
   payment_id       String    @db.VarChar(255)
   client_id        String    @db.Char(36)
   case_id          String    @db.Char(36)
@@ -163,7 +163,7 @@ model blog_tags {
 }
 
 model blogs {
-  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id              String            @id @default(uuid()) @db.Char(36)
   title           String            @db.VarChar(255)
   content         String            @db.Text
   author_id       String            @db.Char(36)
@@ -178,19 +178,19 @@ model blogs {
 }
 
 model categories {
-  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id              String            @id @default(uuid()) @db.Char(36)
   name            String            @unique(map: "name") @db.VarChar(100)
   blog_categories blog_categories[]
 }
 
 model tags {
-  id        String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id        String      @id @default(uuid()) @db.Char(36)
   name      String      @unique(map: "name") @db.VarChar(50)
   blog_tags blog_tags[]
 }
 
 model case_history {
-  id            String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id            String      @id @default(uuid()) @db.Char(36)
   case_id       String      @db.Char(36)
   created_at    DateTime?   @default(now()) @db.DateTime(0)
   case_event_id String      @db.VarChar(36)
@@ -202,7 +202,7 @@ model case_history {
 }
 
 model notifications {
-  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  id          String    @id @default(uuid()) @db.Char(36)
   user_id     String    @db.Char(36)
   title       String    @db.VarChar(255)
   description String    @db.Text
@@ -214,7 +214,7 @@ model notifications {
 }
 
 model case_events {
-  id                String            @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  id                String            @id @default(uuid()) @db.VarChar(36)
   status_id         String            @db.VarChar(255)
   sub_status_id     String            @db.VarChar(255)
   title             String            @db.VarChar(255)

@@ -6,6 +6,7 @@ const errorCodes = require('./errorCodes')
 const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
 const CaseTypes = Object.freeze({
   IN_PROGRESS: 'in_progress',
@@ -720,7 +721,45 @@ class Helper {
     })
   }
 
-  static async getInactiveUsers (prisma, page, type, relationField) {
+  static async deployToS3Bucket (base64Content, fileName) {
+    try {
+      const s3 = new S3Client({
+        region: 'eu-north-1',
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+        }
+      })
+
+      // Extract file extension from base64 string
+      const matches = base64Content.match(/^data:(.+);base64,(.+)$/)
+      if (!matches || matches.length !== 3) {
+        throw new Error('Invalid base64 string')
+      }
+      const mimeType = matches[1]
+      const fileBuffer = Buffer.from(matches[2], 'base64')
+      const extension = mimeType.split('/')[1] // Extract extension from MIME type
+      const fullFileName = `${fileName}.${extension}`
+
+      // Upload to S3
+      const params = {
+        Bucket: 'kadr-files',
+        Key: fullFileName,
+        Body: fileBuffer,
+        ContentType: mimeType
+      }
+
+      const command = new PutObjectCommand(params)
+      await s3.send(command)
+
+      return `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`
+    } catch (error) {
+      console.error('Error uploading to S3:', error)
+      throw error
+    }
+  }
+
+  static async getUsers (isActive, prisma, page, type, relationField) {
     const perPage = 10
 
     // Calculate the number of items to skip
@@ -730,7 +769,7 @@ class Helper {
       prisma.user.findMany({
         where: {
           AND: [
-            { active: false },
+            { active: isActive },
             { is_self_signed_up: true },
             { user_type: type }
           ]
@@ -745,12 +784,10 @@ class Helper {
           name: true,
           email: true,
           phone_number: true,
-          password_hash: true,
           created_at: true,
           updated_at: true,
           user_type: true,
           active: true,
-          google_token: true,
           city: true,
           state: true,
           pincode: true,
@@ -789,7 +826,7 @@ class Helper {
       prisma.user.count({
         where: {
           AND: [
-            { active: false },
+            { active: isActive },
             { is_self_signed_up: true },
             { user_type: type }
           ]

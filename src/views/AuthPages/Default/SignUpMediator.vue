@@ -4,12 +4,12 @@
         <Spinner :isVisible="loading" />
         <div v-if="step === 1">
             <div class="mb-3">
-                <label for="name">Full Name</label>
+                <label for="name">Full Name <span class="text-danger">*</span></label>
                 <input type="text" class="form-control capitalize-first-word" id="name" v-model="formData.name" placeholder="Your Full Name" />
             </div>
             <div class="mb-3">
-              <label for="profileLogo">Upload Profile Picture</label>
-              <div class="file-upload">
+                <label for="profileLogo">Upload Profile Picture</label>
+                <div class="file-upload">
                 <input type="file" class="form-control-file" id="profileLogo" @change="handlProfilePictureUpload" accept="image/*"/>
                 <label for="profileLogo" class="custom-file-upload">
                     Choose File
@@ -18,15 +18,15 @@
               </div>
             </div>
             <div class="mb-3">
-                <label for="email">Email Address</label>
+                <label for="email">Email Address <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="Enter Email" />
             </div>
             <div class="mb-3">
-                <label for="phone">Phone Number</label>
+                <label for="phone">Phone Number <span class="text-danger">*</span></label>
                 <input type="tel" class="form-control" id="phone" v-model="formData.phone" placeholder="Phone Number" />
             </div>
             <div class="mb-3">
-                <label for="language">Preferred Languages (Max 3)</label>
+                <label for="language">Preferred Languages (Max 3) <span class="text-danger">*</span></label>
                 <div class="d-flex flex-wrap" style="height: 125px;overflow-y: scroll;">
                   <div
                     v-for="(option, index) in availableLanguges"
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="state">State</label>
+                <label for="state">State <span class="text-danger">*</span></label>
                 <select id="state" v-model="formData.state" class="form-control">
                 <option value="">Select State</option>
                 <option v-for="(item, index) in states" :key="index" :value="item">
@@ -48,11 +48,11 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="city">City</label>
+                <label for="city">City <span class="text-danger">*</span></label>
                 <input type="text" class="form-control capitalize-first-word" id="city" v-model="formData.city" placeholder="City" />
             </div>
             <div class="mb-3">
-                <label for="pincode">Pin Code</label>
+                <label for="pincode">Pin Code <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" id="pincode" v-model="formData.pincode" placeholder="Pin Code" />
             </div>
             <div class="d-flex justify-content-between">
@@ -70,15 +70,15 @@
         <div v-if="step === 2">
           <label style="font-weight: bold;margin-bottom: 1rem">LLB Degree Details</label>
           <div class="mb-3">
-              <label for="degreeCollege">College Name</label>
+              <label for="degreeCollege">College Name <span class="text-danger">*</span></label>
               <input type="text" class="form-control capitalize-first-word" id="degreeCollege" v-model="formData.llbCollege" placeholder="LLB Degree College" />
           </div>
           <div class="mb-3">
-              <label for="degreeUniversity">University</label>
+              <label for="degreeUniversity">University <span class="text-danger">*</span></label>
               <input type="text" class="form-control capitalize-first-word" id="degreeUniversity" v-model="formData.llbUniversity" placeholder="LLB Degree University" />
           </div>
           <div class="mb-3">
-              <label for="degreeYear">Year of Completion</label>
+              <label for="degreeYear">Year of Completion <span class="text-danger">*</span></label>
               <select class="form-control" id="degreeYear" v-model="formData.llbYear">
                 <option value="0" disabled>Select year</option>
                 <option v-for="(item, index) in years" :key="index" :value="item">
@@ -87,7 +87,7 @@
               </select>
           </div>
           <div class="mb-3">
-              <label for="llbDegree">Upload LLB Degree Certificate</label>
+              <label for="llbDegree">Upload LLB Degree Certificate <span class="text-danger">*</span></label>
               <div class="file-upload">
               <input type="file" class="form-control-file" id="llbDegree" @change="onUploadLLBDegreeCertificate" />
               <label for="llbDegree" class="custom-file-upload">
@@ -98,7 +98,7 @@
           </div>
           <label style="font-weight: bold;margin-bottom: 1rem;margin-top:1rem;">Mediator Course (MCPC)</label>
           <div class="mb-3">
-              <label for="mcpcDegreeYear">Year of Completion</label>
+              <label for="mcpcDegreeYear">Year of Completion <span class="text-danger">*</span></label>
               <select class="form-control" id="mcpcDegreeYear" v-model="formData.mediatorCourseYear">
                 <option value="0" disabled>Select year</option>
                 <option v-for="(item, index) in years" :key="index" :value="item">
@@ -107,7 +107,7 @@
               </select>
           </div>
           <div class="mb-3">
-              <label for="mcpcCertificate">Upload MCPC Certificate</label>
+              <label for="mcpcCertificate">Upload MCPC Certificate <span class="text-danger">*</span></label>
               <div class="file-upload">
               <input type="file" class="form-control-file" id="mcpcCertificate" @change="onUploadMCPCCertificate" />
               <label for="mcpcCertificate" class="custom-file-upload">
@@ -131,11 +131,11 @@
         <div v-if="step === 3">
             <label style="font-weight: bold;margin-bottom: 1rem">Practice Details</label>
             <div class="mb-3">
-              <label for="barEnrollmentNo">Bar Enrollment Number</label>
+              <label for="barEnrollmentNo">Bar Enrollment Number <span class="text-danger">*</span></label>
               <input type="text" class="form-control capitalize-first-word" id="barEnrollmentNo" v-model="formData.barEnrollmentNo" placeholder="Bar Enrollment Number" />
             </div>
             <div class="mb-3">
-              <label for="areaOfPractice">Preferred Area of Practice  (Max 3)</label>
+              <label for="areaOfPractice">Preferred Area of Practice  (Max 3) <span class="text-danger">*</span></label>
               <div class="d-flex flex-wrap" style="height: 60px;overflow-y: scroll;">
                 <div
                   v-for="(option, index) in availableAreaOfPractice"
@@ -148,7 +148,7 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="areaOfPractice">Available For</label>
+              <label for="areaOfPractice">Available For <span class="text-danger">*</span></label>
               <div class="text-start">
                 <div class="checkbox-group">
                   <div class="form-check form-check-inline">

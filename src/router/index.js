@@ -25,6 +25,7 @@ import ECommerceListing from '../views/Apps/Ecommerce/Listing'
 import EditableTable from '../views/Tables/EditableTable'
 /* User View */
 import UserList from '../views/User/UserList'
+import AdminUsersListView from '../views/User/AdminUsersListView.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,12 @@ const appChildRoute = (prop) => [
     name: prop + '.e-commerce.index',
     meta: { name: 'Product list' },
     component: ECommerceListing
+  },
+  {
+    path: 'users',
+    name: prop + '.users',
+    meta: { name: 'Admin Users List' },
+    component: AdminUsersListView
   }
 ]
 
