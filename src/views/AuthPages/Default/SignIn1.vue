@@ -17,9 +17,6 @@
       <div class="d-inline-block w-100" style="display:none;">
         <button class="btn btn-primary float-right" @click="onClickLogin">Sign in</button>
       </div>
-      <div class="sign-info">
-        <span class="dark-color d-inline-block line-height-2">Don't have an account? <a href="#" @click="onClickSignUp">Sign up</a></span>
-      </div>
     </div>
   </div>
 </template>

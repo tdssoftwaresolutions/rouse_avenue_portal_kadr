@@ -32,12 +32,13 @@ router.get('/getExistingUser', apiController.getExistingUser)
 router.post('/saveBlog', authMiddleware, apiController.saveBlog)
 router.get('/getBlogAssets', apiController.getBlogAssets)
 router.post('/acceptMediationRequest', authMiddleware, apiController.acceptMediationRequest)
-
+router.post('/newCase', authMiddleware, apiController.newCase)
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)
 router.get('/generatePassword', apiController.generatePassword)
 router.get('/getActiveUsers', authMiddleware, apiController.getActiveUsers)
-
+router.get('/getSignatureRequestDetails', apiController.getSignatureRequestDetails)
+router.post('/submitSignature', apiController.submitSignature)
 // Static website APIs
 router.get('/getBlogs', apiController.geAllBlogs)
 router.get('/getPublicBlogAssets', apiController.getPublicBlogAssets)

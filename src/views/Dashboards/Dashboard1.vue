@@ -5,6 +5,8 @@
       <dashboard-client v-if="user.type == 'CLIENT'" :user="user" :content="dashboardContent"/>
       <dashboard-mediator v-else-if="user.type == 'MEDIATOR'" :user="user"  :content="dashboardContent"/>
       <dashboard-admin v-else-if="user.type == 'ADMIN'" :user="user"  :content="dashboardContent"/>
+      <dashboard-judge v-else-if="user.type == 'JUDGE'" :user="user"  :content="dashboardContent"/>
+      <dashboard-m-c v-else-if="user.type == 'MC'" :user="user"  :content="dashboardContent"/>
     </div>
   </div>
 </template>
@@ -13,11 +15,13 @@ import { sofbox } from '../../config/pluginInit'
 import DashboardMediator from './DashboardMediator'
 import DashboardClient from './DashboardClient'
 import DashboardAdmin from './DashboardAdmin'
+import DashboardJudge from './DashboardJudge'
+import DashboardMC from './DashboardMC'
 
 export default {
   name: 'Dashboard',
   components: {
-    DashboardMediator, DashboardClient, DashboardAdmin
+    DashboardMediator, DashboardClient, DashboardAdmin, DashboardJudge, DashboardMC
   },
   props: {
     user: null

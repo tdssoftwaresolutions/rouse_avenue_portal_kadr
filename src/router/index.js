@@ -27,6 +27,8 @@ import EditableTable from '../views/Tables/EditableTable'
 import UserList from '../views/User/UserList'
 import AdminUsersListView from '../views/User/AdminUsersListView.vue'
 
+import Signature from '../views/Client/Signature.vue'
+
 Vue.use(VueRouter)
 
 const childRoutes = (prop) => [
@@ -162,6 +164,11 @@ const routes = [
     name: 'blog',
     component: Layout1,
     children: blogChildRoutes('blog')
+  },
+  {
+    path: '/signature',
+    name: 'signature',
+    component: Signature
   },
   {
     path: '/pages',

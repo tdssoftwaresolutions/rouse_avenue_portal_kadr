@@ -8,62 +8,80 @@ datasource db {
 }
 
 model user {
-  id                             String          @id @default(uuid()) @db.Char(36)
-  name                           String          @db.VarChar(255)
-  email                          String          @unique(map: "email") @db.VarChar(255)
-  phone_number                   String?         @db.VarChar(20)
-  password_hash                  String          @db.VarChar(255)
-  created_at                     DateTime?       @default(now()) @db.Timestamp(0)
-  updated_at                     DateTime?       @default(now()) @db.Timestamp(0)
-  user_type                      user_user_type  @default(CLIENT)
-  active                         Boolean         @default(true)
-  google_token                   String?         @db.LongText
-  city                           String?         @db.VarChar(100)
-  state                          String?         @db.VarChar(100)
-  pincode                        String?         @db.Char(6)
-  is_self_signed_up              Boolean         @default(false)
-  llb_college                    String?         @db.VarChar(255)
-  llb_university                 String?         @db.VarChar(255)
-  llb_year                       Int?            @default(0)
-  mediator_course_year           Int?            @default(0)
-  mcpc_certificate_url           String?         @db.VarChar(255)
-  preferred_area_of_practice     String?         @db.LongText
-  selected_hearing_types         String?         @db.LongText
-  bar_enrollment_no              String?         @db.VarChar(255)
-  preferred_languages            String?         @db.LongText
-  llb_certificate_url            String?         @db.VarChar(255)
-  profile_picture_url            String?         @db.VarChar(255)
+  id                             String                    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  name                           String                    @db.VarChar(255)
+  email                          String                    @unique(map: "email") @db.VarChar(255)
+  phone_number                   String?                   @db.VarChar(20)
+  password_hash                  String?                   @db.VarChar(255)
+  created_at                     DateTime?                 @default(now()) @db.Timestamp(0)
+  updated_at                     DateTime?                 @default(now()) @db.Timestamp(0)
+  user_type                      user_user_type            @default(MEDIATOR)
+  active                         Boolean                   @default(true)
+  google_token                   String?                   @db.LongText
+  city                           String?                   @db.VarChar(100)
+  state                          String?                   @db.VarChar(100)
+  pincode                        String?                   @db.Char(6)
+  is_self_signed_up              Boolean                   @default(false)
+  llb_college                    String?                   @db.VarChar(255)
+  llb_university                 String?                   @db.VarChar(255)
+  llb_year                       Int?                      @default(0)
+  mediator_course_year           Int?                      @default(0)
+  mcpc_certificate_url           String?                   @db.VarChar(255)
+  preferred_area_of_practice     String?                   @db.LongText
+  selected_hearing_types         String?                   @db.LongText
+  bar_enrollment_no              String?                   @db.VarChar(255)
+  preferred_languages            String?                   @db.LongText
+  llb_certificate_url            String?                   @db.VarChar(255)
+  profile_picture_url            String?                   @db.VarChar(255)
+  working_day_of_week            user_working_day_of_week?
   blogs                          blogs[]
-  cases_cases_first_partyTouser  cases[]         @relation("cases_first_partyTouser")
-  cases_cases_second_partyTouser cases[]         @relation("cases_second_partyTouser")
-  cases_cases_mediatorTouser     cases[]         @relation("cases_mediatorTouser")
+  cases_cases_first_partyTouser  cases[]                   @relation("cases_first_partyTouser")
+  cases_cases_second_partyTouser cases[]                   @relation("cases_second_partyTouser")
+  cases_cases_judgeTouser        cases[]                   @relation("cases_judgeTouser")
+  cases_cases_mediatorTouser     cases[]                   @relation("cases_mediatorTouser")
   events                         events[]
   notes                          notes[]
   notifications                  notifications[]
+  signature_tracking             signature_tracking[]
   transactions                   transactions[]
 }
 
 model cases {
-  id                            String             @id @default(uuid()) @db.Char(36)
-  created_at                    DateTime?          @default(now()) @db.Timestamp(0)
-  updated_at                    DateTime?          @default(now()) @db.Timestamp(0)
-  mediator                      String?            @db.Char(36)
-  first_party                   String?            @db.Char(36)
-  second_party                  String?            @db.Char(36)
-  caseId                        String?            @db.Char(50)
-  evidence_document_url         String?            @db.VarChar(255)
-  description                   String?            @db.Text
-  category                      String?            @db.VarChar(100)
-  case_type                     String?            @db.VarChar(255)
-  status                        String?            @db.VarChar(255)
-  sub_status                    String?            @db.VarChar(255)
+  id                            String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  created_at                    DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at                    DateTime?            @default(now()) @db.Timestamp(0)
+  mediator                      String?              @db.Char(36)
+  first_party                   String?              @db.Char(36)
+  second_party                  String?              @db.Char(36)
+  caseId                        String?              @db.Char(50)
+  judge_document_url            String?              @db.VarChar(255)
+  nature_of_suit                String?              @db.Text
+  stage                         String?              @db.VarChar(100)
+  case_type                     String?              @db.VarChar(255)
+  status                        String?              @db.VarChar(255)
+  sub_status                    String?              @db.VarChar(255)
+  hearing_date                  DateTime?            @db.Date
+  institution_date              DateTime?            @db.Date
+  mediation_date_time           DateTime?            @db.DateTime(0)
+  referral_judge_signature      String?              @db.Text
+  plaintiff_signature           String?              @db.Text
+  plaintiff_phone               String?              @db.VarChar(15)
+  plaintiff_advocate            String?              @db.Text
+  respondent_signature          String?              @db.Text
+  respondent_phone              String?              @db.Text
+  respondent_advocate           String?              @db.Text
+  judge                         String?              @db.Char(36)
+  suit_no                       String?              @db.Text
+  hearing_count                 Int?
   case_history                  case_history[]
-  case_statuses                 case_statuses?     @relation(fields: [status], references: [id], onDelete: Cascade, map: "fk_cases_status")
-  case_sub_statuses             case_sub_statuses? @relation(fields: [sub_status], references: [id], onDelete: Cascade, map: "fk_cases_sub_status")
-  user_cases_first_partyTouser  user?              @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
-  user_cases_second_partyTouser user?              @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
-  user_cases_mediatorTouser     user?              @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
+  case_statuses                 case_statuses?       @relation(fields: [status], references: [id], onDelete: Cascade, map: "fk_cases_status")
+  case_sub_statuses             case_sub_statuses?   @relation(fields: [sub_status], references: [id], onDelete: Cascade, map: "fk_cases_sub_status")
+  user_cases_first_partyTouser  user?                @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
+  user_cases_second_partyTouser user?                @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
+  user_cases_judgeTouser        user?                @relation("cases_judgeTouser", fields: [judge], references: [id], map: "fk_judge")
+  user_cases_mediatorTouser     user?                @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
   events                        events[]
+  signature_tracking            signature_tracking[]
   transactions                  transactions[]
 
   @@index([mediator], map: "fk_mediator")
@@ -71,6 +89,7 @@ model cases {
   @@index([second_party], map: "fk_second_party")
   @@index([status], map: "fk_cases_status")
   @@index([sub_status], map: "fk_cases_sub_status")
+  @@index([judge], map: "fk_judge")
 }
 
 model caseIdTracker {
@@ -79,7 +98,7 @@ model caseIdTracker {
 }
 
 model events {
-  id                   String      @id @default(uuid()) @db.Char(36)
+  id                   String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
   title                String      @db.VarChar(255)
   description          String?     @db.Text
   start_datetime       DateTime    @db.DateTime(0)
@@ -111,7 +130,7 @@ model available_languages {
 }
 
 model notes {
-  id        String    @id @default(uuid()) @db.Char(36)
+  id        String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   user_id   String    @db.Char(36)
   note_text String    @db.Text
   created   DateTime? @default(now()) @db.DateTime(0)
@@ -122,7 +141,7 @@ model notes {
 }
 
 model transactions {
-  transaction_id   String    @id @default(uuid()) @db.Char(36)
+  transaction_id   String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   payment_id       String    @db.VarChar(255)
   client_id        String    @db.Char(36)
   case_id          String    @db.Char(36)
@@ -163,7 +182,7 @@ model blog_tags {
 }
 
 model blogs {
-  id              String            @id @default(uuid()) @db.Char(36)
+  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
   title           String            @db.VarChar(255)
   content         String            @db.Text
   author_id       String            @db.Char(36)
@@ -178,19 +197,19 @@ model blogs {
 }
 
 model categories {
-  id              String            @id @default(uuid()) @db.Char(36)
+  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
   name            String            @unique(map: "name") @db.VarChar(100)
   blog_categories blog_categories[]
 }
 
 model tags {
-  id        String      @id @default(uuid()) @db.Char(36)
+  id        String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
   name      String      @unique(map: "name") @db.VarChar(50)
   blog_tags blog_tags[]
 }
 
 model case_history {
-  id            String      @id @default(uuid()) @db.Char(36)
+  id            String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
   case_id       String      @db.Char(36)
   created_at    DateTime?   @default(now()) @db.DateTime(0)
   case_event_id String      @db.VarChar(36)
@@ -202,7 +221,7 @@ model case_history {
 }
 
 model notifications {
-  id          String    @id @default(uuid()) @db.Char(36)
+  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   user_id     String    @db.Char(36)
   title       String    @db.VarChar(255)
   description String    @db.Text
@@ -214,7 +233,7 @@ model notifications {
 }
 
 model case_events {
-  id                String            @id @default(uuid()) @db.VarChar(36)
+  id                String            @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
   status_id         String            @db.VarChar(255)
   sub_status_id     String            @db.VarChar(255)
   title             String            @db.VarChar(255)
@@ -248,10 +267,19 @@ model case_sub_statuses {
   @@index([status_id], map: "fk_case_sub_statuses_status")
 }
 
-enum user_user_type {
-  ADMIN
-  MEDIATOR
-  CLIENT
+model signature_tracking {
+  id               String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  user_id          String    @db.Char(36)
+  case_id          String    @db.Char(36)
+  signed           Boolean?  @default(false)
+  signature_expiry DateTime  @db.DateTime(0)
+  created_at       DateTime? @default(now()) @db.DateTime(0)
+  updated_at       DateTime? @default(now()) @db.DateTime(0)
+  cases            cases     @relation(fields: [case_id], references: [id], onDelete: Cascade, map: "fk_signature_case")
+  user             user      @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_signature_user")
+
+  @@index([case_id], map: "fk_signature_case")
+  @@index([user_id], map: "fk_signature_user")
 }
 
 enum events_type {
@@ -262,4 +290,22 @@ enum events_type {
 enum blogs_status {
   Draft
   Published
+}
+
+enum user_user_type {
+  ADMIN
+  MEDIATOR
+  MC
+  JUDGE
+  CLIENT
+}
+
+enum user_working_day_of_week {
+  Monday
+  Tuesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+  Wednesday
 }

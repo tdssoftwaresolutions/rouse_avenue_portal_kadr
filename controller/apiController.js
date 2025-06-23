@@ -13,10 +13,9 @@ const striptags = require('striptags')
 const CaseSubTypes = Object.freeze({
   MEDIATOR_ASSIGNED: 'mediator_assigned',
   MEETING_SCHEDULED: 'meeting_scheduled',
-  NOTICE_SENT_TO_OPPOSITE_PARTY: 'notice_sent_to_opposite_party',
-  PENDING_MEDIATION_AGREEMENT_SIGN: 'pending_mediation_agreement_sign',
-  PENDING_MEDIATION_PAYMENT: 'pending_mediation_payment',
-  PENDING_NOTICE_PAYMENT: 'pending_notice_payment'
+  PENDING_COMPLAINANT_SIGNATURE: 'pending_complainant_signature',
+  PENDING_RESPONDENT_SIGNATURE: 'pending_respondent_signature',
+  PENDING_MEDIATION_CENTER: 'pending_mc'
 })
 const CaseTypes = Object.freeze({
   FAILED: 'failed',
@@ -122,6 +121,60 @@ module.exports = {
         dashboardContent.notifications = clientNotifications
         dashboardContent.todaysEvent = helper.getEventsForToday(casesWithEvents)
         dashboardContent.user = user
+      } else if (user.user_type === 'JUDGE') {
+        const [notes, casesWithEvents, casesCount, tracker ] = await Promise.all([
+          prisma.notes.findMany({
+            where: {
+              user_id: userDetails.id
+            },
+            select: {
+              id: true,
+              note_text: true
+            },
+            orderBy: {
+              created: 'desc'
+            }
+          }),
+          helper.getJudgeCases(prisma, userDetails.id, 1),
+          helper.getJudgeCasesCount(prisma, userDetails.id),
+          prisma.caseIdTracker.findFirst()
+        ])
+        dashboardContent.myCases = {
+          casesWithEvents,
+          total: casesCount,
+          page: 1,
+          perPage: 10
+        }
+        dashboardContent.notes = notes
+        dashboardContent.user = user
+        let newCaseId = 1
+        if (tracker) { newCaseId = tracker.lastCaseId + 1 }
+        dashboardContent.nextCaseId = newCaseId
+      } else if (user.user_type === 'MC') {
+        const [notes, casesWithEvents, casesCount] = await Promise.all([
+          prisma.notes.findMany({
+            where: {
+              user_id: userDetails.id
+            },
+            select: {
+              id: true,
+              note_text: true
+            },
+            orderBy: {
+              created: 'desc'
+            }
+          }),
+          helper.getMediationCenterCases(prisma, 1),
+          helper.getMediationCenterCasesCount(prisma)
+        ])
+        dashboardContent.myCases = {
+          casesWithEvents,
+          total: casesCount,
+          page: 1,
+          perPage: 10
+        }
+        dashboardContent.notes = notes
+        dashboardContent.user = user
       }
 
       res.json({ success: true, dashboardContent })
@@ -131,6 +184,108 @@ module.exports = {
     } finally {
       await prisma.$disconnect()
     }
+  },
+  newCase: async function (req, res) {
+    const {
+      hearingDate,
+      suitNo,
+      party1,
+      party1Email,
+      party2,
+      party2Email,
+      institutionDate,
+      natureOfSuit,
+      stage,
+      hearingCount,
+      mediationDateTime,
+      referralJudgeSignature,
+      plaintiffPhone,
+      plaintiffAdvocate,
+      respondentPhone,
+      respondentAdvocate,
+      document,
+      judgeId
+    } = req.body.caseData
+
+    // Helper function to get or create a user
+    async function getOrCreateUser (email, name) {
+      let user = await prisma.user.findUnique({
+        where: {
+          email
+        },
+        select: {
+          id: true
+        }
+      })
+
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            name,
+            email,
+            user_type: 'CLIENT',
+            active: true
+          },
+          select: {
+            id: true
+          }
+        })
+      }
+
+      return user.id
+    }
+
+    // Get or create users for party1 and party2
+    const firstPartyId = await getOrCreateUser(party1Email, party1)
+    const secondPartyId = await getOrCreateUser(party2Email, party2)
+
+    let uploadedDocumentResponse = null
+    if (document) { uploadedDocumentResponse = await helper.deployToS3Bucket(document, `case-reference-document-${uuidv4()}`) }
+
+    const tracker = await prisma.caseIdTracker.findFirst()
+    let newCaseId = 1
+    if (tracker) {
+      newCaseId = tracker.lastCaseId + 1
+    }
+
+    const newCaseRecord = await prisma.cases.create({
+      data: {
+        first_party: firstPartyId,
+        second_party: secondPartyId,
+        judge_document_url: uploadedDocumentResponse,
+        nature_of_suit: natureOfSuit,
+        stage,
+        status: CaseTypes.NEW,
+        sub_status: CaseSubTypes.PENDING_COMPLAINANT_SIGNATURE,
+        caseId: `ROUSE-MED-${newCaseId}`,
+        suit_no: suitNo,
+        hearing_count: hearingCount,
+        hearing_date: new Date(hearingDate),
+        institution_date: new Date(institutionDate),
+        mediation_date_time: new Date(mediationDateTime),
+        referral_judge_signature: referralJudgeSignature,
+        plaintiff_phone: plaintiffPhone,
+        plaintiff_advocate: plaintiffAdvocate,
+        respondent_phone: respondentPhone,
+        judge: judgeId,
+        respondent_advocate: respondentAdvocate
+      }
+    })
+
+    await prisma.caseIdTracker.upsert({
+      where: { id: 1 },
+      update: { lastCaseId: newCaseId },
+      create: { lastCaseId: newCaseId }
+    })
+
+    const newSignatureRecord = await helper.createSignatureTrackingRecord(prisma, firstPartyId, newCaseRecord.id)
+
+    const htmlBody = `
+    <p>Hi ${party1}, <br/> A mediation request has been initiated by Rouse Avenue Court.<br/>You are identified as the first party in this mediation case. To proceed further with the case, we require your signature verification. <br/> Please click the link below to review and provide your signature:</p>
+    <p><br/> Link to register - ${process.env.BASE_URL}/admin/signature?requestId=${newSignatureRecord.id}</p>`
+    await helper.sendEmail('Signature Required: Mediation Request from Rouse Avenue Court', party1Email, htmlBody)
+
+    res.json({ success: true, message: 'New case created successfully.' })
   },
   getInactiveUsers: async function (req, res) {
     const type = req.query.type
@@ -864,7 +1019,7 @@ module.exports = {
             description,
             category,
             status: CaseTypes.NEW,
-            caseId: `KDR-${newCaseId}`
+            caseId: `ROUSE-MED-${newCaseId}`
           }
         })
 
@@ -1013,6 +1168,186 @@ module.exports = {
 
       res.json({ accessToken: newAccessToken })
     })
+  },
+  submitSignature: async function (req, res) {
+    try {
+      const { requestId, signature } = req.body // Read requestId and signature from request body
+
+      if (!requestId || !signature) {
+        return res.status(400).json({ success: false, message: 'Request ID and signature are required.' })
+      }
+
+      // Query the signature_tracking record by requestId
+      const signatureTracking = await prisma.signature_tracking.findUnique({
+        where: { id: requestId },
+        select: {
+          id: true,
+          signed: true,
+          case_id: true,
+          user_id: true
+        }
+      })
+
+      if (!signatureTracking) {
+        return res.status(404).json({ success: false, message: 'No valid signature tracking record found.' })
+      }
+
+      // Mark the signature_tracking record as signed
+      await prisma.signature_tracking.update({
+        where: { id: requestId },
+        data: { signed: true }
+      })
+
+      // Query the case record using case_id
+      const caseRecord = await prisma.cases.findUnique({
+        where: { id: signatureTracking.case_id },
+        select: {
+          id: true,
+          first_party: true,
+          second_party: true,
+          user_cases_second_partyTouser: {
+            select: {
+              id: true,
+              email: true,
+              name: true
+            }
+          }
+        }
+      })
+
+      if (!caseRecord) {
+        return res.status(404).json({ success: false, message: 'No valid case record found.' })
+      }
+
+      let sendRequestToSecondParty = false
+      // Update the case record based on the userId
+      const updateData = {}
+      if (signatureTracking.user_id === caseRecord.first_party) {
+        updateData.plaintiff_signature = signature // Update plaintiff_signature
+        updateData.sub_status = CaseSubTypes.PENDING_SECOND_PARTY_SIGNATURE // Set sub_status to pending second party signatur
+        sendRequestToSecondParty = true
+      } else if (signatureTracking.user_id === caseRecord.second_party) {
+        updateData.respondent_signature = signature // Update respondent_signature
+        updateData.sub_status = CaseSubTypes.PENDING_MEDIATION_CENTER
+      } else {
+        return res.status(400).json({ success: false, message: 'User ID does not match any party in the case.' })
+      }
+
+      if (sendRequestToSecondParty === true) {
+        const newSignatureRecord = await helper.createSignatureTrackingRecord(prisma, caseRecord.second_party, caseRecord.id)
+
+        const htmlBody = `
+          <p>Hi ${caseRecord.user_cases_second_partyTouser.name}, <br/> A mediation request has been initiated by Rouse Avenue Court.<br/>You are identified as the second party in this mediation case. To proceed further with the case, we require your signature verification. <br/> Please click the link below to review and provide your signature:</p>
+          <p><br/> Link to register - ${process.env.BASE_URL}/admin/signature?requestId=${newSignatureRecord.id}</p>`
+        await helper.sendEmail('Signature Required: Mediation Request from Rouse Avenue Court', caseRecord.user_cases_second_partyTouser.email, htmlBody)
+      }
+
+      await prisma.cases.update({
+        where: { id: caseRecord.id },
+        data: updateData
+      })
+
+      res.json({ success: true, message: 'Signature submitted successfully.' })
+    } catch (error) {
+      console.error('Error submitting signature:', error)
+      res.status(500).json({ success: false, message: 'Internal server error.' })
+    }
+  },
+  getSignatureRequestDetails: async function (req, res) {
+    try {
+      const { requestId } = req.query // Read requestId from URL parameters
+
+      if (!requestId) {
+        return res.status(400).json({ success: false, message: 'Request ID is required.' })
+      }
+
+      // Query the signature_tracking table
+      const signatureTracking = await prisma.signature_tracking.findFirst({
+        where: {
+          id: requestId,
+          signed: false,
+          signature_expiry: {
+            gt: new Date() // Ensure signature_expiry is in the future
+          }
+        },
+        include: {
+          user: true,
+          cases: true // Pull related case table data using case_id
+        }
+      })
+
+      if (!signatureTracking) {
+        return res.status(404).json({ success: false, message: 'No valid signature request found.' })
+      }
+
+      // Query the case table for detailed case data
+      const caseData = await prisma.cases.findUnique({
+        where: { id: signatureTracking.case_id },
+        select: {
+          id: true,
+          created_at: true,
+          updated_at: true,
+          mediator: true,
+          caseId: true,
+          judge_document_url: true,
+          nature_of_suit: true,
+          stage: true,
+          case_type: true,
+          status: true,
+          sub_status: true,
+          hearing_date: true,
+          institution_date: true,
+          mediation_date_time: true,
+          referral_judge_signature: true,
+          plaintiff_signature: true,
+          plaintiff_phone: true,
+          plaintiff_advocate: true,
+          respondent_signature: true,
+          respondent_phone: true,
+          respondent_advocate: true,
+          judge: true,
+          suit_no: true,
+          hearing_count: true,
+          user_cases_first_partyTouser: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          user_cases_second_partyTouser: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          user_cases_judgeTouser: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      })
+
+      if (!caseData) {
+        return res.status(404).json({ success: false, message: 'No case data found for the provided request.' })
+      }
+
+      let userName = ''
+      let isFirstPaty = false
+      if (caseData.user_cases_first_partyTouser.id === signatureTracking.user_id) {
+        userName = caseData.user_cases_first_partyTouser.name
+        isFirstPaty = true
+      } else if (caseData.user_cases_second_partyTouser.id === signatureTracking.user_id) {
+        userName = caseData.user_cases_second_partyTouser.name
+        isFirstPaty = false
+      }
+
+      res.json({ success: true, caseData, userName, isFirstPaty })
+    } catch (error) {
+      console.error('Error fetching signature request details:', error)
+      res.status(500).json({ success: false, message: 'Internal server error.' })
+    }
   },
   getActiveUsers: async function (req, res) {
     try {

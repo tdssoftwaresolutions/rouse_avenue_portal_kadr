@@ -31,6 +31,9 @@ const GET_BLOG_ASSETS = '/getBlogAssets'
 const ACCEPT_MEDIATION_REQUEST = '/acceptMediationRequest'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
 const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
+const NEW_CASE_ENDPOINT = '/newCase'
+const SUBMIT_SIGNATURE = '/submitSignature'
+const GET_SIGNATURE_REQUEST_DETAILS = '/getSignatureRequestDetails'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -170,9 +173,33 @@ export default (router) => {
           return error
         }
       },
+      async submitSignature ({ commit }, { signature, requestId }) {
+        try {
+          const { data } = await apiClient.post(SUBMIT_SIGNATURE, { signature, requestId })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getSignatureRequestDetails ({ commit }, { requestId }) {
+        try {
+          const { data } = await apiClient.get(`${GET_SIGNATURE_REQUEST_DETAILS}?requestId=${encodeURIComponent(requestId)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
       async verifySignature ({ commit }, { signature, userData }) {
         try {
           const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async createNewCase ({ commit }, { caseData, userId }) {
+        try {
+          const { data } = await apiClient.post(NEW_CASE_ENDPOINT, { caseData, userId })
           return data
         } catch (error) {
           return error

@@ -20,6 +20,14 @@ const CaseTypes = Object.freeze({
   PENDING: 'pending'
 })
 
+const CaseSubTypes = Object.freeze({
+  MEDIATOR_ASSIGNED: 'mediator_assigned',
+  MEETING_SCHEDULED: 'meeting_scheduled',
+  PENDING_COMPLAINANT_SIGNATURE: 'pending_complainant_signature',
+  PENDING_RESPONDENT_SIGNATURE: 'pending_respondent_signature',
+  PENDING_MEDIATION_CENTER: 'pending_mc'
+})
+
 class Helper {
   static generateRandomPassword (length = 12) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -657,6 +665,178 @@ class Helper {
     })
   }
 
+  static async getJudgeCasesCount (prisma, judgeId) {
+    return prisma.cases.count({
+      where: {
+        judge: judgeId,
+        OR: [
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
+        ]
+      }
+    })
+  }
+
+  static async getMediationCenterCasesCount (prisma) {
+    return prisma.cases.count({
+      where: {
+        sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER,
+        OR: [
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
+        ]
+      }
+    })
+  }
+
+  static async getMediationCenterCases (prisma, page) {
+    const perPage = 10
+
+    // Calculate the number of items to skip
+    const skip = (page - 1) * perPage
+
+    return prisma.cases.findMany({
+      where: {
+        sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER,
+        OR: [
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      skip, // Skip items for pagination
+      take: perPage, // Limit the number of items per page
+      select: {
+        id: true,
+        mediator: true,
+        first_party: true,
+        second_party: true,
+        caseId: true,
+        judge_document_url: true,
+        nature_of_suit: true,
+        stage: true,
+        suit_no: true,
+        status: true,
+        hearing_count: true,
+        sub_status: true,
+        hearing_date: true,
+        institution_date: true,
+        mediation_date_time: true,
+        referral_judge_signature: true,
+        plaintiff_signature: true,
+        plaintiff_phone: true,
+        plaintiff_advocate: true,
+        respondent_signature: true,
+        respondent_phone: true,
+        respondent_advocate: true,
+        judge: true,
+        user_cases_first_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
+          }
+        },
+        user_cases_second_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
+          }
+        },
+        user_cases_mediatorTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    })
+  }
+
+  static async getJudgeCases (prisma, judgeId, page) {
+    const perPage = 10
+
+    // Calculate the number of items to skip
+    const skip = (page - 1) * perPage
+
+    return prisma.cases.findMany({
+      where: {
+        judge: judgeId,
+        OR: [
+          { status: CaseTypes.NEW },
+          { status: CaseTypes.IN_PROGRESS }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      skip, // Skip items for pagination
+      take: perPage, // Limit the number of items per page
+      select: {
+        id: true,
+        mediator: true,
+        first_party: true,
+        second_party: true,
+        caseId: true,
+        judge_document_url: true,
+        nature_of_suit: true,
+        stage: true,
+        suit_no: true,
+        status: true,
+        hearing_count: true,
+        sub_status: true,
+        hearing_date: true,
+        institution_date: true,
+        mediation_date_time: true,
+        referral_judge_signature: true,
+        plaintiff_signature: true,
+        plaintiff_phone: true,
+        plaintiff_advocate: true,
+        respondent_signature: true,
+        respondent_phone: true,
+        respondent_advocate: true,
+        judge: true,
+        user_cases_first_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
+          }
+        },
+        user_cases_second_partyTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
+          }
+        },
+        user_cases_mediatorTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    })
+  }
+
   static async getMediatorCases (prisma, mediatorId, page) {
     // const today = new Date()
     // const startOfToday = new Date(today.setHours(0, 0, 0, 0))
@@ -730,7 +910,7 @@ class Helper {
           secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
         }
       })
-
+      console.log(base64Content)
       // Extract file extension from base64 string
       const matches = base64Content.match(/^data:(.+);base64,(.+)$/)
       if (!matches || matches.length !== 3) {
@@ -929,7 +1109,7 @@ class Helper {
     return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' })
   }
 
-  static async sendEmail (emailId, htmlBody) {
+  static async sendEmail (subject = 'Mail from kADR.live', emailId, htmlBody) {
     try {
       // Create a transporter
       const transporter = nodemailer.createTransport({
@@ -945,7 +1125,7 @@ class Helper {
       const mailOptions = {
         from: process.env.EMAIL_USER, // Sender's email address
         to: emailId, // Recipient's email address
-        subject: 'Mail from kADR.live', // Subject line
+        subject, // Subject line
         html: htmlBody
       }
 
@@ -957,6 +1137,27 @@ class Helper {
       return { message: 'Email sent successfully', info: info.response }
     } catch (error) {
       return { message: 'Failed to send email', error }
+    }
+  }
+
+  static async createSignatureTrackingRecord (prisma, userId, caseId) {
+    try {
+      const signatureExpiry = new Date()
+      signatureExpiry.setHours(signatureExpiry.getHours() + 24) // Set expiry to 24 hours from now
+
+      const record = await prisma.signature_tracking.create({
+        data: {
+          user_id: userId,
+          case_id: caseId,
+          signed: false,
+          signature_expiry: signatureExpiry
+        }
+      })
+
+      return record
+    } catch (error) {
+      console.error('Error creating signature tracking record:', error)
+      throw error
     }
   }
 }

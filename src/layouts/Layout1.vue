@@ -59,6 +59,8 @@ import NavBarStyle1 from '../components/sofbox/navbars/NavBarStyle1'
 import SideBarItems from '../FackApi/json/SideBar'
 import SideBarItemsMediator from '../FackApi/json/SideBarMediator'
 import SideBarItemAdmin from '../FackApi/json/SideBarAdmin'
+import SideBarItemsJudge from '../FackApi/json/SideBarJudge'
+import SideBarItemsMC from '../FackApi/json/SideBarMC'
 import profile from '../assets/images/user/1.jpeg'
 import logo from '../assets/images/logo.png'
 import { sofbox } from '../config/pluginInit'
@@ -116,6 +118,10 @@ export default {
             this.sidebar = SideBarItems
           } else if (userType === 'ADMIN') {
             this.sidebar = SideBarItemAdmin
+          } else if (userType === 'JUDGE') {
+            this.sidebar = SideBarItemsJudge
+          } else if (userType === 'MC') {
+            this.sidebar = SideBarItemsMC
           }
           this.user = data.userData
         } else {
