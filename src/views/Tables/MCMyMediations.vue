@@ -34,7 +34,7 @@
                     <b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="ml-2">
                       View Details
                     </b-button>
-                    <b-button size="sm" class="ml-2">
+                    <b-button size="sm" class="ml-2" @click="openAssignMediatorModal(data.item)">
                       Assign Mediator
                     </b-button>
                   </template>
@@ -54,8 +54,27 @@
             @close="closeViewDetails"
           />
         </b-modal>
-        <b-modal id="new-case-modal" size="xl" title="New Mediation" v-model="showNewCaseForm" hide-footer>
-          <mediation-form :nextCaseId="localNextCaseId"  @close="onCloseNewMediationForm" :userName="user.name"/>
+        <b-modal id="assign-mediator-modal" size="lg" title="Assign Mediator" scrollable v-model="showAssignMediatorModal" hide-footer>
+          <div v-if="assignedMediator" class="assigned-mediator-warning">
+            <p style="text-align: center;">
+              <strong>Note:</strong> This case is already assigned to <strong>{{ assignedMediator.name }}</strong>.
+            </p>
+          </div>
+          <div class="mediators-grid">
+            <div
+              v-for="mediator in availableMediators"
+              :key="mediator.id"
+              class="mediator-box"
+              :class="{ selected: mediator.id === selectedMediatorId }"
+              @click="selectMediator(mediator.id)"
+            >
+              <h5 style="font-size: 16px; margin-bottom: 5px;">{{ mediator.name }}</h5>
+              <p style="font-size: 14px; margin-bottom: 5px;">{{ mediator.email }}</p>
+              <p style="font-size: 14px; margin-bottom: 5px;">Phone: {{ mediator.phone_number }}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;">Total Cases Assigned: {{ mediator.cases_cases_mediatorTouser.length }}</p>
+              <b-button size="sm" variant="primary" @click="assignMediator(mediator.id)">Assign</b-button>
+            </div>
+          </div>
         </b-modal>
       </b-col>
     </b-row>
@@ -224,6 +243,42 @@ export default {
         this.casesCache[this.currentPage] = response
         this.paginatedData = response
       }
+    },
+    async openAssignMediatorModal (caseItem) {
+      this.selectedCaseId = caseItem.id
+      this.loading = true // Use the existing loading property
+      try {
+        const response = await this.$store.dispatch('getAvailableMediators', { caseId: this.selectedCaseId })
+        this.availableMediators = response.mediators || []
+        this.assignedMediator = response.assignedMediator || null
+        this.selectedMediatorId = this.availableMediators.reduce((prev, curr) =>
+          curr.cases_cases_mediatorTouser.length < prev.cases_cases_mediatorTouser.length ? curr : prev
+        ).id
+        this.showAssignMediatorModal = true
+      } catch (error) {
+        this.showAlert('Failed to fetch mediators.', 'danger')
+      } finally {
+        this.loading = false
+      }
+    },
+    selectMediator (mediatorId) {
+      this.selectedMediatorId = mediatorId // Update the selected mediator ID
+    },
+    async assignMediator (mediatorId) {
+      this.loading = true // Use the existing loading property
+      try {
+        const response = await this.$store.dispatch('assignMediator', { caseId: this.selectedCaseId, mediatorId })
+        if (response.success) {
+          this.showAlert('Mediator assigned successfully.', 'success')
+          this.showAssignMediatorModal = false
+        } else {
+          this.showAlert(response.message || 'Failed to assign mediator.', 'danger')
+        }
+      } catch (error) {
+        this.showAlert('An error occurred while assigning mediator.', 'danger')
+      } finally {
+        this.loading = false
+      }
     }
   },
   data () {
@@ -250,7 +305,13 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false
+      loading: false,
+      assignedMediator: null,
+      showAssignMediatorModal: false,
+      availableMediators: [],
+      selectedCaseId: null,
+      selectedMediatorId: null, // Track the selected mediator ID
+      defaultProfilePicture: ''
     }
   }
 }
@@ -268,5 +329,59 @@ ul li span {
 
 ul li span strong {
   margin-right: 8px; /* Add space between key (bold) and value */
+}
+
+.mediators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Use auto-fill to ensure items wrap properly */
+  gap: 20px;
+  padding: 20px;
+}
+
+@media (min-width: 1200px) {
+  .mediators-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust column size for large screens */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .mediators-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column size for medium screens */
+  }
+}
+
+@media (max-width: 767px) {
+  .mediators-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust column size for small screens */
+  }
+}
+
+.mediator-box {
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.mediator-box.selected {
+  background-color: #d9e6f2;
+  border-color: #2c6faf;
+}
+
+.assigned-mediator-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #ffeeba;
+}
+
+.b-modal {
+  max-height: 90vh; /* Ensure modal height adjusts dynamically */
+  overflow-y: auto; /* Allow vertical scrolling if content exceeds modal height */
 }
 </style>

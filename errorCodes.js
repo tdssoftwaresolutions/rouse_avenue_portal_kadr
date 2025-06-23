@@ -76,7 +76,7 @@ const ERROR_CODES = {
   },
   USER_NOT_ACTIVE: {
     errorCode: 'E304',
-    message: 'User not yet activated, please wait for kADR team to review your account.'
+    message: 'User not yet activated, please wait for Rouse Avenue team to review your account.'
   },
   INVALID_OTP: {
     errorCode: 'E305',

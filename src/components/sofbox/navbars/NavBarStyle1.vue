@@ -6,7 +6,7 @@
         <div class="top-logo">
           <router-link :to="homeURL">
             <img :src="logo" class="img-fluid" alt="logo">
-            <span>KADR</span>
+            <span>RAMC</span>
           </router-link>
         </div>
       </div>

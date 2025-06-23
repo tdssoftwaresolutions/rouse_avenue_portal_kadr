@@ -34,6 +34,8 @@ const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
 const NEW_CASE_ENDPOINT = '/newCase'
 const SUBMIT_SIGNATURE = '/submitSignature'
 const GET_SIGNATURE_REQUEST_DETAILS = '/getSignatureRequestDetails'
+const GET_AVAILABLE_MEDIATORS = '/getAvailableMediators'
+const ASSIGN_MEDIATOR = '/assignMediator'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -240,6 +242,22 @@ export default (router) => {
       async setClientPayment ({ commit }, { payload }) {
         try {
           const { data } = await apiClient.post(SET_CLIENT_PAYMENT_ENDPOINT, { ...payload })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async assignMediator ({ commit }, { caseId, mediatorId }) {
+        try {
+          const { data } = await apiClient.post(ASSIGN_MEDIATOR, { caseId, mediatorId })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getAvailableMediators ({ commit }, { caseId }) {
+        try {
+          const { data } = await apiClient.get(`${GET_AVAILABLE_MEDIATORS}?caseId=${encodeURIComponent(caseId)}`)
           return data
         } catch (error) {
           return error

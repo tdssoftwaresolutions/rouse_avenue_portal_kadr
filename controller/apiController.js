@@ -455,7 +455,7 @@ module.exports = {
     const uniqueSignUpLink = helper.generateUniqueSignUpLink(caseDetails.user_cases_second_partyTouser.id)
 
     const htmlBody = `
-    <p>Hi ${caseDetails.user_cases_second_partyTouser.name}, we have recieved a mediation request from ${caseDetails.user_cases_first_partyTouser.name} on kADR.live.</p>
+    <p>Hi ${caseDetails.user_cases_second_partyTouser.name}, we have recieved a mediation request from ${caseDetails.user_cases_first_partyTouser.name} on Rouse Avenue Mediation Center.</p>
     <p>To go ahead and start the mediation, please click on below links <br/> Link to register - ${uniqueSignUpLink}</p>`
     await helper.sendEmail(caseDetails.user_cases_second_partyTouser.email, htmlBody)
 
@@ -612,7 +612,7 @@ module.exports = {
       })
     }
     const htmlBody = `
-              <p>Hi ${updatedUser.name}, thanks for registering on KADR.live. Your account is now active.</p>
+              <p>Hi ${updatedUser.name}, thanks for registering on Rouse Avenue Mediation Center. Your account is now active.</p>
               <p>To login, use below credentials:</p> <br/>
               <p>Username : ${updatedUser.email}</p> <br/>
               <p>Password : ${generatedPassword} <p>`
@@ -786,7 +786,7 @@ module.exports = {
         }
       })
       const htmlBody = `
-                    <p>Hi, we have recieved your request to reset password for your account on kADR.live.</p>
+                    <p>Hi, we have recieved your request to reset password for your account on Rouse Avenue Mediation Center.</p>
                     <p>To go ahead with this, please enter OTP: ${otp} on our platform to reset the password</p>
                   `
       await helper.sendEmail(email, htmlBody)
@@ -1168,6 +1168,100 @@ module.exports = {
 
       res.json({ accessToken: newAccessToken })
     })
+  },
+  assignMediator: async function (req, res) {
+    try {
+      const { caseId, mediatorId } = req.body // Read caseId and mediatorId from request body
+
+      if (!caseId || !mediatorId) {
+        return res.status(400).json({ success: false, message: 'Case ID and Mediator ID are required.' })
+      }
+
+      // Verify mediatorId is valid and user_type is 'MEDIATOR'
+      const mediator = await prisma.user.findUnique({
+        where: { id: mediatorId },
+        select: { id: true, user_type: true }
+      })
+
+      if (!mediator || mediator.user_type !== 'MEDIATOR') {
+        return res.status(400).json({ success: false, message: 'Invalid mediator ID or user is not a mediator.' })
+      }
+
+      // Update the case with the mediatorId
+      await prisma.cases.update({
+        where: { id: caseId },
+        data: { mediator: mediatorId }
+      })
+
+      res.json({ success: true, message: 'Mediator assigned successfully.' })
+    } catch (error) {
+      console.error('Error assigning mediator:', error)
+      res.status(500).json({ success: false, message: 'Internal server error.' })
+    }
+  },
+  getAvailableMediators: async function (req, res) {
+    try {
+      const { caseId } = req.query // Read caseId from URL parameters
+
+      if (!caseId) {
+        return res.status(400).json({ success: false, message: 'Case ID is required.' })
+      }
+
+      const today = new Date().toLocaleString('en-US', { weekday: 'long' }) // Get today's day of the week (e.g., 'Monday')
+
+      // Query the user table for mediators available today
+      const mediators = await prisma.user.findMany({
+        where: {
+          user_type: 'MEDIATOR',
+          working_day_of_week: {
+            equals: today // Check if today's day matches exactly
+          }
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone_number: true,
+          cases_cases_mediatorTouser: { // Pull cases where this user is assigned as mediator
+            select: {
+              id: true,
+              caseId: true,
+              nature_of_suit: true,
+              stage: true,
+              status: true
+            }
+          }
+        }
+      })
+
+      // Query the case to find the assigned mediator, if any
+      const assignedMediator = await prisma.cases.findUnique({
+        where: { id: caseId },
+        select: {
+          user_cases_mediatorTouser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone_number: true
+            }
+          }
+        }
+      })
+
+      if (mediators.length === 0) {
+        return res.status(404).json({ success: false, message: 'No mediators available today.' })
+      }
+
+      res.json({
+        success: true,
+        mediators,
+        assignedMediator: assignedMediator?.user_cases_mediatorTouser || null
+      })
+    } catch (error) {
+      console.error('Error fetching available mediators:', error)
+      res.status(500).json({ success: false, message: 'Internal server error.' })
+    }
   },
   submitSignature: async function (req, res) {
     try {

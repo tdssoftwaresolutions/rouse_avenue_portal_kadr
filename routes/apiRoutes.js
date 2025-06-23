@@ -33,14 +33,18 @@ router.post('/saveBlog', authMiddleware, apiController.saveBlog)
 router.get('/getBlogAssets', apiController.getBlogAssets)
 router.post('/acceptMediationRequest', authMiddleware, apiController.acceptMediationRequest)
 router.post('/newCase', authMiddleware, apiController.newCase)
-// Temperory APIs
-router.post('/sendemail/:email/:name', apiController.sendEmail)
-router.get('/generatePassword', apiController.generatePassword)
 router.get('/getActiveUsers', authMiddleware, apiController.getActiveUsers)
 router.get('/getSignatureRequestDetails', apiController.getSignatureRequestDetails)
 router.post('/submitSignature', apiController.submitSignature)
+router.get('/getAvailableMediators', authMiddleware, apiController.getAvailableMediators)
+router.post('/assignMediator', authMiddleware, apiController.assignMediator)
+// Temperory APIs
+router.post('/sendemail/:email/:name', apiController.sendEmail)
+router.get('/generatePassword', apiController.generatePassword)
+
 // Static website APIs
 router.get('/getBlogs', apiController.geAllBlogs)
 router.get('/getPublicBlogAssets', apiController.getPublicBlogAssets)
 router.get('/getBlog', apiController.getBlog)
+
 module.exports = router

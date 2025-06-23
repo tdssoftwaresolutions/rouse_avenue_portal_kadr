@@ -113,6 +113,7 @@ export default {
     },
     async onCloseNewMediationForm (formData) {
       formData.judgeId = this.user.id // Add judgeId to formData
+      this.loading = true
       const response = await this.$store.dispatch('createNewCase', {
         caseData: formData
       })
@@ -158,6 +159,7 @@ export default {
         this.paginatedData.total += 1 // Increment total count
         this.currentPage = 1 // Reset to the first page
       }
+      this.loading = false
     },
     openNewCaseForm () {
       this.showNewCaseForm = true
@@ -209,8 +211,10 @@ export default {
     },
     async fetchCases (newPage) {
       this.currentPage = newPage
+      this.loading = true
       if (this.casesCache[this.currentPage]) {
         this.paginatedData = this.casesCache[this.currentPage]
+        this.loading = false
         return
       }
       const response = await this.$store.dispatch('getMyCases', {
@@ -222,6 +226,7 @@ export default {
         this.casesCache[this.currentPage] = response
         this.paginatedData = response
       }
+      this.loading = false
     }
   },
   data () {

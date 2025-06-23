@@ -15,10 +15,10 @@ app.use(cookieParser())
 
 app.use('/api', require('./routes/apiRoutes'))
 
-// Serve static files from the 'public/home' directory (Static website at kadr.live)
+// Serve static files from the 'public/home' directory (Static website)
 app.use(express.static(path.join(__dirname, 'public/home')))
 
-// Serve the Vue.js-based admin app from the 'dist' directory (Dynamic site at kadr.live/admin)
+// Serve the Vue.js-based admin app from the 'dist' directory (Dynamic site /admin)
 app.use('/admin', express.static(path.join(__dirname, 'dist')))
 
 // Fallback for all other routes (useful for client-side routing in Vue.js)

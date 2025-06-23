@@ -8,174 +8,180 @@
       NEW DELHI
     </h1>
 
-    <form @submit.prevent="submitForm" class="form-section">
-      <div class="form-row">
-        <label>CASE ID:</label>
-        <input disabled :value="`${form.caseId || uniquecaseId}`" />
-        <label>Next Date of Hearing in Referral Court:</label>
-        <input type="date" v-model="form.hearingDate" :min="today" :disabled="viewMode" />
-      </div>
-
-      <div class="form-row">
-        <label>Name of the Referral Judge:</label>
-        <input :value="userName" disabled />
-      </div>
-
-      <div class="form-row">
-        <label>Suit No/Case No:</label>
-        <input v-model="form.suitNo" :disabled="viewMode" />
-      </div>
-
-      <div class="form-row" style="gap:10px">
-        <label>Name of the Parties:</label>
-        <div class="party-input-group">
-          <input v-model="form.party1" placeholder="Party 1" :disabled="viewMode" />
-          <br />
-          <input v-model="form.party1Email" placeholder="Party 1 Email" :disabled="viewMode" />
-        </div>
-        <span>vs</span>
-        <div class="party-input-group">
-          <input v-model="form.party2" placeholder="Party 2" :disabled="viewMode" />
-          <br />
-          <input v-model="form.party2Email" placeholder="Party 2 Email" :disabled="viewMode" />
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Date of Institution of Case:</label>
-        <input type="date" v-model="form.institutionDate" :disabled="viewMode" />
-        <label>Nature of Suit:</label>
-        <input v-model="form.natureOfSuit" :disabled="viewMode" />
-      </div>
-
-      <div class="form-row">
-        <label>Stage of the Case at Time of Referral:</label>
-        <input v-model="form.stage" :disabled="viewMode" />
-        <label>Number of Hearings at Time of Referral:</label>
-        <input type="number" v-model.number="form.hearingCount" min="0" :disabled="viewMode" />
-      </div>
-
-      <!-- Mediation Referral Order Block -->
-      <div class="referral-section">
-        <h2>Mediation Referral Order</h2>
-        <p>
-          This Court, having conferred with the parties and having determined that this matter could benefit from
-          mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
-          provided by the court at no cost to the Parties.
-        </p>
-
-        <p>
-          The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
-          New Delhi</strong> on:
-          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" />.
-          If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
-          date for mediation convenient to the parties.
-        </p>
-
-        <p>
-          The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
-        </p>
-
-        <p>
-          If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
-          by the parties/their counsel and returned to this Court for further appropriate orders.
-        </p>
-
-        <p>
-          If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
-          anything that was discussed at the mediation.
-        </p>
-
-        <div class="form-row">
-          <label>Signature of Referral Judge:</label>
-          <div v-if="viewMode">
-            <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
-              <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
-            </div>
-            <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-              <span class="cursive-signature">{{ userInitials }}</span>
-            </div>
-          </div>
-          <div v-else>
-            <div class="signature-type-selector" v-if="!viewMode">
-              <button
-                type="button"
-                :class="{ active: signatureType === 'digital' }"
-                @click="setSignatureType('digital')">
-                Digital Signature
-              </button>
-              <button
-                type="button"
-                :class="{ active: signatureType === 'manual' }"
-                @click="setSignatureType('manual')">
-                Sign Manually
-              </button>
-            </div>
-            <div v-if="signatureType === 'digital'" class="digital-signature-box">
-              <span class="cursive-signature">{{ userInitials }}</span>
-            </div>
-            <div v-else-if="signatureType === 'manual'" class="manual-signature">
-              <canvas ref="signaturePad" class="signature-canvas" :disabled="viewMode"></canvas>
-              <button type="button" @click="clearSignature" class="btn btn-secondary" style="margin: 0px;width: 100%;" v-if="!viewMode">
-                Clear <i class="ri-refresh-line"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Signatures Section -->
-      <div class="form-row signature-section">
-        <div>
-          <h4>Plaintiff/Complainant</h4>
+    <b-tabs v-model="activeTab" class="mb-3">
+      <b-tab title="Case Details">
+        <form @submit.prevent="submitForm" class="form-section">
           <div class="form-row">
-            <label >Signature:</label>
-            <div v-if="viewMode">
-              <div v-if="form.plaintiffSignature.startsWith('data:image/')">
-                <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
-              </div>
-              <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
-              </div>
-            </div>
+            <label>CASE ID:</label>
+            <input disabled :value="`${form.caseId || uniquecaseId}`" />
+            <label>Next Date of Hearing in Referral Court:</label>
+            <input type="date" v-model="form.hearingDate" :min="today" :disabled="viewMode" />
           </div>
-          <label>Phone No:</label>
-          <input v-model="form.plaintiffPhone" :disabled="viewMode" />
-          <label>Name of Advocate:</label>
-          <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
-        </div>
 
-        <div>
-          <h4>Respondent/Accused</h4>
           <div class="form-row">
-            <label >Signature:</label>
-            <div v-if="viewMode">
-              <div v-if="form.respondentSignature.startsWith('data:image/')">
-                <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
+            <label>Name of the Referral Judge:</label>
+            <input :value="userName" disabled />
+          </div>
+
+          <div class="form-row">
+            <label>Suit No/Case No:</label>
+            <input v-model="form.suitNo" :disabled="viewMode" />
+          </div>
+
+          <div class="form-row">
+            <label>Name of the Parties:</label>
+            <div class="party-input-group">
+              <input v-model="form.party1" placeholder="Party 1" :disabled="viewMode" />
+              <br />
+              <input v-model="form.party1Email" placeholder="Party 1 Email" :disabled="viewMode" />
+            </div>
+            <span style="margin-left:1rem;margin-right: 1rem;">vs</span>
+            <div class="party-input-group">
+              <input v-model="form.party2" placeholder="Party 2" :disabled="viewMode" />
+              <br />
+              <input v-model="form.party2Email" placeholder="Party 2 Email" :disabled="viewMode" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Date of Institution of Case:</label>
+            <input type="date" v-model="form.institutionDate" :disabled="viewMode" />
+            <label>Nature of Suit:</label>
+            <input v-model="form.natureOfSuit" :disabled="viewMode" />
+          </div>
+
+          <div class="form-row">
+            <label>Stage of the Case at Time of Referral:</label>
+            <input v-model="form.stage" :disabled="viewMode" />
+            <label>Number of Hearings at Time of Referral:</label>
+            <input type="number" v-model.number="form.hearingCount" min="0" :disabled="viewMode" />
+          </div>
+
+          <!-- Mediation Referral Order Block -->
+          <div class="referral-section">
+            <h2>Mediation Referral Order</h2>
+            <p>
+              This Court, having conferred with the parties and having determined that this matter could benefit from
+              mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
+              provided by the court at no cost to the Parties.
+            </p>
+
+            <p>
+              The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
+              New Delhi</strong> on:
+              <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" />.
+              If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
+              date for mediation convenient to the parties.
+            </p>
+
+            <p>
+              The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
+            </p>
+
+            <p>
+              If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
+              by the parties/their counsel and returned to this Court for further appropriate orders.
+            </p>
+
+            <p>
+              If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
+              anything that was discussed at the mediation.
+            </p>
+
+            <div class="form-row">
+              <label>Signature of Referral Judge:</label>
+              <div v-if="viewMode">
+                <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
+                  <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
+                </div>
+                <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                  <span class="cursive-signature">{{ userInitials }}</span>
+                </div>
               </div>
-              <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                <span class="cursive-signature">{{ form.respondentSignature }}</span>
+              <div v-else>
+                <div class="signature-type-selector" v-if="!viewMode">
+                  <button
+                    type="button"
+                    :class="{ active: signatureType === 'digital' }"
+                    @click="setSignatureType('digital')">
+                    Digital Signature
+                  </button>
+                  <button
+                    type="button"
+                    :class="{ active: signatureType === 'manual' }"
+                    @click="setSignatureType('manual')">
+                    Sign Manually
+                  </button>
+                </div>
+                <div v-if="signatureType === 'digital'" class="digital-signature-box">
+                  <span class="cursive-signature">{{ userInitials }}</span>
+                </div>
+                <div v-else-if="signatureType === 'manual'" class="manual-signature">
+                  <canvas ref="signaturePad" class="signature-canvas" :disabled="viewMode"></canvas>
+                  <button type="button" @click="clearSignature" class="btn btn-secondary" style="margin: 0px;width: 100%;" v-if="!viewMode">
+                    Clear <i class="ri-refresh-line"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <label>Phone No:</label>
-          <input v-model="form.respondentPhone" :disabled="viewMode" />
-          <label>Name of Advocate:</label>
-          <input v-model="form.respondentAdvocate" :disabled="viewMode" />
-        </div>
-      </div>
-      <div class="form-row">
-        <label>Additional Document:</label>
-        <div v-if="viewMode">
-          <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
-        </div>
-        <div v-else>
-          <input type="file" @change="handleFileUpload"  />
-        </div>
-      </div>
-      <button v-if="!viewMode" type="submit">Submit</button>
-      <button v-else type="button" @click="closeForm">Close</button>
-    </form>
+
+          <!-- Signatures Section -->
+          <div class="form-row signature-section">
+            <div>
+              <h4>Plaintiff/Complainant</h4>
+              <div class="form-row">
+                <label >Signature:</label>
+                <div v-if="viewMode">
+                  <div v-if="form.plaintiffSignature.startsWith('data:image/')">
+                    <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
+                  </div>
+                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                    <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
+                  </div>
+                </div>
+              </div>
+              <label>Phone No:</label>
+              <input v-model="form.plaintiffPhone" :disabled="viewMode" />
+              <label>Name of Advocate:</label>
+              <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
+            </div>
+
+            <div>
+              <h4>Respondent/Accused</h4>
+              <div class="form-row">
+                <label >Signature:</label>
+                <div v-if="viewMode">
+                  <div v-if="form.respondentSignature.startsWith('data:image/')">
+                    <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
+                  </div>
+                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                    <span class="cursive-signature">{{ form.respondentSignature }}</span>
+                  </div>
+                </div>
+              </div>
+              <label>Phone No:</label>
+              <input v-model="form.respondentPhone" :disabled="viewMode" />
+              <label>Name of Advocate:</label>
+              <input v-model="form.respondentAdvocate" :disabled="viewMode" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Additional Document:</label>
+            <div v-if="viewMode">
+              <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
+            </div>
+            <div v-else>
+              <input type="file" @change="handleFileUpload"  />
+            </div>
+          </div>
+          <button v-if="!viewMode" type="submit">Submit</button>
+        </form>
+      </b-tab>
+      <b-tab title="Mediation">
+        <!-- Leave blank for now -->
+      </b-tab>
+    </b-tabs>
   </div>
 </template>
 
@@ -208,6 +214,7 @@ export default {
   },
   data () {
     return {
+      activeTab: 0,
       signatureType: 'digital',
       form: {
         caseId: '',

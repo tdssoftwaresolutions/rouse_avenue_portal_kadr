@@ -112,7 +112,7 @@
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../components/sofbox/spinner/spinner.vue'
-import JudgeMyMediations from '../Tables/Judge_MyMediations.vue'
+import JudgeMyMediations from '../Tables/JudgeMyMediations.vue'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
 const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
 

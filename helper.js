@@ -1109,7 +1109,7 @@ class Helper {
     return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' })
   }
 
-  static async sendEmail (subject = 'Mail from kADR.live', emailId, htmlBody) {
+  static async sendEmail (subject = 'Mail from Rouse Avenue Mediaton Center', emailId, htmlBody) {
     try {
       // Create a transporter
       const transporter = nodemailer.createTransport({
