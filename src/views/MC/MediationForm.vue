@@ -179,7 +179,124 @@
         </form>
       </b-tab>
       <b-tab title="Mediation">
-        <!-- Leave blank for now -->
+        <div v-if="mediationData && mediationData.data">
+          <div class="mediation-section">
+            <h3>Mediation Summary</h3>
+            <div class="mediation-row">
+              <div>
+                <strong>Status:</strong>
+                {{ getStatusLabel(mediationData.data.status) }}
+              </div>
+              <div>
+              </div>
+            </div>
+
+            <h4 style="margin-top: 2rem;">Mediation Meetings</h4>
+            <b-table
+              :items="mediationData.data.events"
+              :fields="[
+                { key: 'title', label: 'Title' },
+                { key: 'start_datetime', label: 'Start' },
+                { key: 'end_datetime', label: 'End' },
+                { key: 'meeting_link', label: 'Meeting Link' },
+                { key: 'feedback', label: 'Feedback' }
+              ]"
+              small
+              responsive
+              bordered
+              class="mb-4"
+            >
+              <template #cell(start_datetime)="data">
+                {{ new Date(data.item.start_datetime).toLocaleString() }}
+              </template>
+              <template #cell(end_datetime)="data">
+                {{ new Date(data.item.end_datetime).toLocaleString() }}
+              </template>
+              <template #cell(meeting_link)="data">
+                <a :href="data.item.meeting_link" target="_blank" v-if="data.item.meeting_link">Join</a>
+              </template>
+              <template #cell(feedback)="data">
+                <div v-if="data.item.event_feedback_events_event_feedback_idToevent_feedback">
+                  <div>
+                    <span v-if="data.item.event_feedback_events_event_feedback_idToevent_feedback.first_party_present">1st Party Present</span>
+                    <span v-else>1st Party Absent</span>
+                  </div>
+                  <div>
+                    <span v-if="data.item.event_feedback_events_event_feedback_idToevent_feedback.second_party_present">2nd Party Present</span>
+                    <span v-else>2nd Party Absent</span>
+                  </div>
+                  <div>
+                    <strong>Summary:</strong>
+                    {{ data.item.event_feedback_events_event_feedback_idToevent_feedback.summary_of_meeting }}
+                  </div>
+                </div>
+                <span v-else>-</span>
+              </template>
+            </b-table>
+
+            <h4>Mediation Agreement</h4>
+            <div v-if="mediationData.data.agreement">
+              <div class="agreement-block">
+                <div class="agreement-row">
+                  <div class="agreement-col">
+                    <div>
+                      <strong>Date:</strong>
+                      <div>{{ new Date(mediationData.data.agreement.created_at).toLocaleString() }}</div>
+                    </div>
+                    <div>
+                      <strong>Both Parties Agreed:</strong>
+                      <div>
+                        <span v-if="mediationData.data.agreement.both_parties_agreed">Yes</span>
+                        <span v-else>No</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="agreement-col">
+                    <div>
+                      <strong>Agreed Terms:</strong>
+                      <div>{{ mediationData.data.agreement.agreed_terms }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="agreement-signatures">
+                  <div class="signature-col">
+                    <div><strong>Mediator Signature</strong></div>
+                    <div v-if="mediationData.data.agreement.signature_mediator && mediationData.data.agreement.signature_mediator.startsWith('data:image/')">
+                      <img :src="mediationData.data.agreement.signature_mediator" alt="Mediator Signature" class="signature-img" />
+                    </div>
+                    <div v-else>
+                      <span class="cursive-signature">{{ mediationData.data.agreement.signature_mediator }}</span>
+                    </div>
+                  </div>
+                  <div class="signature-col">
+                    <div><strong>First Party Signature</strong></div>
+                    <div v-if="mediationData.data.agreement.first_party_signature && mediationData.data.agreement.first_party_signature.startsWith('data:image/')">
+                      <img :src="mediationData.data.agreement.first_party_signature" alt="First Party Signature" class="signature-img" />
+                    </div>
+                    <div v-else>
+                      <span class="cursive-signature">{{ mediationData.data.agreement.first_party_signature }}</span>
+                    </div>
+                  </div>
+                  <div class="signature-col">
+                    <div><strong>Second Party Signature</strong></div>
+                    <div v-if="mediationData.data.agreement.second_party_signature && mediationData.data.agreement.second_party_signature.startsWith('data:image/')">
+                      <img :src="mediationData.data.agreement.second_party_signature" alt="Second Party Signature" class="signature-img" />
+                    </div>
+                    <div v-else>
+                      <span class="cursive-signature">{{ mediationData.data.agreement.second_party_signature }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <span>No agreement available.</span>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <p>No mediation data available.</p>
+        </div>
       </b-tab>
     </b-tabs>
   </div>
@@ -217,6 +334,7 @@ export default {
       activeTab: 0,
       signatureType: 'digital',
       form: {
+        id: '',
         caseId: '',
         hearingDate: '',
         suitNo: '',
@@ -246,7 +364,26 @@ export default {
         type: 'primary'
       },
       today: new Date().toISOString().split('T')[0],
-      now: new Date().toISOString().slice(0, 16)
+      now: new Date().toISOString().slice(0, 16),
+      mediationData: null, // Store fetched mediation data
+      statusValueMap: {
+        failed: 'Failed',
+        in_progress: 'In Progress',
+        cancelled: 'Cancelled',
+        closed_no_success: 'Closed No Success',
+        closed_success: 'Closed Success',
+        escalated: 'Escalated',
+        new: 'New',
+        on_hold: 'On Hold',
+        pending: 'Pending'
+      },
+      subStatusValueMap: {
+        mediator_assigned: 'Mediator Assigned',
+        meeting_scheduled: 'Meeting Scheduled',
+        pending_complainant_signature: 'Pending Complainant Signature',
+        pending_respondent_signature: 'Pending Respondent Signature',
+        pending_mc: 'Pending Mediation Center'
+      }
     }
   },
   computed: {
@@ -358,6 +495,32 @@ export default {
       }
       return true
     },
+    async fetchMediationData () {
+      // Replace with your actual Vuex action or API call
+      try {
+        const caseId = this.form.id
+        // Example: fetch mediation data for this caseId
+        const result = await this.$store.dispatch('getMediationData', { caseId })
+        this.mediationData = result
+      } catch (e) {
+        this.showAlert('Failed to fetch mediation data.', 'danger')
+      }
+    },
+    getStatusLabel (status) {
+      if (!status) return '-'
+      return this.statusValueMap[status] || this.toCamelCase(status)
+    },
+    getSubStatusLabel (subStatus) {
+      if (!subStatus) return '-'
+      return this.subStatusValueMap[subStatus] || this.toCamelCase(subStatus)
+    },
+    toCamelCase (str) {
+      if (!str) return ''
+      return str
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .replace(/\s+/g, ' ')
+    },
     submitForm () {
       if (this.viewMode) {
         this.closeForm()
@@ -416,6 +579,7 @@ export default {
   created () {
     if (this.viewMode && this.formData) {
       this.form = {
+        id: this.formData.id || '',
         caseId: this.formData.caseId || '',
         hearingDate: this.formatDate(this.formData.hearing_date, 'date') || '',
         suitNo: this.formData.suit_no || '',
@@ -436,6 +600,13 @@ export default {
         respondentPhone: this.formData.respondent_phone || '',
         respondentAdvocate: this.formData.respondent_advocate || '',
         document: this.formData.judge_document_url || null
+      }
+    }
+  },
+  watch: {
+    activeTab (val) {
+      if (val === 1) {
+        this.fetchMediationData()
       }
     }
   }
@@ -608,5 +779,77 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+}
+
+.mediation-section {
+  background: #f8fafd;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 16px;
+}
+.mediation-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.mediation-section h3 {
+  margin-bottom: 12px;
+  color: #2c6faf;
+}
+.mediation-section h4 {
+  margin-top: 24px;
+  margin-bottom: 10px;
+  color: #2c6faf;
+}
+.agreement-block {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  margin-top: 10px;
+  max-width: 700px;
+}
+.agreement-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.agreement-col {
+  flex: 1 1 0;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.agreement-signatures {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 32px;
+  gap: 16px;
+}
+.signature-col {
+  flex: 1 1 0;
+  min-width: 180px;
+  text-align: center;
+}
+.signature-img {
+  max-width: 180px;
+  max-height: 70px;
+  border: 1px solid #ccc;
+  margin: 0 auto;
+  display: block;
+  background: #fafbfc;
+}
+.cursive-signature {
+  font-family: Cursive;
+  font-size: 24px;
+  color: #2c6faf;
+  display: inline-block;
+  margin-top: 10px;
 }
 </style>

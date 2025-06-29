@@ -28,6 +28,7 @@ import UserList from '../views/User/UserList'
 import AdminUsersListView from '../views/User/AdminUsersListView.vue'
 
 import Signature from '../views/Client/Signature.vue'
+import AgreementSignature from '../views/Client/AgreementSignature.vue'
 
 Vue.use(VueRouter)
 
@@ -169,6 +170,11 @@ const routes = [
     path: '/signature',
     name: 'signature',
     component: Signature
+  },
+  {
+    path: '/agreement-signature',
+    name: 'agreement-signature',
+    component: AgreementSignature
   },
   {
     path: '/pages',

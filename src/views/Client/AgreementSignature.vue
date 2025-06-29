@@ -1,121 +1,92 @@
 <template>
   <div class="form-container">
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
+    <form @submit.prevent="openAadharModal" class="form-section" v-if="data != null">
+      <div class="document-container">
+        <h1>ROUSE AVENUE MEDIATION CENTER</h1>
+        <h2>MEDIATION COMPLETION DOCUMENT</h2>
+        <hr />
 
-    <h1 class="header">
-      MEDIATION CENTRE<br />
-      ROUSE AVENUE COURTS COMPLEX<br />
-      NEW DELHI
-    </h1>
+        <section>
+          <h4>1. Case Information</h4>
+          <p><strong>Case ID:</strong> {{ data.caseId }}</p>
+          <p><strong>Case Type:</strong> {{ data.caseType }}</p>
+          <p><strong>Date of Case Registration:</strong> {{ formatDateTime(data.dateOfCaseRegistration) }}</p>
+          <p><strong>Mediation Completion Date:</strong> {{ formatDateTime(data.mediationCompletionDate) }}</p>
+        </section>
 
-    <form @submit.prevent="openAadharModal" class="form-section" v-if="signatureRequestDetails != null">
-      <div class="form-row">
-        <label>CASE ID:</label>
-        <input disabled :value="signatureRequestDetails.caseId" />
-        <label>Next Date of Hearing in Referral Court:</label>
-        <input type="date" :value="formatDate(signatureRequestDetails.hearing_date,'date')" disabled />
-      </div>
+        <section>
+          <h4>2. Party Details</h4>
+          <p><strong>First Party (Name):</strong> {{ data.firstPartyName }}</p>
+          <p><strong>Second Party (Name):</strong> {{ data.secondPartyName }}</p>
+        </section>
 
-      <div class="form-row">
-        <label>Name of the Referral Judge:</label>
-        <input :value="signatureRequestDetails.user_cases_judgeTouser.name" disabled />
-      </div>
+        <section>
+          <h4>3. Mediator Details</h4>
+          <p><strong>Mediator Name:</strong> {{ data.mediatorName }}</p>
+          <p><strong>Number of Mediation Sessions Held:</strong> {{ data.numberOfSessions }}</p>
+          <p><strong>Dates of Mediation Sessions:</strong>
+            {{ formatSessionDates(data.sessionDates) }}
+          </p>
+        </section>
 
-      <div class="form-row">
-        <label>Suit No/Case No:</label>
-        <input :value="signatureRequestDetails.suit_no" disabled />
-      </div>
-
-      <div class="form-row">
-        <label>Name of the Parties:</label>
-        <div class="party-input-group">
-          <input :value="signatureRequestDetails.user_cases_first_partyTouser.name" disabled />
-        </div>
-        <span>vs</span>
-        <div class="party-input-group">
-          <input :value="signatureRequestDetails.user_cases_second_partyTouser.name" disabled />
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Date of Institution of Case:</label>
-        <input type="date" :value="formatDate(signatureRequestDetails.institution_date,'date')" disabled />
-        <label>Nature of Suit:</label>
-        <input :value="signatureRequestDetails.nature_of_suit" disabled />
-      </div>
-
-      <div class="form-row">
-        <label>Stage of the Case at Time of Referral:</label>
-        <input :value="signatureRequestDetails.stage" disabled />
-        <label>Number of Hearings at Time of Referral:</label>
-        <input :value="signatureRequestDetails.hearing_count" disabled />
-      </div>
-
-      <!-- Mediation Referral Order Block -->
-      <div class="referral-section">
-        <h2>Mediation Referral Order</h2>
-        <p>
-          This Court, having conferred with the parties and having determined that this matter could benefit from
-          mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
-          provided by the court at no cost to the Parties.
-        </p>
-
-        <p>
-          The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
-          New Delhi</strong> on:
-          <input type="datetime-local" :value="formatDate(signatureRequestDetails.mediation_date_time,'datetime-local')" class="inline-input" disabled />.
-        </p>
-
-        <p>
-          The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
-        </p>
-
-        <p>
-          If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
-          by the parties/their counsel and returned to this Court for further appropriate orders.
-        </p>
-
-        <p>
-          If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
-          anything that was discussed at the mediation.
-        </p>
-      </div>
-
-      <!-- Signatures Section -->
-      <div class="form-row signature-section">
-        <div>
-          <label>Your Signature:</label>
-          <div class="signature-type-selector">
-            <button
-              type="button"
-              :class="{ active: signature_type === 'digital' }"
-              @click="setSignatureType('digital')">
-              Digital Signature
-            </button>
-            <button
-              type="button"
-              :class="{ active: signature_type === 'manual' }"
-              @click="setSignatureType('manual')">
-              Sign Manually
-            </button>
+        <section>
+          <h4>4. Outcome of Mediation</h4>
+          <p>
+            This is to certify that the mediation process initiated at
+            <strong>Rouse Avenue Mediation Center</strong> has been completed
+            successfully. Both parties, with the assistance of the assigned mediator,
+            have mutually agreed upon the following resolution:
+          </p>
+          <div class="agreement-box" style="margin-bottom:1rem;">
+            {{ data.outcomeOfMediation }}
           </div>
-          <div v-if="signature_type === 'digital'" class="digital-signature-box">
-            <span class="cursive-signature">{{ userInitials }}</span>
+        </section>
+
+        <section>
+          <h4>5. Acknowledgement</h4>
+          <p>
+            By signing below, both parties confirm that they participated voluntarily
+            in the mediation sessions and are in full agreement with the outcome as
+            stated above.
+          </p>
+        </section>
+
+        <section class="signature-block">
+          <div>
+            <label>Your Signature:</label>
+            <div class="signature-type-selector">
+              <button
+                type="button"
+                :class="{ active: signature_type === 'digital' }"
+                @click="setSignatureType('digital')">
+                Digital Signature
+              </button>
+              <button
+                type="button"
+                :class="{ active: signature_type === 'manual' }"
+                @click="setSignatureType('manual')">
+                Sign Manually
+              </button>
+            </div>
+            <div v-if="signature_type === 'digital'" class="digital-signature-box">
+              <span class="cursive-signature">{{ userInitials }}</span>
+            </div>
+            <div v-else-if="signature_type === 'manual'" class="manual-signature">
+              <canvas ref="signaturePad" class="signature-canvas"></canvas>
+              <button type="button" @click="clearSignature('plaintiff')" class="btn btn-secondary" style="margin: 0px;width: 100%;">
+                Clear <i class="ri-refresh-line"></i>
+              </button>
+            </div>
           </div>
-          <div v-else-if="signature_type === 'manual'" class="manual-signature">
-            <canvas ref="signaturePad" class="signature-canvas"></canvas>
-            <button type="button" @click="clearSignature('plaintiff')" class="btn btn-secondary" style="margin: 0px;width: 100%;">
-              Clear <i class="ri-refresh-line"></i>
-            </button>
-          </div>
-        </div>
+        </section>
+
+        <p class="note">
+          <strong>Note:</strong> This document serves as a formal record of the completion
+          of mediation. Any further disputes regarding this agreement must be addressed as per
+          the terms mentioned above or escalated as per the relevant legal procedures.
+        </p>
       </div>
-      <label>Phone No:</label>
-      <input v-if="isFirstPaty" v-model="signatureRequestDetails.plaintiff_phone" disabled/>
-      <input v-else v-model="signatureRequestDetails.respondent_phone" disabled/>
-      <label>Name of Advocate:</label>
-      <input v-if="isFirstPaty" v-model="signatureRequestDetails.plaintiff_advocate" disabled/>
-      <input v-else v-model="signatureRequestDetails.respondent_advocate" disabled/>
       <button type="submit">Submit</button>
     </form>
 
@@ -180,9 +151,7 @@ export default {
     return {
       signature_type: 'digital',
       signaturePad: null,
-      userName: '',
-      isFirstPaty: false,
-      signatureRequestDetails: null, // Variable to store the response
+      data: {},
       alert: {
         visible: false,
         message: '',
@@ -198,8 +167,7 @@ export default {
   },
   computed: {
     userInitials () {
-      return this.userName
-        .split(' ')
+      return this.data?.userName?.split(' ')
         .map((name) => name[0])
         .join('')
         .toUpperCase()
@@ -212,27 +180,29 @@ export default {
     },
     userInitialsName () {
       // Show full name for verification
-      return this.userName
+      return this.data?.userName
     }
   },
   methods: {
-    async fetchSignatureRequestDetails () {
+    formatDateTime (dateString) {
+      if (!dateString) return ''
+      const date = new Date(dateString)
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    },
+    async getAgreementDetailsForSignature () {
       const requestId = this.$route.query?.requestId // Access requestId from query parameters
       if (!requestId) {
         this.showAlert('Request ID is missing in the URL.', 'danger')
         return
       }
       try {
-        const response = await this.$store.dispatch('getSignatureRequestDetails', { requestId })
-        console.log(response)
+        const response = await this.$store.dispatch('getAgreementDetailsForSignature', { requestId })
         if (response.response?.data?.success === false) {
           this.showAlert('Already submitted the signature, no action required!', 'success')
           return
         }
 
-        this.signatureRequestDetails = response.caseData // Store the response in a variable
-        this.userName = response.userName
-        this.isFirstPaty = response.isFirstPaty
+        this.data = response.data
       } catch (error) {
         console.log(error)
         this.showAlert('Failed to fetch signature request details.', 'danger')
@@ -338,23 +308,33 @@ export default {
         requestBody.signature = this.signaturePad.toDataURL()
       }
 
-      this.$store.dispatch('submitSignature', requestBody)
+      this.$store.dispatch('submitAgreementSignature', requestBody)
         .then(response => {
           if (response.errorCode) {
             this.showAlert(response.message, 'danger')
           } else {
             this.showAlert('Signature submitted successfully!', 'success')
-            this.signatureRequestDetails = null
+            this.data = null
           }
         })
         .catch(error => {
           console.error('Error submitting signature:', error)
           this.showAlert('Failed to submit signature. Please try again.', 'danger')
         })
+    },
+    formatSessionDates (dates) {
+      if (!dates || !Array.isArray(dates) || dates.length === 0) return '-'
+      return dates
+        .map(dt => {
+          if (!dt) return ''
+          const d = new Date(dt)
+          return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })
+        .join(', ')
     }
   },
   mounted () {
-    this.fetchSignatureRequestDetails()
+    this.getAgreementDetailsForSignature()
   }
 }
 </script>

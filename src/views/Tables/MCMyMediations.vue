@@ -24,17 +24,25 @@
                  <template v-slot:cell(party)="data">
                     {{ data.item.user_cases_first_partyTouser?.name }} vs {{ data.item.user_cases_second_partyTouser?.name }}
                   </template>
-                  <template v-slot:cell(hearing_date)="data">
-                    {{ formatDate(data.item.hearing_date) }}
-                  </template>
                   <template v-slot:cell(mediation_date_time)="data">
                     {{ formatDate(data.item.mediation_date_time) }}
+                  </template>
+                  <template v-slot:cell(status)="data">
+                    {{ getStatusLabel(data.item.status) }}
+                  </template>
+                  <template v-slot:cell(sub_status)="data">
+                    {{ getSubStatusLabel(data.item.sub_status) }}
                   </template>
                   <template v-slot:cell(action)="data">
                     <b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="ml-2">
                       View Details
                     </b-button>
-                    <b-button size="sm" class="ml-2" @click="openAssignMediatorModal(data.item)">
+                    <b-button
+                      size="sm"
+                      class="ml-2"
+                      @click="openAssignMediatorModal(data.item)"
+                      :style="{ visibility: data.item.status === 'closed_success' ? 'hidden' : 'visible' }"
+                    >
                       Assign Mediator
                     </b-button>
                   </template>
@@ -279,6 +287,21 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    getStatusLabel (status) {
+      if (!status) return '-'
+      return this.statusValueMap[status] || this.toCamelCase(status)
+    },
+    getSubStatusLabel (subStatus) {
+      if (!subStatus) return '-'
+      return this.subStatusValueMap[subStatus] || this.toCamelCase(subStatus)
+    },
+    toCamelCase (str) {
+      if (!str) return ''
+      return str
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .replace(/\s+/g, ' ')
     }
   },
   data () {
@@ -294,8 +317,9 @@ export default {
       columns: [
         { label: 'Case Number', key: 'caseId', class: 'text-left', sortable: true },
         { label: 'Party', key: 'party', class: 'text-left', sortable: true },
-        { label: 'Hearing Date', key: 'hearing_date', class: 'text-left', sortable: true },
         { label: 'Mediation Date', key: 'mediation_date_time', class: 'text-left', sortable: true },
+        { label: 'Status', key: 'status', class: 'text-left', sortable: true },
+        { label: 'Sub Status', key: 'sub_status', class: 'text-left', sortable: true },
         { label: 'Action', key: 'action', class: 'text-center' }
       ],
       casesCache: {},
@@ -311,7 +335,25 @@ export default {
       availableMediators: [],
       selectedCaseId: null,
       selectedMediatorId: null, // Track the selected mediator ID
-      defaultProfilePicture: ''
+      defaultProfilePicture: '',
+      statusValueMap: {
+        failed: 'Failed',
+        in_progress: 'In Progress',
+        cancelled: 'Cancelled',
+        closed_no_success: 'Closed No Success',
+        closed_success: 'Closed Success',
+        escalated: 'Escalated',
+        new: 'New',
+        on_hold: 'On Hold',
+        pending: 'Pending'
+      },
+      subStatusValueMap: {
+        mediator_assigned: 'Mediator Assigned',
+        meeting_scheduled: 'Meeting Scheduled',
+        pending_complainant_signature: 'Pending Complainant Signature',
+        pending_respondent_signature: 'Pending Respondent Signature',
+        pending_mc: 'Pending Mediation Center'
+      }
     }
   }
 }

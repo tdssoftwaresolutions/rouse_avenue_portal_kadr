@@ -39,8 +39,8 @@
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 job-classification">
-              <li class=""><i class="ri-checkbox-blank-circle-fill" :style="{ color: personalEventColor }"/>KADR Client Meeting</li>
-              <li class=""><i class="ri-checkbox-blank-circle-fill"  :style="{ color: kadrEventColor }"/>Personal Client Meeting</li>
+              <li class=""><i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }"/>ROUSE Client Meeting</li>
+              <li class=""><i class="ri-checkbox-blank-circle-fill"  :style="{ color: personalEventColor }"/>Personal Client Meeting</li>
             </ul>
           </template>
         </iq-card>
@@ -53,10 +53,10 @@
               <li class="d-flex align-items-center justify-content-between" v-for="(event, index) in dashboardContent.todaysEvent" :key="index">
                 <div class="d-flex align-items-center">
                   <div class="schedule-icon">
-                    <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }" v-if="event.type == 'KADR'"></i>
+                    <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }" v-if="event.type == 'ROUSE'"></i>
                     <i class="ri-checkbox-blank-circle-fill" :style="{ color: personalEventColor }" v-else></i>
                   </div>
-                  <div class="schedule-text" v-if="event.type == 'KADR'">
+                  <div class="schedule-text" v-if="event.type == 'ROUSE'">
                     <span  style="font-weight: bold">Case #{{ event.caseNumber }}</span>
                     <span>{{ event.firstPartyName }} vs {{ event.secondPartyName }}</span>
                     <span>
@@ -101,9 +101,9 @@
           <div class="data-title">Select Appointment Type</div>
           <div class="radio-group">
             <div class="radio-btn-wrapper" @click="onClickAppointmentType">
-              <input type="radio" id="option1" name="group1" value="kadr" v-model="newAppointment.type">
+              <input type="radio" id="option1" name="group1" value="ROUSE" v-model="newAppointment.type">
               <label for="option1">
-                <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor, marginRight: '0.5rem' }"></i> KADR Client Meeting
+                <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor, marginRight: '0.5rem' }"></i> Rouse Medation Center Meeting
               </label>
             </div>
             <div class="radio-btn-wrapper"  @click="onClickAppointmentType">
@@ -246,7 +246,7 @@ export default {
         link: '',
         user: '',
         caseId: '',
-        type: 'kadr'
+        type: 'ROUSE'
       },
       disabledDatesAndTime: {
         to: this.getYesterdayDate()
@@ -316,7 +316,7 @@ export default {
             title: event.title,
             start: event.start_datetime,
             end: event.end_datetime,
-            color: event.type === 'KADR' ? this.kadrEventColor : this.personalEventColor,
+            color: event.type === 'ROUSE' ? this.kadrEventColor : this.personalEventColor,
             caseId: event.cases ? event.cases.id : null,
             description: event.description || 'No description provided',
             type: event.type,
@@ -386,7 +386,7 @@ export default {
           title: this.newAppointment.title,
           start: this.newAppointment.start,
           end: endDate,
-          color: this.newAppointment.type === 'kadr' ? this.kadrEventColor : this.personalEventColor,
+          color: this.newAppointment.type === 'ROUSE' ? this.kadrEventColor : this.personalEventColor,
           caseId: this.newAppointment.caseId,
           description: this.newAppointment.description,
           type: this.newAppointment.type,
@@ -456,7 +456,7 @@ export default {
         caseNumber: '',
         user: '',
         caseId: null,
-        type: 'kadr'
+        type: 'ROUSE'
       }
     }
   }

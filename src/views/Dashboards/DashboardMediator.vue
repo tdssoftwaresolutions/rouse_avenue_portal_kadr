@@ -23,10 +23,10 @@
                 <li class="d-flex align-items-center justify-content-between" v-for="(event, index) in content.todaysEvent" :key="index">
                   <div class="d-flex align-items-center">
                     <div class="schedule-icon">
-                      <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }" v-if="event.type == 'KADR'"></i>
+                      <i class="ri-checkbox-blank-circle-fill" :style="{ color: kadrEventColor }" v-if="event.type == 'ROUSE'"></i>
                       <i class="ri-checkbox-blank-circle-fill" :style="{ color: personalEventColor }" v-else></i>
                     </div>
-                    <div class="schedule-text" v-if="event.type == 'KADR'">
+                    <div class="schedule-text" v-if="event.type == 'ROUSE'">
                       <span  style="font-weight: bold">Case #{{ event.caseNumber }}</span>
                       <span>{{ event.firstPartyName }} vs {{ event.secondPartyName }}</span>
                       <span>
@@ -76,30 +76,66 @@
           </iq-card>
         </b-col>
         <b-col lg="5" md="12">
-          <iq-card class-name="overflow-hidden" body-class="pb-0">
-            <template v-slot:body>
-              <div class="rounded-circle iq-card-icon iq-bg-primary"><i class="ri-exchange-dollar-fill"></i></div>
-              <span class="float-right line-height-6">Current Month's Income</span>
-              <div class="clearfix"></div>
-              <div class="text-center">
-                <h2 class="mb-0"><span class="counter">Rs.</span><span>65k</span></h2>
-                <p class="mb-0 text-secondary line-height"><i class="ri-arrow-up-line text-success ms-1"></i><span class="text-success">10%</span> Increased</p>
-              </div>
+          <!---Feedback-->
+          <iq-card>
+            <template v-slot:headerTitle>
+              <h4 class="card-title">Pending Meeting Feedback</h4>
             </template>
-            <ApexChart element="chart-1" :chartOption="chart1"/>
-          </iq-card>
-          <iq-card class-name="overflow-hidden" body-class="pb-0">
             <template v-slot:body>
-              <div class="rounded-circle iq-card-icon iq-bg-danger"><i class="ri-shopping-cart-line"></i></div>
-              <span class="float-right line-height-6">Number of Cases Resolved</span>
-              <div class="clearfix"></div>
-              <div class="text-center">
-                <h2 class="mb-0"><span class="counter">30</span><span></span></h2>
-                <p class="mb-0 text-secondary line-height"><i class="ri-arrow-down-line text-danger ms-1"></i><span class="text-danger">10%</span> Increased</p>
+              <div v-if="pendingFeedbacks.length === 0">
+                <p>No pending feedbacks!</p>
               </div>
+              <ul v-else class="list-group">
+                <li v-for="(item, idx) in pendingFeedbacks" :key="item.event.id" class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <div>
+                      <b>Case #{{ item.case.caseId || item.case.case_id }}</b>
+                      <span v-if="item.case.user_cases_first_partyTouser && item.case.user_cases_second_partyTouser">
+                        {{ item.case.user_cases_first_partyTouser.name }} vs {{ item.case.user_cases_second_partyTouser.name }}
+                      </span>
+                    </div>
+                    <div>
+                      <small>
+                        Meeting:
+                        {{
+                          formatDateTime(item.event.start_datetime, 'dateonly')
+                        }}
+                        {{
+                          formatDateTime(item.event.start_datetime, 'timeonly')
+                        }}-{{ formatDateTime(item.event.end_datetime, 'timeonly') }}
+                      </small>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary btn-sm" @click="openFeedbackModal(item)">Give Feedback</button>
+                </li>
+              </ul>
             </template>
-            <ApexChart element="chart-4" :chartOption="chart4"/>
           </iq-card>
+          <!-- Feedback Modal -->
+          <b-modal v-model="showFeedbackModal" title="Submit Meeting Feedback" @hide="resetFeedbackForm" hide-footer>
+            <form @submit.prevent="submitFeedback">
+              <div class="form-group">
+                <label>First Party Present:</label>
+                <b-form-checkbox v-model="feedbackForm.firstPartyPresent" switch>
+                  {{ feedbackForm.firstPartyPresent ? 'Yes' : 'No' }}
+                </b-form-checkbox>
+              </div>
+              <div class="form-group">
+                <label>Second Party Present:</label>
+                <b-form-checkbox v-model="feedbackForm.secondPartyPresent" switch>
+                  {{ feedbackForm.secondPartyPresent ? 'Yes' : 'No' }}
+                </b-form-checkbox>
+              </div>
+              <div class="form-group">
+                <label>Summary of Meeting:</label>
+                <b-form-textarea v-model="feedbackForm.summary" rows="3" required></b-form-textarea>
+              </div>
+              <div class="text-right" style="margin-top: 24px; display: flex; gap: 16px; justify-content: flex-end;">
+                <b-button variant="secondary" @click="showFeedbackModal = false" type="button">Cancel</b-button>
+                <b-button type="submit" variant="primary">Submit</b-button>
+              </div>
+            </form>
+          </b-modal>
         </b-col>
       </b-row>
       <b-row>
@@ -109,7 +145,7 @@
               <h4 class="card-title">My Cases</h4>
             </template>
             <template v-slot:body>
-              <my-cases :cases="content.myCases"></my-cases>
+              <my-cases :cases="content.myCases" :user-full-name="user.name"></my-cases>
             </template>
           </iq-card>
         </b-col>
@@ -133,6 +169,35 @@ export default {
     Alert, Spinner, MyCases
   },
   methods: {
+    formatDateTime (dateString, type) {
+      if (!dateString) return ''
+      const date = new Date(dateString)
+      const day = date.getDate()
+      const month = date.toLocaleString('en-US', { month: 'long' })
+      const year = date.getFullYear()
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const ampm = hour >= 12 ? 'PM' : 'AM'
+      const hour12 = hour % 12 === 0 ? 12 : hour % 12
+      const minuteStr = minute < 10 ? `0${minute}` : minute
+      const getOrdinal = (n) => {
+        if (n > 3 && n < 21) return 'th'
+        switch (n % 10) {
+          case 1: return 'st'
+          case 2: return 'nd'
+          case 3: return 'rd'
+          default: return 'th'
+        }
+      }
+      if (type === 'dateonly') {
+        return `${day}${getOrdinal(day)} ${month} ${year}`
+      }
+      if (type === 'timeonly') {
+        return `${hour12}:${minuteStr}${ampm}`
+      }
+      // fallback to full format
+      return `${day}${getOrdinal(day)} ${month} ${year} at ${hour12}:${minuteStr}${ampm}`
+    },
     formatDate (dateString) {
       const date = new Date(dateString)
       return date.toLocaleString('en-US', {
@@ -181,6 +246,52 @@ export default {
         }
         this.$set(note, 'isModified', false)
       }
+    },
+    openFeedbackModal (item) {
+      this.feedbackTarget = item
+      this.feedbackForm = {
+        firstPartyPresent: false,
+        secondPartyPresent: false,
+        summary: ''
+      }
+      this.showFeedbackModal = true
+    },
+    resetFeedbackForm () {
+      this.feedbackForm = {
+        firstPartyPresent: false,
+        secondPartyPresent: false,
+        summary: ''
+      }
+      this.feedbackTarget = null
+    },
+    async submitFeedback () {
+      if (!this.feedbackForm.summary.trim()) {
+        this.showAlert('Please enter a summary of the meeting.', 'danger')
+        return
+      }
+      const payload = {
+        event_feedback: {
+          first_party_present: this.feedbackForm.firstPartyPresent,
+          second_party_present: this.feedbackForm.secondPartyPresent,
+          summary: this.feedbackForm.summary
+        },
+        case_id: this.feedbackTarget.case.id,
+        event_id: this.feedbackTarget.event.id
+      }
+      await this.$store.dispatch('submitEventFeedback', payload)
+      this.showAlert('Feedback submitted successfully!', 'success')
+      this.showFeedbackModal = false
+      // Remove the submitted feedback from UI
+      const idx = this.pendingFeedbacks.findIndex(
+        item =>
+          item.event.id === this.feedbackTarget.event.id &&
+          item.case.id === this.feedbackTarget.case.id
+      )
+      if (idx !== -1) {
+        // Vue reactivity: remove from array if possible
+        this.$delete(this.pendingFeedbacks, idx)
+      }
+      this.resetFeedbackForm()
     }
   },
   mounted () {
@@ -216,6 +327,13 @@ export default {
       },
       loading: false,
       notes: [],
+      showFeedbackModal: false,
+      feedbackForm: {
+        firstPartyPresent: false,
+        secondPartyPresent: false,
+        summary: ''
+      },
+      feedbackTarget: null, // { case, event }
       chart1: {
         chart: {
           height: 80,
@@ -298,6 +416,33 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    pendingFeedbacks () {
+      // Flatten all events from all cases, filter for past events with no feedback
+      const now = new Date()
+      const result = []
+      if (
+        this.content &&
+        this.content.myCases &&
+        Array.isArray(this.content.myCases.casesWithEvents)
+      ) {
+        this.content.myCases.casesWithEvents.forEach(caseObj => {
+          if (Array.isArray(caseObj.events)) {
+            caseObj.events.forEach(event => {
+              const end = new Date(event.end_datetime)
+              if (
+                end < now &&
+                (!event.event_feedback_id || event.event_feedback_id === null)
+              ) {
+                result.push({ case: caseObj, event })
+              }
+            })
+          }
+        })
+      }
+      return result
+    }
   }
 }
 </script>
@@ -349,5 +494,4 @@ textarea {
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
 }
-
 </style>

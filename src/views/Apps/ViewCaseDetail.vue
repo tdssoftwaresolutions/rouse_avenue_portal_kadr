@@ -3,31 +3,60 @@
         <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
         <Spinner :isVisible="loading" />
         <div>
+          <div>
             <div class="section-title">Case Details</div>
+            <!-- New/updated fields from MediationForm -->
             <div class="data-row">
                 <div class="col-6">
                     <div class="data-title">Case ID</div>
-                    <div>{{ caseObject.caseId }}</div>
+                    <div>{{ caseObject.caseId || caseObject.case_id }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">Case Type</div>
-                    <div>{{ caseObject.case_type }}</div>
+                    <div class="data-title">Suit No/Case No</div>
+                    <div>{{ caseObject.suit_no }}</div>
                 </div>
             </div>
             <div class="data-row">
                 <div class="col-6">
-                    <div class="data-title">Case Category</div>
-                    <div>{{ caseObject.category }}</div>
+                    <div class="data-title">Next Date of Hearing in Referral Court</div>
+                    <div>{{ formatDate(caseObject.hearing_date) }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">Evidence</div>
-                    <div> <a :href="caseObject.evidence_document_url" target="_blank">Link to document</a></div>
+                    <div class="data-title">Date of Institution of Case</div>
+                    <div>{{ formatDate(caseObject.institution_date) }}</div>
                 </div>
             </div>
-            <div class="long-description">
-                <div class="data-title">Case Description</div>
-                <textarea rows="5" readonly :value="caseObject.description">
-                </textarea>
+            <div class="data-row">
+                <div class="col-6">
+                    <div class="data-title">Nature of Suit</div>
+                    <div>{{ caseObject.nature_of_suit }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="data-title">Stage of the Case at Time of Referral</div>
+                    <div>{{ caseObject.stage }}</div>
+                </div>
+            </div>
+            <div class="data-row">
+                <div class="col-6">
+                    <div class="data-title">Number of Hearings at Time of Referral</div>
+                    <div>{{ caseObject.hearing_count }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="data-title">Name of the Referral Judge</div>
+                    <div>{{ caseObject.user_cases_judgeTouser.name }}</div>
+                </div>
+            </div>
+            <div class="data-row">
+                <div class="col-6">
+                    <div class="data-title">Mediation Date & Time</div>
+                    <div>{{ formatDate(caseObject.mediation_date_time) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="data-title">Additional Document</div>
+                    <div>
+                        <a v-if="caseObject.judge_document_url" :href="caseObject.judge_document_url" target="_blank">Click here to view the document</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -40,18 +69,18 @@
                     <div>{{ caseObject.user_cases_first_partyTouser.name }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">Preferred Language</div>
-                    <div>{{ firstPartyPreferredLanguages }}</div>
+                    <div class="data-title">Email</div>
+                    <div>{{ caseObject.user_cases_first_partyTouser.email }}</div>
                 </div>
             </div>
             <div class="data-row">
                 <div class="col-6">
-                    <div class="data-title">State</div>
-                    <div>{{ caseObject.user_cases_first_partyTouser.state }}</div>
+                  <div class="data-title">Phone</div>
+                  <div>{{ caseObject.plaintiff_phone }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">City</div>
-                    <div>{{ caseObject.user_cases_first_partyTouser.city }}</div>
+                  <div class="data-title">Advocate</div>
+                  <div>{{ caseObject.plaintiff_advocate }}</div>
                 </div>
             </div>
         </div>
@@ -65,26 +94,27 @@
                     <div>{{ caseObject.user_cases_second_partyTouser.name }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">Preferred Language</div>
-                    <div>{{ caseObject.user_cases_second_partyTouser.preferred_languages }}</div>
+                    <div class="data-title">Email</div>
+                    <div>{{ caseObject.user_cases_second_partyTouser.email }}</div>
                 </div>
             </div>
             <div class="data-row">
                 <div class="col-6">
-                    <div class="data-title">State</div>
-                    <div>{{ caseObject.user_cases_second_partyTouser.state }}</div>
+                    <div class="data-title">Phone</div>
+                    <div>{{ caseObject.respondent_phone }}</div>
                 </div>
                 <div class="col-6">
-                    <div class="data-title">City</div>
-                    <div>{{ caseObject.user_cases_second_partyTouser.city }}</div>
+                    <div class="data-title">Advocate</div>
+                    <div>{{ caseObject.respondent_advocate }}</div>
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Events Section -->
         <div>
             <div class="section-title">Meetings ({{caseObject.events.length}})
-            <b-button variant="primary" style="float:right" onclick="window.open('/app/calendar','_blank')">New</b-button>
+            <b-button variant="primary" style="float:right" onclick="window.open('/admin/app/calendar','_blank')">New</b-button>
             </div>
             <div class="table-content">
                 <b-table bordered hover :items="caseObject.events" :fields="caseColumns" responsive="xl" v-if="caseObject.events.length>0">
@@ -139,7 +169,7 @@ export default {
     }
   },
   async mounted () {
-    this.firstPartyPreferredLanguages = await this.getPreferredLanguages(this.caseObject.user_cases_first_partyTouser.preferred_languages)
+    // this.firstPartyPreferredLanguages = await this.getPreferredLanguages(this.caseObject.user_cases_first_partyTouser.preferred_languages)
   },
   methods: {
     onNoteChange () {

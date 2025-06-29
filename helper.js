@@ -124,7 +124,7 @@ class Helper {
           return new Date(event.start_datetime).toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
         })
         .map(event => ({
-          type: 'KADR',
+          type: 'ROUSE',
           caseNumber: caseItem?.caseId,
           startDate: event.start_datetime,
           endDate: event.end_datetime,
@@ -680,10 +680,27 @@ class Helper {
   static async getMediationCenterCasesCount (prisma) {
     return prisma.cases.count({
       where: {
-        sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER,
         OR: [
-          { status: CaseTypes.NEW },
-          { status: CaseTypes.IN_PROGRESS }
+          {
+            AND: [
+              {
+                OR: [
+                  { sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER },
+                  { sub_status: CaseSubTypes.MEDIATOR_ASSIGNED }
+                ]
+              },
+              {
+                OR: [
+                  { status: CaseTypes.NEW },
+                  { status: CaseTypes.IN_PROGRESS }
+                ]
+              }
+            ]
+          },
+          {
+            status: CaseTypes.CLOSED_SUCCESS,
+            sub_status: null
+          }
         ]
       }
     })
@@ -691,23 +708,38 @@ class Helper {
 
   static async getMediationCenterCases (prisma, page) {
     const perPage = 10
-
-    // Calculate the number of items to skip
     const skip = (page - 1) * perPage
 
     return prisma.cases.findMany({
       where: {
-        sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER,
         OR: [
-          { status: CaseTypes.NEW },
-          { status: CaseTypes.IN_PROGRESS }
+          {
+            AND: [
+              {
+                OR: [
+                  { sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER },
+                  { sub_status: CaseSubTypes.MEDIATOR_ASSIGNED }
+                ]
+              },
+              {
+                OR: [
+                  { status: CaseTypes.NEW },
+                  { status: CaseTypes.IN_PROGRESS }
+                ]
+              }
+            ]
+          },
+          {
+            status: CaseTypes.CLOSED_SUCCESS,
+            sub_status: null
+          }
         ]
       },
       orderBy: {
         created_at: 'desc'
       },
-      skip, // Skip items for pagination
-      take: perPage, // Limit the number of items per page
+      skip,
+      take: perPage,
       select: {
         id: true,
         mediator: true,
@@ -860,32 +892,65 @@ class Helper {
       take: perPage, // Limit the number of items per page
       select: {
         id: true,
-        description: true,
-        category: true,
-        case_type: true,
+        mediator: true,
+        first_party: true,
+        second_party: true,
         caseId: true,
-        evidence_document_url: true,
+        judge_document_url: true,
+        nature_of_suit: true,
+        stage: true,
+        suit_no: true,
         status: true,
+        hearing_count: true,
+        sub_status: true,
+        hearing_date: true,
+        institution_date: true,
+        mediation_date_time: true,
+        referral_judge_signature: true,
+        plaintiff_signature: true,
+        plaintiff_phone: true,
+        plaintiff_advocate: true,
+        respondent_signature: true,
+        respondent_phone: true,
+        respondent_advocate: true,
+        judge: true,
         user_cases_first_partyTouser: {
           select: {
             id: true,
-            preferred_languages: true,
             name: true,
-            state: true,
-            city: true
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
           }
         },
         user_cases_second_partyTouser: {
           select: {
             id: true,
             name: true,
-            state: true,
-            city: true
+            email: true,
+            phone_number: true,
+            city: true,
+            state: true
+          }
+        },
+        user_cases_mediatorTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        user_cases_judgeTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
           }
         },
         events: {
           orderBy: {
-            created_at: 'desc'
+            start_datetime: 'desc'
           },
           select: {
             id: true,
@@ -894,6 +959,7 @@ class Helper {
             start_datetime: true,
             end_datetime: true,
             type: true,
+            event_feedback_id: true,
             meeting_link: true
           }
         }
@@ -912,14 +978,22 @@ class Helper {
       })
       console.log(base64Content)
       // Extract file extension from base64 string
+      let mimeType, fileBuffer, extension, fullFileName
+
       const matches = base64Content.match(/^data:(.+);base64,(.+)$/)
-      if (!matches || matches.length !== 3) {
-        throw new Error('Invalid base64 string')
+      if (matches && matches.length === 3) {
+        // Data URI format
+        mimeType = matches[1]
+        fileBuffer = Buffer.from(matches[2], 'base64')
+        extension = mimeType.split('/')[1]
+        fullFileName = `${fileName}.${extension}`
+      } else {
+        // Raw base64 (assume PDF)
+        mimeType = 'application/pdf'
+        fileBuffer = Buffer.from(base64Content, 'base64')
+        extension = 'pdf'
+        fullFileName = `${fileName}.${extension}`
       }
-      const mimeType = matches[1]
-      const fileBuffer = Buffer.from(matches[2], 'base64')
-      const extension = mimeType.split('/')[1] // Extract extension from MIME type
-      const fullFileName = `${fileName}.${extension}`
 
       // Upload to S3
       const params = {
@@ -1131,16 +1205,17 @@ class Helper {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions)
-      console.log('Email sent: ' + info.response)
+      console.log('Email sent to : ' + emailId + ' -- ' + info.response)
 
       // Send a response to the client
       return { message: 'Email sent successfully', info: info.response }
     } catch (error) {
+      console.error('Error sending email:', error)
       return { message: 'Failed to send email', error }
     }
   }
 
-  static async createSignatureTrackingRecord (prisma, userId, caseId) {
+  static async createSignatureTrackingRecord (prisma, userId, caseId, caseAgreementId) {
     try {
       const signatureExpiry = new Date()
       signatureExpiry.setHours(signatureExpiry.getHours() + 24) // Set expiry to 24 hours from now
@@ -1150,6 +1225,7 @@ class Helper {
           user_id: userId,
           case_id: caseId,
           signed: false,
+          case_agreement_id: caseAgreementId,
           signature_expiry: signatureExpiry
         }
       })
@@ -1159,6 +1235,151 @@ class Helper {
       console.error('Error creating signature tracking record:', error)
       throw error
     }
+  }
+
+  static generateMediationHTML (data) {
+    const {
+      caseId,
+      caseType,
+      dateOfCaseRegistration,
+      mediationCompletionDate,
+      firstPartyName,
+      secondPartyName,
+      mediatorName,
+      numberOfSessions,
+      sessionDates,
+      mutualAgreement,
+      firstPartySignatureImage, // base64 or URL
+      secondPartySignatureImage,
+      mediatorSignatureImage
+    } = data
+
+    return `
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 40px;
+            color: #333;
+          }
+  
+          h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 5px;
+          }
+  
+          hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid #aaa;
+          }
+  
+          .section {
+            margin-top: 30px;
+          }
+  
+          .section h4 {
+            margin-bottom: 10px;
+            text-decoration: underline;
+          }
+  
+          .info p {
+            margin: 4px 0;
+          }
+  
+          .signature-block {
+            margin-top: 30px;
+          }
+  
+          .signature-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+          }
+  
+          .signature-col {
+            width: 30%;
+            text-align: center;
+          }
+  
+          .signature-col img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #000;
+          }
+  
+          .note {
+            margin-top: 30px;
+            font-size: 0.95em;
+            color: #555;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>ROUSE AVENUE MEDIATION CENTER</h1>
+        <h2>MEDIATION COMPLETION DOCUMENT</h2>
+        <hr/>
+  
+        <div class="section info">
+          <h4>1. Case Information</h4>
+          <p><strong>Case ID:</strong> ${caseId}</p>
+          <p><strong>Case Type:</strong> ${caseType}</p>
+          <p><strong>Date of Case Registration:</strong> ${dateOfCaseRegistration}</p>
+          <p><strong>Mediation Completion Date:</strong> ${mediationCompletionDate}</p>
+        </div>
+  
+        <div class="section info">
+          <h4>2. Party Details</h4>
+          <p><strong>First Party (Name):</strong> ${firstPartyName}</p>
+          <p><strong>Second Party (Name):</strong> ${secondPartyName}</p>
+        </div>
+  
+        <div class="section info">
+          <h4>3. Mediator Details</h4>
+          <p><strong>Mediator Name:</strong> ${mediatorName}</p>
+          <p><strong>Number of Mediation Sessions Held:</strong> ${numberOfSessions}</p>
+          <p><strong>Dates of Mediation Sessions:</strong> ${sessionDates}</p>
+        </div>
+  
+        <div class="section">
+          <h4>4. Outcome of Mediation</h4>
+          <p>This is to certify that the mediation process initiated at <strong>Rouse Avenue Mediation Center</strong> has been completed successfully. Both parties, with the assistance of the assigned mediator, have mutually agreed upon the following resolution:</p>
+          <div style="margin-top:15px; border:1px solid #ccc; padding:10px; background:#f9f9f9;">
+            ${mutualAgreement}
+          </div>
+        </div>
+  
+        <div class="section">
+          <h4>5. Acknowledgement</h4>
+          <p>By signing below, both parties confirm that they participated voluntarily in the mediation sessions and are in full agreement with the outcome as stated above.</p>
+        </div>
+  
+        <div class="section signature-block">
+          <h4>6. Signatures</h4>
+          <div class="signature-row">
+            <div class="signature-col">
+              <p><strong>First Party</strong></p>
+              <img src="${firstPartySignatureImage}" alt="First Party Signature"/>
+            </div>
+            <div class="signature-col">
+              <p><strong>Second Party</strong></p>
+              <img src="${secondPartySignatureImage}" alt="Second Party Signature"/>
+            </div>
+            <div class="signature-col">
+              <p><strong>Mediator</strong></p>
+              <img src="${mediatorSignatureImage}" alt="Mediator Signature"/>
+            </div>
+          </div>
+        </div>
+  
+        <div class="note">
+          <strong>Note:</strong> This document serves as a formal record of the completion of mediation. Any further disputes regarding this agreement must be addressed as per the terms mentioned above or escalated as per the relevant legal procedures.
+        </div>
+      </body>
+      </html>
+    `
   }
 }
 

@@ -22,42 +22,6 @@
       "class_name": "",
       "is_icon_class": false,
       "icon": "ri-home-4-line"
-    },
-    {
-      "title": "My Blogs",
-      "name": "blog.list",
-      "is_heading": false,
-      "is_active": false,
-      "link": {
-        "name": "blog.list"
-      },
-      "class_name": "",
-      "is_icon_class": false,
-      "icon": "ri-home-4-line"
-    },
-    {
-      "title": "My Documents",
-      "name": "app.e-commerce.index",
-      "is_heading": false,
-      "is_active": false,
-      "link": {
-        "name": "app.e-commerce.index"
-      },
-      "class_name": "",
-      "is_icon_class": false,
-      "icon": "ri-home-4-line"
-    },
-    {
-      "title": "Billing",
-      "name": "table.editable",
-      "is_heading": false,
-      "is_active": false,
-      "link": {
-        "name": "table.editable"
-      },
-      "class_name": "",
-      "is_icon_class": false,
-      "icon": "ri-home-4-line"
     }
   ]
   

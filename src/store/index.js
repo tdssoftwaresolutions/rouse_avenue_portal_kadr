@@ -36,6 +36,11 @@ const SUBMIT_SIGNATURE = '/submitSignature'
 const GET_SIGNATURE_REQUEST_DETAILS = '/getSignatureRequestDetails'
 const GET_AVAILABLE_MEDIATORS = '/getAvailableMediators'
 const ASSIGN_MEDIATOR = '/assignMediator'
+const SUBMIT_EVENT_FEEDBACK = '/submitEventFeedback'
+const MARK_CASE_RESOLVED = '/markCaseResolved'
+const GET_MEDIATION_DATA = '/getMediationData'
+const GET_AGREEMENT_DETAILS_FOR_SIGNATURE = '/getAgreementDetailsForSignature'
+const SUBMIT_AGREEMENT_SIGNATURE = '/submitAgreementSignature'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -159,6 +164,14 @@ export default (router) => {
           return error
         }
       },
+      async getAgreementDetailsForSignature ({ commit }, { requestId }) {
+        try {
+          const { data } = await apiClient.get(`${GET_AGREEMENT_DETAILS_FOR_SIGNATURE}?id=${encodeURIComponent(requestId)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
       async logout ({ commit }) {
         try {
           const { data } = await apiClient.get(LOGOUT_ENDPOINT)
@@ -175,9 +188,41 @@ export default (router) => {
           return error
         }
       },
+      async markCaseResolved ({ commit }, { caseId, bothAgreed, agreementText, signature }) {
+        try {
+          const { data } = await apiClient.post(MARK_CASE_RESOLVED, { caseId, bothAgreed, agreementText, signature })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async getMediationData ({ commit }, { caseId }) {
+        try {
+          const { data } = await apiClient.get(`${GET_MEDIATION_DATA}?caseId=${encodeURIComponent(caseId)}`)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async submitAgreementSignature ({ commit }, { signature, requestId }) {
+        try {
+          const { data } = await apiClient.post(SUBMIT_AGREEMENT_SIGNATURE, { signature, requestId })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
       async submitSignature ({ commit }, { signature, requestId }) {
         try {
           const { data } = await apiClient.post(SUBMIT_SIGNATURE, { signature, requestId })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async submitEventFeedback ({ commit }, { event_feedback, case_id, event_id }) {
+        try {
+          const { data } = await apiClient.post(SUBMIT_EVENT_FEEDBACK, { event_feedback, case_id, event_id })
           return data
         } catch (error) {
           return error

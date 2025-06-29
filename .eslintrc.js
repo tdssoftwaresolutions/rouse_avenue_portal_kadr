@@ -9,6 +9,7 @@ module.exports = {
   ],
   rules: {
     'no-console': 'off',
+    'camelcase': 'off',
     'no-debugger': 'off',
     // Disable multi-word component names rule
     'vue/multi-word-component-names': 'off',

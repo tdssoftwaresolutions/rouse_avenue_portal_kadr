@@ -41,30 +41,76 @@
           </iq-card>
         </b-col>
         <b-col lg="5" md="12">
-          <iq-card class-name="overflow-hidden" body-class="pb-0">
-            <template v-slot:body>
-              <div class="rounded-circle iq-card-icon iq-bg-primary"><i class="ri-exchange-dollar-fill"></i></div>
-              <span class="float-right line-height-6">Current Month's Income</span>
-              <div class="clearfix"></div>
-              <div class="text-center">
-                <h2 class="mb-0"><span class="counter">Rs.</span><span>65k</span></h2>
-                <p class="mb-0 text-secondary line-height"><i class="ri-arrow-up-line text-success ms-1"></i><span class="text-success">10%</span> Increased</p>
-              </div>
-            </template>
-            <ApexChart element="chart-1" :chartOption="chart1"/>
-          </iq-card>
-          <iq-card class-name="overflow-hidden" body-class="pb-0">
-            <template v-slot:body>
-              <div class="rounded-circle iq-card-icon iq-bg-danger"><i class="ri-shopping-cart-line"></i></div>
-              <span class="float-right line-height-6">Number of Cases Resolved</span>
-              <div class="clearfix"></div>
-              <div class="text-center">
-                <h2 class="mb-0"><span class="counter">30</span><span></span></h2>
-                <p class="mb-0 text-secondary line-height"><i class="ri-arrow-down-line text-danger ms-1"></i><span class="text-danger">10%</span> Increased</p>
-              </div>
-            </template>
-            <ApexChart element="chart-4" :chartOption="chart4"/>
-          </iq-card>
+          <b-row>
+            <b-col md="6">
+              <iq-card>
+                <template v-slot:body>
+                  <b-row>
+                    <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                      <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                        <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/call-center.gif')" alt="summary-image" />
+                      </div>
+                    </b-col>
+                    <b-col lg="12" class="mt-3">
+                      <h6 class="card-title text-uppercase text-secondary mb-0">No. of unassigned cases</h6>
+                      <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{ content.stats.pendingMC }}</span>
+                    </b-col>
+                  </b-row>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col md="6">
+              <iq-card>
+                <template v-slot:body>
+                  <b-row>
+                    <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                      <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                        <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/happy.gif')" alt="summary-image" />
+                      </div>
+                    </b-col>
+                    <b-col lg="12" class="mt-3">
+                      <h6 class="card-title text-uppercase text-secondary mb-0">No. of In-progress cases</h6>
+                      <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{  content.stats.totalAssigned }}</span>
+                    </b-col>
+                  </b-row>
+                  </template>
+                </iq-card>
+              </b-col>
+              <b-col md="6">
+                <iq-card>
+                  <template v-slot:body>
+                    <b-row>
+                      <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                        <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                          <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/checklist.gif')" alt="summary-image" />
+                        </div>
+                      </b-col>
+                      <b-col lg="12" class="mt-3">
+                        <h6 class="card-title text-uppercase text-secondary mb-0">No. of closed (success) cases</h6>
+                        <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{  content.stats.successCases }}</span>
+                      </b-col>
+                    </b-row>
+                  </template>
+                </iq-card>
+              </b-col>
+              <b-col md="6">
+                <iq-card>
+                  <template v-slot:body>
+                    <b-row>
+                      <b-col lg="12" class="mb-2 d-flex justify-content-between">
+                        <div class="icon iq-icon-box rounded-circle rounded-circle" data-wow-delay="0.2s">
+                          <img class="float-right summary-image-top mt-1" :src="require('../../assets/images/admin/checklist.gif')" alt="summary-image" />
+                        </div>
+                      </b-col>
+                      <b-col lg="12" class="mt-3">
+                        <h6 class="card-title text-uppercase text-secondary mb-0">No. of closed (failed) cases</h6>
+                        <span class="h2 text-dark mb-0 counter d-inline-block w-100">{{ content.stats.failedCases }}</span>
+                      </b-col>
+                    </b-row>
+                  </template>
+                </iq-card>
+              </b-col>
+          </b-row>
         </b-col>
       </b-row>
       <b-row>

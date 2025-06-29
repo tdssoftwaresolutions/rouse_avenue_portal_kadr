@@ -38,6 +38,11 @@ router.get('/getSignatureRequestDetails', apiController.getSignatureRequestDetai
 router.post('/submitSignature', apiController.submitSignature)
 router.get('/getAvailableMediators', authMiddleware, apiController.getAvailableMediators)
 router.post('/assignMediator', authMiddleware, apiController.assignMediator)
+router.post('/submitEventFeedback', authMiddleware, apiController.submitEventFeedback)
+router.post('/markCaseResolved', authMiddleware, apiController.markCaseResolved)
+router.get('/getMediationData', authMiddleware, apiController.getMediationData)
+router.get('/getAgreementDetailsForSignature', apiController.getAgreementDetailsForSignature)
+router.post('/submitAgreementSignature', apiController.submitAgreementSignature)
 // Temperory APIs
 router.post('/sendemail/:email/:name', apiController.sendEmail)
 router.get('/generatePassword', apiController.generatePassword)
