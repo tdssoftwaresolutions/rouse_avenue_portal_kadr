@@ -136,6 +136,7 @@ export default {
             this.sidebar = SideBarItemsMC
           }
           this.user = data.userData
+          this.userProfile = data.userData.photo || profile
         } else {
           this.onClickSignOut()
         }

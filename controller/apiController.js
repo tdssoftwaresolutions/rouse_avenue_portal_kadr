@@ -40,9 +40,11 @@ const oauth2Client = new google.auth.OAuth2(
 
 module.exports = {
   updateUserProfile: async function (req, res) {
-    console.log('Updating user profile with data:', req.body)
-    const { name, phone_number, profile_picture, password } = req.body
     const userDetails = req.user
+    const { name, phone_number, profile_picture, password } = req.body
+    let uploadedProfilePictureResponse = null
+    if (profile_picture) { uploadedProfilePictureResponse = await helper.deployToS3Bucket(profile_picture, `profile-picture-${uuidv4()}`) }
+    console.log(uploadedProfilePictureResponse)
     try {
       await prisma.user.update({
         where: {
@@ -51,7 +53,7 @@ module.exports = {
         data: {
           name,
           phone_number,
-          profile_picture_url: profile_picture,
+          ...(uploadedProfilePictureResponse && { profile_picture_url: uploadedProfilePictureResponse }),
           ...(password && { password_hash: await helper.hashPassword(password) })
         }
       })

@@ -35,7 +35,7 @@
                           <div class="profile-img-edit">
                             <img
                               class="profile-pic"
-                              :src="profilePicturePreview || user.profile_picture_url || defaultProfileImage"
+                              :src="profilePicturePreview || form.profile_picture_url || defaultProfileImage"
                               alt="profile-pic"
                               @click="triggerProfilePictureUpload"
                             >
@@ -82,13 +82,15 @@
                   </div>
                   <div class="iq-card-body">
                     <b-form @submit.prevent="onSavePassword">
-                      <div class="form-group">
-                        <label for="npass">New Password:</label>
-                        <b-form-input id="npass" v-model="form.password" type="password" autocomplete="new-password" />
+                      <div class="mb-3 position-relative">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input v-model="form.password" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" >
+                        <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility"  :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
                       </div>
-                      <div class="form-group">
-                        <label for="vpass">Confirm Password:</label>
-                        <b-form-input id="vpass" v-model="form.confirmPassword" type="password" autocomplete="new-password" />
+                      <div class="mb-3 position-relative">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input v-model="form.confirmPassword" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" >
+                        <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility"  :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
                       </div>
                       <button type="submit" class="btn btn-primary mr-2">
                         <span>Change Password</span>
@@ -122,10 +124,12 @@ export default {
   },
   data () {
     return {
+      showPassword: false,
       defaultProfileImage: profile,
       activeTab: 'personal',
       form: {
         name: '',
+        profile_picture_url: null,
         phone_number: '',
         password: '',
         confirmPassword: ''
@@ -156,6 +160,9 @@ export default {
     sofbox.index()
   },
   methods: {
+    togglePasswordVisibility () {
+      this.showPassword = !this.showPassword
+    },
     async initUserData () {
       const response = await this.$store.dispatch('getUserData')
       if (!response.errorCode) {
@@ -163,6 +170,7 @@ export default {
         this.user = user
         this.form.name = user.name || ''
         this.form.phone_number = user.phone || ''
+        this.form.profile_picture_url = user.photo || ''
       }
     },
     triggerProfilePictureUpload () {
@@ -205,18 +213,19 @@ export default {
           profile_picture: this.profilePicturePreview
         }
         await this.updateUserProfile(payload)
-        this.$bvToast.toast('Profile updated successfully', { variant: 'success', solid: true })
+        this.showAlert('Profile updated successfully', 'success')
       } catch (e) {
-        this.$bvToast.toast('Failed to update profile', { variant: 'danger', solid: true })
+        this.showAlert('Failed to update profile', 'danger')
       }
       this.loading = false
+      window.location.reload() // Reload to reflect changes
     },
     async updateUserProfile (payload) {
       return await this.$store.dispatch('updateUserProfile', payload)
     },
     async onSavePassword () {
       if (this.form.password && this.form.password !== this.form.confirmPassword) {
-        this.$bvToast.toast('Passwords do not match', { variant: 'danger', solid: true })
+        this.showAlert('Passwords do not match', 'danger')
         return
       }
       this.loading = true
@@ -225,11 +234,12 @@ export default {
           password: this.form.password
         }
         await this.updateUserProfile(payload)
-        this.$bvToast.toast('Password updated successfully', { variant: 'success', solid: true })
+        this.showAlert('Password updated successfully', 'success')
       } catch (e) {
-        this.$bvToast.toast('Failed to update password', { variant: 'danger', solid: true })
+        this.showAlert('Failed to update password', 'danger')
       }
       this.loading = false
+      window.location.reload() // Reload to reflect changes
     }
   }
 }
