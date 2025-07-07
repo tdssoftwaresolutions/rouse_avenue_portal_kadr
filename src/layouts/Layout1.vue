@@ -145,6 +145,7 @@ export default {
     onClickEditProfile () {
       // this.pageTitle = 'Edit Profile'
       this.$router.push({ path: '/user/profile-edit' })
+      this.onClickProfile()
     },
     async onClickSignOut () {
       const response = await this.$store.dispatch('logout')

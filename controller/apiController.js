@@ -39,6 +39,30 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 module.exports = {
+  updateUserProfile: async function (req, res) {
+    console.log('Updating user profile with data:', req.body)
+    const { name, phone_number, profile_picture, password } = req.body
+    const userDetails = req.user
+    try {
+      await prisma.user.update({
+        where: {
+          id: userDetails.id
+        },
+        data: {
+          name,
+          phone_number,
+          profile_picture_url: profile_picture,
+          ...(password && { password_hash: await helper.hashPassword(password) })
+        }
+      })
+      res.json({ success: true })
+    } catch (error) {
+      console.error('Error updating user profile:', error)
+      res.json(errorCodes.INVALID_REQUEST)
+    } finally {
+      await prisma.$disconnect()
+    }
+  },
   getDashboardContent: async function (req, res) {
     try {
       const userDetails = req.user
@@ -1239,9 +1263,23 @@ module.exports = {
     const userData = {
       'id': req.user.id,
       'type': req.user.type,
-      'name': req.user.name,
       'email': req.user.email
     }
+    const user = await prisma.user.findFirst({
+      where: {
+        id: req.user.id
+      },
+      select: {
+        id: true,
+        profile_picture_url: true,
+        phone_number: true,
+        name: true
+      }
+    })
+    userData.photo = user.profile_picture_url || ''
+    userData.phone = user.phone_number || ''
+    userData.name = user.name || ''
+
     const signature = helper.signResponseData(userData)
     res.json({
       userData,

@@ -1,5 +1,7 @@
 <template>
   <b-container fluid>
+    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
+    <Spinner :isVisible="loading" />
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -33,7 +35,7 @@
                           <div class="profile-img-edit">
                             <img
                               class="profile-pic"
-                              :src="profilePicturePreview || user.profile_picture_url || require('../../assets/images/user/11.png')"
+                              :src="profilePicturePreview || user.profile_picture_url || defaultProfileImage"
                               alt="profile-pic"
                               @click="triggerProfilePictureUpload"
                             >
@@ -64,9 +66,8 @@
                           <b-form-input id="phone" v-model="form.phone_number" />
                         </div>
                       </div>
-                      <button type="submit" class="btn btn-primary mr-2" :disabled="saving">
-                        <span v-if="!saving">Save</span>
-                        <b-spinner small v-else></b-spinner>
+                      <button type="submit" class="btn btn-primary mr-2">
+                        <span >Save</span>
                       </button>
                     </b-form>
                   </div>
@@ -89,9 +90,8 @@
                         <label for="vpass">Confirm Password:</label>
                         <b-form-input id="vpass" v-model="form.confirmPassword" type="password" autocomplete="new-password" />
                       </div>
-                      <button type="submit" class="btn btn-primary mr-2" :disabled="saving">
-                        <span v-if="!saving">Change Password</span>
-                        <b-spinner small v-else></b-spinner>
+                      <button type="submit" class="btn btn-primary mr-2">
+                        <span>Change Password</span>
                       </button>
                     </b-form>
                   </div>
@@ -106,10 +106,23 @@
 </template>
 <script>
 import { sofbox } from '../../config/pluginInit'
+import profile from '../../assets/images/user/1.jpeg'
+import Alert from '../../components/sofbox/alert/Alert.vue'
+import Spinner from '../../components/sofbox/spinner/spinner.vue'
+const allowedTypes = [
+  'image/jpeg',
+  'image/png'
+]
+const maxSize = 2 * 1024 * 1024
+
 export default {
   name: 'ProfileEdit',
+  components: {
+    Alert, Spinner
+  },
   data () {
     return {
+      defaultProfileImage: profile,
       activeTab: 'personal',
       form: {
         name: '',
@@ -126,49 +139,87 @@ export default {
       },
       profilePictureFile: null,
       profilePicturePreview: null,
-      saving: false
+      alert: {
+        visible: false,
+        message: '',
+        timeout: 5000,
+        type: 'primary'
+      },
+      loading: false
     }
+  },
+  created () {
+    // Fetch user data from store and initialize form/user
+    this.initUserData()
   },
   mounted () {
     sofbox.index()
   },
   methods: {
+    async initUserData () {
+      const response = await this.$store.dispatch('getUserData')
+      if (!response.errorCode) {
+        const user = response.userData
+        this.user = user
+        this.form.name = user.name || ''
+        this.form.phone_number = user.phone || ''
+      }
+    },
     triggerProfilePictureUpload () {
       this.$refs.profilePictureInput.click()
     },
     onProfilePictureChange (event) {
+      const ref = this
       const file = event.target.files[0]
       if (file) {
         this.profilePictureFile = file
         const reader = new FileReader()
         reader.onload = e => {
+          if (!allowedTypes.includes(ref.profilePictureFile.type)) {
+            ref.showAlert('Invalid file type. Allowed types: JPEG, PNG.', 'danger')
+            return
+          }
+          if (ref.profilePictureFile.size > maxSize) {
+            ref.showAlert('Profile picture size exceeds 2MB.', 'danger')
+            return
+          }
           this.profilePicturePreview = e.target.result
         }
         reader.readAsDataURL(file)
       }
     },
+    showAlert (message, type) {
+      this.alert = {
+        message,
+        type,
+        timeout: 5000,
+        visible: true
+      }
+    },
     async onSave () {
-      this.saving = true
+      this.loading = true
       try {
         const payload = {
           name: this.form.name,
           phone_number: this.form.phone_number,
-          url: this.form.url,
-          profilePicture: this.profilePictureFile
+          profile_picture: this.profilePicturePreview
         }
         await this.updateUserProfile(payload)
         this.$bvToast.toast('Profile updated successfully', { variant: 'success', solid: true })
       } catch (e) {
         this.$bvToast.toast('Failed to update profile', { variant: 'danger', solid: true })
       }
-      this.saving = false
+      this.loading = false
+    },
+    async updateUserProfile (payload) {
+      return await this.$store.dispatch('updateUserProfile', payload)
     },
     async onSavePassword () {
       if (this.form.password && this.form.password !== this.form.confirmPassword) {
         this.$bvToast.toast('Passwords do not match', { variant: 'danger', solid: true })
         return
       }
-      this.saving = true
+      this.loading = true
       try {
         const payload = {
           password: this.form.password
@@ -178,7 +229,7 @@ export default {
       } catch (e) {
         this.$bvToast.toast('Failed to update password', { variant: 'danger', solid: true })
       }
-      this.saving = false
+      this.loading = false
     }
   }
 }

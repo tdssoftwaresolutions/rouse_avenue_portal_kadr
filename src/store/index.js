@@ -38,6 +38,7 @@ const GET_AVAILABLE_MEDIATORS = '/getAvailableMediators'
 const ASSIGN_MEDIATOR = '/assignMediator'
 const SUBMIT_EVENT_FEEDBACK = '/submitEventFeedback'
 const MARK_CASE_RESOLVED = '/markCaseResolved'
+const UPDATE_USER_PROFILE = '/updateUserProfile'
 const GET_MEDIATION_DATA = '/getMediationData'
 const GET_AGREEMENT_DETAILS_FOR_SIGNATURE = '/getAgreementDetailsForSignature'
 const SUBMIT_AGREEMENT_SIGNATURE = '/submitAgreementSignature'
@@ -51,6 +52,7 @@ const getDefaultState = () => {
     availableStates: null,
     allLanguages: null,
     dashboardContent: null,
+    userData: null,
     calendarInit: null
   }
 }
@@ -124,6 +126,9 @@ export default (router) => {
       setDashboardContent (state, data) {
         state.dashboardContent = data
       },
+      setUserData (state, data) {
+        state.userData = data
+      },
       setCalendarInit (state, data) {
         state.calendarInit = data
       }
@@ -148,6 +153,14 @@ export default (router) => {
       async resetPassword ({ commit }, { emailAddress }) {
         try {
           const { data } = await apiClient.post(RESET_PASSWORD_ENDPOINT, { emailAddress })
+          return data
+        } catch (error) {
+          return error
+        }
+      },
+      async updateUserProfile ({ commit }, { name, phone_number, profile_picture, password }) {
+        try {
+          const { data } = await apiClient.post(UPDATE_USER_PROFILE, { name, phone_number, profile_picture, password })
           return data
         } catch (error) {
           return error
@@ -334,9 +347,13 @@ export default (router) => {
         }
       },
 
-      async getUserData ({ commit }) {
+      async getUserData ({ state, commit }) {
         try {
+          if (state.userData) {
+            return state.userData
+          }
           const { data } = await apiClient.get(GET_USER_DATA_ENDPOINT)
+          commit('setUserData', data)
           return data
         } catch (error) {
           return error
