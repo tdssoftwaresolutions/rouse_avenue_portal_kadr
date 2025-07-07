@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
+  parallel: false,
   lintOnSave: process.env.NODE_ENV !== 'production',
   publicPath: process.env.NODE_ENV === 'production'
     ? process.env.BASE_URL + '/admin/'

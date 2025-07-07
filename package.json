@@ -6,7 +6,7 @@
     "serve": "npm-run-all --parallel serve-client serve-server",
     "serve-client": "vue-cli-service serve",
     "serve-server": "node server.js",
-    "build": "vue-cli-service build",
+    "build": "NODE_OPTIONS='--max_old_space_size=2048' vue-cli-service build --modern",
     "watch": "vue-cli-service build --watch",
     "start": "nodemon server.js",
     "prisma:pull": "npx prisma db pull && npx prisma generate",
