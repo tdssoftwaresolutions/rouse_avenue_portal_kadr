@@ -66,8 +66,8 @@
 
         <p>
           The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
-          New Delhi</strong> on:
-          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" />.
+          New Delhi</strong> on
+          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" disabled="viewMode"/>.
           If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
           date for mediation convenient to the parties.
         </p>
@@ -379,15 +379,45 @@ export default {
     closeForm () {
       this.$emit('close')
     },
-    formatDate (dateString, type) {
+    formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''
+
       const date = new Date(dateString)
-      if (type === 'date') {
-        return date.toISOString().split('T')[0] // Format as YYYY-MM-DD
-      } else if (type === 'datetime-local') {
-        return date.toISOString().slice(0, 16) // Format as YYYY-MM-DDTHH:mm
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
       }
-      return dateString
     }
   },
   created () {

@@ -30,13 +30,13 @@
                       <span  style="font-weight: bold">Case #{{ event.caseNumber }}</span>
                       <span>{{ event.firstPartyName }} vs {{ event.secondPartyName }}</span>
                       <span>
-                        {{ formatDate(event.startDate) }} to {{ formatDate(event.endDate) }}
+                        {{ formatDate(event.startDate, 'display', {includeDate: false, includeTime: true} ) }} to {{ formatDate(event.endDate,'display', {includeDate: false, includeTime: true} ) }}
                       </span>
                     </div>
                     <div class="schedule-text" v-else>
                       <span  style="font-weight: bold">{{ event.title }}</span>
                       <span>
-                        {{ formatDate(event.startDate) }} to {{ formatDate(event.endDate) }}
+                        {{ formatDate(event.startDate,'display', {includeDate: false, includeTime: true} ) }} to {{ formatDate(event.endDate, 'display', {includeDate: false, includeTime: true} ) }}
                       </span>
                     </div>
                   </div>
@@ -98,11 +98,11 @@
                       <small>
                         Meeting:
                         {{
-                          formatDateTime(item.event.start_datetime, 'dateonly')
+                          formatDate(item.event.start_datetime, 'display')
                         }}
                         {{
-                          formatDateTime(item.event.start_datetime, 'timeonly')
-                        }}-{{ formatDateTime(item.event.end_datetime, 'timeonly') }}
+                          formatDate(item.event.start_datetime, 'display', { includeDate: false, includeTime: true })
+                        }}-{{ formatDate(item.event.end_datetime, 'display', { includeDate: false, includeTime: true }) }}
                       </small>
                     </div>
                   </div>
@@ -169,42 +169,56 @@ export default {
     Alert, Spinner, MyCases
   },
   methods: {
-    formatDateTime (dateString, type) {
+    formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''
+
       const date = new Date(dateString)
-      const day = date.getDate()
-      const month = date.toLocaleString('en-US', { month: 'long' })
-      const year = date.getFullYear()
-      const hour = date.getHours()
-      const minute = date.getMinutes()
-      const ampm = hour >= 12 ? 'PM' : 'AM'
-      const hour12 = hour % 12 === 0 ? 12 : hour % 12
-      const minuteStr = minute < 10 ? `0${minute}` : minute
-      const getOrdinal = (n) => {
-        if (n > 3 && n < 21) return 'th'
-        switch (n % 10) {
-          case 1: return 'st'
-          case 2: return 'nd'
-          case 3: return 'rd'
-          default: return 'th'
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeDate = true, includeTime = false } = options
+          if (includeDate && includeTime) {
+            return date.toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          } else if (includeDate) {
+            return date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          } else if (includeTime) {
+            return date.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          }
         }
       }
-      if (type === 'dateonly') {
-        return `${day}${getOrdinal(day)} ${month} ${year}`
-      }
-      if (type === 'timeonly') {
-        return `${hour12}:${minuteStr}${ampm}`
-      }
-      // fallback to full format
-      return `${day}${getOrdinal(day)} ${month} ${year} at ${hour12}:${minuteStr}${ampm}`
-    },
-    formatDate (dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        hour: 'numeric', // '6 PM'
-        minute: 'numeric', // '52'
-        hour12: true // 12-hour clock
-      })
     },
     showAlert (message, type) {
       this.alert = {
@@ -282,14 +296,26 @@ export default {
       this.showAlert('Feedback submitted successfully!', 'success')
       this.showFeedbackModal = false
       // Remove the submitted feedback from UI
-      const idx = this.pendingFeedbacks.findIndex(
-        item =>
-          item.event.id === this.feedbackTarget.event.id &&
-          item.case.id === this.feedbackTarget.case.id
-      )
-      if (idx !== -1) {
-        // Vue reactivity: remove from array if possible
-        this.$delete(this.pendingFeedbacks, idx)
+      // Remove the event from the case's events array directly for reactivity
+      if (
+        this.content &&
+        this.content.myCases &&
+        Array.isArray(this.content.myCases.casesWithEvents)
+      ) {
+        const caseIdx = this.content.myCases.casesWithEvents.findIndex(
+          c => c.id === this.feedbackTarget.case.id
+        )
+        if (caseIdx !== -1) {
+          const eventsArr = this.content.myCases.casesWithEvents[caseIdx].events
+          if (Array.isArray(eventsArr)) {
+            const eventIdx = eventsArr.findIndex(
+              e => e.id === this.feedbackTarget.event.id
+            )
+            if (eventIdx !== -1) {
+              this.$delete(eventsArr, eventIdx)
+            }
+          }
+        }
       }
       this.resetFeedbackForm()
     }
@@ -333,88 +359,7 @@ export default {
         secondPartyPresent: false,
         summary: ''
       },
-      feedbackTarget: null, // { case, event }
-      chart1: {
-        chart: {
-          height: 80,
-          type: 'area',
-          sparkline: {
-            enabled: true
-          },
-          group: 'sparklines'
-
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: 3,
-          curve: 'smooth'
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.5,
-            opacityTo: 0
-          }
-        },
-        series: [{
-          name: 'series1',
-          data: [60, 15, 50, 30, 70]
-        }],
-        colors: ['#0084ff'],
-
-        xaxis: {
-          type: 'datetime',
-          categories: ['2018-08-19T00:00:00', '2018-09-19T01:30:00', '2018-10-19T02:30:00', '2018-11-19T01:30:00', '2018-12-19T01:30:00']
-        },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm'
-          }
-        }
-      },
-      chart4: {
-        chart: {
-          height: 80,
-          type: 'area',
-          sparkline: {
-            enabled: true
-          },
-          group: 'sparklines'
-
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: 3,
-          curve: 'smooth'
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.5,
-            opacityTo: 0
-          }
-        },
-        series: [{
-          name: 'series1',
-          data: [75, 30, 60, 35, 60]
-        }],
-        colors: ['#e64141'],
-        xaxis: {
-          type: 'datetime',
-          categories: ['2018-08-19T00:00:00', '2018-09-19T01:30:00', '2018-10-19T02:30:00', '2018-11-19T01:30:00', '2018-12-19T01:30:00']
-        },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm'
-          }
-        }
-      }
+      feedbackTarget: null // { case, event }
     }
   },
   computed: {

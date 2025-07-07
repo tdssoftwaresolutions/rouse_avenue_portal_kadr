@@ -6,7 +6,7 @@
       <!-- Sidebar  -->
       <SideBarStyle1 :items="sidebar" :logo="logo" />
       <!-- TOP Nav Bar -->
-      <NavBarStyle1 title="Dashboard" :homeURL="{ name: 'dashboard1.home' }" :logo="logo">
+      <NavBarStyle1 :title="pageTitle" :logo="logo" >
         <template slot="responsiveRight">
           <ul class="navbar-nav ms-auto navbar-list">
             <li class="nav-item iq-full-screen"><a href="#" class="iq-waves-effect" id="btnFullscreen"><i class="ri-fullscreen-line"></i></a></li>
@@ -24,6 +24,17 @@
                     <div class="bg-primary p-3">
                       <h5 class="mb-0 text-white line-height">Hello {{ user.name }}</h5>
                     </div>
+                    <a v-on:click="onClickEditProfile" class="iq-sub-card iq-bg-primary-hover">
+                      <div class="media align-items-center" style="cursor: pointer;">
+                          <div class="iq-card-icon iq-bg-success">
+                            <i class="ri-profile-line"></i>
+                          </div>
+                          <div class="media-body ml-3">
+                            <h6 class="mb-0 ">Edit Profile</h6>
+                            <p class="mb-0 font-size-12">Modify your personal details.</p>
+                          </div>
+                      </div>
+                    </a>
                     <div class="d-inline-block w-100 text-center p-3">
                       <a class="iq-bg-danger iq-sign-btn" v-on:click="onClickSignOut" role="button">Sign out<i class="ri-login-box-line ms-2"></i></a>
                     </div>
@@ -91,7 +102,8 @@ export default {
       userProfile: profile,
       logo,
       user: null,
-      profileClass: ''
+      profileClass: '',
+      pageTitle: ''
     }
   },
   methods: {
@@ -130,6 +142,10 @@ export default {
       }
     },
     handleComplete () {},
+    onClickEditProfile () {
+      // this.pageTitle = 'Edit Profile'
+      this.$router.push({ path: '/user/profile-edit' })
+    },
     async onClickSignOut () {
       const response = await this.$store.dispatch('logout')
       if (!response.errorCode) {

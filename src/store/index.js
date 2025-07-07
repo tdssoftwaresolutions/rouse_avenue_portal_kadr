@@ -41,6 +41,7 @@ const MARK_CASE_RESOLVED = '/markCaseResolved'
 const GET_MEDIATION_DATA = '/getMediationData'
 const GET_AGREEMENT_DETAILS_FOR_SIGNATURE = '/getAgreementDetailsForSignature'
 const SUBMIT_AGREEMENT_SIGNATURE = '/submitAgreementSignature'
+const LIST_ALL_MEDIATORS_WITH_CASES = '/listAllMediatorsWithCases'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -180,6 +181,14 @@ export default (router) => {
           return error
         }
       },
+      async LIST_ALL_MEDIATORS_WITH_CASES ({ commit }) {
+        try {
+          const { data } = await apiClient.get(LIST_ALL_MEDIATORS_WITH_CASES)
+          return data
+        } catch (error) {
+          return error
+        }
+      },
       async confirmPasswordChange ({ commit }, { emailAddress, otp, password }) {
         try {
           const { data } = await apiClient.post(CONFIRM_PASSWORD_CHANGE_ENDPOINT, { emailAddress, otp, password })
@@ -188,9 +197,9 @@ export default (router) => {
           return error
         }
       },
-      async markCaseResolved ({ commit }, { caseId, bothAgreed, agreementText, signature }) {
+      async markCaseResolved ({ commit }, { caseId, resolveStatus, agreementText, signature }) {
         try {
-          const { data } = await apiClient.post(MARK_CASE_RESOLVED, { caseId, bothAgreed, agreementText, signature })
+          const { data } = await apiClient.post(MARK_CASE_RESOLVED, { caseId, resolveStatus, agreementText, signature })
           return data
         } catch (error) {
           return error

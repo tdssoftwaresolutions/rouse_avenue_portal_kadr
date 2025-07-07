@@ -26,10 +26,10 @@
                     {{ data.item.user_cases_first_partyTouser?.name }} vs {{ data.item.user_cases_second_partyTouser?.name }}
                   </template>
                   <template v-slot:cell(hearing_date)="data">
-                    {{ formatDate(data.item.hearing_date) }}
+                    {{ formatDate(data.item.hearing_date, 'display') }}
                   </template>
                   <template v-slot:cell(mediation_date_time)="data">
-                    {{ formatDate(data.item.mediation_date_time) }}
+                    {{ formatDate(data.item.mediation_date_time, 'display',{includeTime: true}) }}
                   </template>
                   <template v-slot:cell(action)="data">
                     <b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="ml-2">
@@ -44,7 +44,14 @@
             </b-row>
           </template>
         </iq-card>
-        <b-modal id="modal-lg" size="xl" :title="caseTitle" scrollable v-model="showViewDetails" hide-footer>
+        <b-modal
+          id="modal-lg"
+          size="xl"
+          :title="caseTitle"
+          scrollable
+          v-model="showViewDetails"
+          hide-footer
+        >
           <mediation-form
             :formData="selectedCase"
             :viewMode="true"
@@ -52,8 +59,16 @@
             @close="closeViewDetails"
           />
         </b-modal>
-        <b-modal id="new-case-modal" size="xl" title="New Mediation" v-model="showNewCaseForm" hide-footer>
-          <mediation-form :nextCaseId="localNextCaseId"  @close="onCloseNewMediationForm" :userName="user.name"/>
+        <b-modal
+          id="new-case-modal"
+          size="xl"
+          title="New Mediation"
+          v-model="showNewCaseForm"
+          hide-footer
+          :no-close-on-backdrop="true"
+          :no-close-on-esc="true"
+        >
+          <mediation-form :nextCaseId="localNextCaseId" @close="onCloseNewMediationForm" :userName="user.name"/>
         </b-modal>
       </b-col>
     </b-row>
@@ -100,16 +115,45 @@ export default {
     }
   },
   methods: {
-    formatDate (dateString) {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
       const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      })
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
     },
     async onCloseNewMediationForm (formData) {
       formData.judgeId = this.user.id // Add judgeId to formData

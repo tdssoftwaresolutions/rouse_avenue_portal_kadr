@@ -1,18 +1,18 @@
 <template>
   <div class="form-container">
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-    <form @submit.prevent="openAadharModal" class="form-section" v-if="data != null">
-      <div class="document-container">
-        <h1>ROUSE AVENUE MEDIATION CENTER</h1>
+    <Spinner :isVisible="loading" />
+    <h1>ROUSE AVENUE MEDIATION CENTER</h1>
         <h2>MEDIATION COMPLETION DOCUMENT</h2>
         <hr />
-
+    <form @submit.prevent="openPhoneModal" class="form-section" v-if="data != null">
+      <div class="document-container">
         <section>
           <h4>1. Case Information</h4>
           <p><strong>Case ID:</strong> {{ data.caseId }}</p>
           <p><strong>Case Type:</strong> {{ data.caseType }}</p>
-          <p><strong>Date of Case Registration:</strong> {{ formatDateTime(data.dateOfCaseRegistration) }}</p>
-          <p><strong>Mediation Completion Date:</strong> {{ formatDateTime(data.mediationCompletionDate) }}</p>
+          <p><strong>Date of Case Registration:</strong> {{ formatDate(data.dateOfCaseRegistration,'display') }}</p>
+          <p><strong>Mediation Completion Date:</strong> {{ formatDate(data.mediationCompletionDate,'display') }}</p>
         </section>
 
         <section>
@@ -38,8 +38,7 @@
             successfully. Both parties, with the assistance of the assigned mediator,
             have mutually agreed upon the following resolution:
           </p>
-          <div class="agreement-box" style="margin-bottom:1rem;">
-            {{ data.outcomeOfMediation }}
+          <div class="agreement-box" style="margin-bottom:1rem;" v-html="data.outcomeOfMediation">
           </div>
         </section>
 
@@ -90,28 +89,27 @@
       <button type="submit">Submit</button>
     </form>
 
-    <!-- Aadhar Verification Modal -->
-    <b-modal v-model="showAadharModal" hide-footer title="Aadhaar Verification" @hidden="resetAadharModal">
-      <div class="aadhar-modal-content">
-        <div v-if="aadharStep === 1">
-          <h5>Enter your Aadhaar Number</h5>
+    <!-- Phone Verification Modal -->
+    <b-modal v-model="showPhoneModal" hide-footer title="Phone Verification" @hidden="resetPhoneModal">
+      <div class="phone-modal-content">
+        <div v-if="phoneStep === 1">
+          <h5>Enter your Phone Number</h5>
           <b-form-group>
             <b-form-input
-              v-model="aadharNumber"
-              maxlength="12"
-              placeholder="Enter 12-digit Aadhaar Number"
+              v-model="phoneNumber"
+              maxlength="10"
+              placeholder="Enter your registered phone number"
               type="text"
-              pattern="[0-9]{12}"
               autocomplete="off"
             ></b-form-input>
           </b-form-group>
-          <b-button variant="primary" block :disabled="!isAadharValid" @click="sendOtp">Send OTP</b-button>
+          <b-button variant="primary" block :disabled="!isPhoneValid" @click="sendPhoneOtp">Send OTP</b-button>
         </div>
-        <div v-else-if="aadharStep === 2">
-          <h5>OTP sent to your registered mobile</h5>
+        <div v-else-if="phoneStep === 2">
+          <h5>OTP sent to your phone</h5>
           <b-form-group>
             <b-form-input
-              v-model="aadharOtp"
+              v-model="phoneOtp"
               maxlength="6"
               placeholder="Enter 6-digit OTP"
               type="text"
@@ -119,17 +117,17 @@
               autocomplete="off"
             ></b-form-input>
           </b-form-group>
-          <b-button variant="primary" block :disabled="!isOtpValid" @click="verifyOtp">Verify OTP</b-button>
+          <b-button variant="primary" block :disabled="!isOtpValid" @click="verifyPhoneOtp">Verify OTP</b-button>
         </div>
-        <div v-else-if="aadharStep === 3">
-          <div class="aadhar-verification-success">
+        <div v-else-if="phoneStep === 3">
+          <div class="phone-verification-success">
             <b-icon icon="check-circle-fill" variant="success" font-scale="2"></b-icon>
             <h5>Verification Successful!</h5>
             <p>
-              Name matched with Aadhaar:<br>
-              <strong>{{ userInitialsName }}</strong>
+              Phone number matched with our records:<br>
+              <strong>{{ phoneNumber }}</strong>
             </p>
-            <b-alert show variant="success" class="mt-2">Congrats! Your identity is verified via Aadhaar.</b-alert>
+            <b-alert show variant="success" class="mt-2">Congrats! Your identity is verified via phone.</b-alert>
             <b-button variant="success" block @click="finalSubmit">Proceed</b-button>
           </div>
         </div>
@@ -141,28 +139,32 @@
 <script>
 import SignaturePad from 'signature_pad'
 import Alert from '../../components/sofbox/alert/Alert.vue'
+import Spinner from '../../components/sofbox/spinner/spinner.vue'
 
 export default {
   name: 'Signature',
   components: {
-    Alert
+    Alert, Spinner
   },
   data () {
     return {
+      loading: false,
       signature_type: 'digital',
       signaturePad: null,
-      data: {},
+      data: null,
       alert: {
         visible: false,
         message: '',
         timeout: 5000,
         type: 'primary'
       },
-      showAadharModal: false,
-      aadharStep: 1,
-      aadharNumber: '',
-      aadharOtp: '',
-      fakeOtp: '123456'
+      // Phone verification modal state
+      showPhoneModal: false,
+      phoneStep: 1,
+      phoneNumber: '',
+      phoneOtp: '',
+      fakeOtp: '123456',
+      matchedPhone: ''
     }
   },
   computed: {
@@ -172,25 +174,60 @@ export default {
         .join('')
         .toUpperCase()
     },
-    isAadharValid () {
-      return /^[0-9]{12}$/.test(this.aadharNumber)
+    isPhoneValid () {
+      // Accept 10 digit or +91 format
+      return /^(?:\+91|0)?[789]\d{9}$/.test(this.phoneNumber)
     },
     isOtpValid () {
-      return /^[0-9]{6}$/.test(this.aadharOtp)
+      return /^[0-9]{6}$/.test(this.phoneOtp)
     },
     userInitialsName () {
-      // Show full name for verification
       return this.data?.userName
     }
   },
   methods: {
-    formatDateTime (dateString) {
+    formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''
+
       const date = new Date(dateString)
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
     },
     async getAgreementDetailsForSignature () {
-      const requestId = this.$route.query?.requestId // Access requestId from query parameters
+      const requestId = this.$route.query?.requestId
       if (!requestId) {
         this.showAlert('Request ID is missing in the URL.', 'danger')
         return
@@ -198,10 +235,10 @@ export default {
       try {
         const response = await this.$store.dispatch('getAgreementDetailsForSignature', { requestId })
         if (response.response?.data?.success === false) {
+          this.data = null
           this.showAlert('Already submitted the signature, no action required!', 'success')
           return
         }
-
         this.data = response.data
       } catch (error) {
         console.log(error)
@@ -218,12 +255,12 @@ export default {
     setSignatureType (type) {
       this.signature_type = type
       if (type === 'manual') {
-        this.initializeSignaturePad() // Ensure this is called after the DOM is updated
+        this.initializeSignaturePad()
       }
     },
     initializeSignaturePad () {
       this.$nextTick(() => {
-        const canvas = this.$refs.signaturePad // Ensure canvas is properly referenced
+        const canvas = this.$refs.signaturePad
         if (!canvas) {
           console.error('SignaturePad canvas element is not found.')
           return
@@ -241,70 +278,71 @@ export default {
       canvas.height = canvas.offsetHeight * ratio
       canvas.getContext('2d').scale(ratio, ratio)
     },
-    formatDate (dateString, type) {
-      if (!dateString) return ''
-      const date = new Date(dateString)
-      if (type === 'date') {
-        return date.toISOString().split('T')[0] // Format as YYYY-MM-DD
-      } else if (type === 'datetime-local') {
-        return date.toISOString().slice(0, 16) // Format as YYYY-MM-DDTHH:mm
-      }
-      return dateString
-    },
     clearSignature () {
       if (this.signaturePad) {
         this.signaturePad.clear()
       }
     },
-    openAadharModal () {
-      // Called instead of submitForm, triggers Aadhaar modal
-      this.showAadharModal = true
-      this.aadharStep = 1
-      this.aadharNumber = ''
-      this.aadharOtp = ''
+    openPhoneModal () {
+      this.showPhoneModal = true
+      this.phoneStep = 1
+      this.phoneNumber = ''
+      this.phoneOtp = ''
+      this.matchedPhone = ''
     },
-    sendOtp () {
+    sendPhoneOtp () {
       // Simulate sending OTP
-      this.aadharStep = 2
-      this.aadharOtp = ''
-      this.$bvToast.toast('OTP sent to your registered mobile number.', {
-        title: 'Aadhaar Verification',
+      // Check if entered phone matches the user's phone in data
+      // const phoneFromRecord = this.data?.phone_number || ''
+      // Normalize both numbers for comparison (remove +91, spaces, etc.)
+      // const normalize = (num) => num.replace(/[^0-9]/g, '').replace(/^91/, '')
+      // if (normalize(this.phoneNumber) !== normalize(phoneFromRecord)) {
+      //  this.$bvToast.toast('Phone number does not match our records.', {
+      //    title: 'Phone Verification',
+      //    variant: 'danger',
+      //    solid: true
+      //  })
+      //  return
+      // }
+      this.phoneStep = 2
+      this.phoneOtp = ''
+      // this.matchedPhone = phoneFromRecord
+      this.$bvToast.toast('OTP sent to your phone number.', {
+        title: 'Phone Verification',
         variant: 'info',
         solid: true
       })
     },
-    verifyOtp () {
-      // Simulate OTP verification and name match
-      if (this.aadharOtp === this.fakeOtp) {
-        this.aadharStep = 3
+    verifyPhoneOtp () {
+      if (this.phoneOtp === this.fakeOtp) {
+        this.phoneStep = 3
       } else {
         this.$bvToast.toast('Invalid OTP. Please try again.', {
-          title: 'Aadhaar Verification',
+          title: 'Phone Verification',
           variant: 'danger',
           solid: true
         })
       }
     },
     finalSubmit () {
-      this.showAadharModal = false
-      // Now call the original submitForm logic
+      this.showPhoneModal = false
       this.submitFormReal()
     },
-    resetAadharModal () {
-      this.aadharStep = 1
-      this.aadharNumber = ''
-      this.aadharOtp = ''
+    resetPhoneModal () {
+      this.phoneStep = 1
+      this.phoneNumber = ''
+      this.phoneOtp = ''
+      this.matchedPhone = ''
     },
     submitFormReal () {
+      this.loading = true
       const requestBody = {
         requestId: this.$route.query.requestId,
         signature: ''
       }
       if (this.signature_type === 'digital') {
-        // For digital signature, just send the initials
         requestBody.signature = this.userInitials
       } else if (this.signature_type === 'manual' && this.signaturePad) {
-        // For manual signature, send the signature image
         requestBody.signature = this.signaturePad.toDataURL()
       }
 
@@ -320,6 +358,8 @@ export default {
         .catch(error => {
           console.error('Error submitting signature:', error)
           this.showAlert('Failed to submit signature. Please try again.', 'danger')
+        }).finally(() => {
+          this.loading = false
         })
     },
     formatSessionDates (dates) {
@@ -327,8 +367,7 @@ export default {
       return dates
         .map(dt => {
           if (!dt) return ''
-          const d = new Date(dt)
-          return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          return this.formatDate(dt, 'display', { includeTime: true })
         })
         .join(', ')
     }
@@ -525,6 +564,27 @@ button {
 }
 
 .aadhar-verification-success p {
+  margin: 5px 0;
+}
+
+.phone-modal-content {
+  padding: 20px;
+}
+
+.phone-verification-success {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.phone-verification-success b-icon {
+  font-size: 48px;
+}
+
+.phone-verification-success h5 {
+  margin: 10px 0;
+}
+
+.phone-verification-success p {
   margin: 5px 0;
 }
 </style>

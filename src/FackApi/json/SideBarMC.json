@@ -10,6 +10,18 @@
     "class_name": "",
     "is_icon_class": false,
     "icon": "ri-home-4-line"
+  },
+  {
+    "title": "Mediators",
+    "name": "sidebar.mediators",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "dashboard1.mediators"
+    },
+    "class_name": "",
+    "is_icon_class": false,
+    "icon": "ri-home-4-line"
   }
 ]
   

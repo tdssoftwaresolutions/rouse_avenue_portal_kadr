@@ -4,15 +4,15 @@
     <div class="iq-navbar-custom">
       <div class="iq-sidebar-logo">
         <div class="top-logo">
-          <router-link :to="homeURL">
+          <a href="/admin">
             <img :src="logo" class="img-fluid" alt="logo">
             <span>RAMC</span>
-          </router-link>
+          </a>
         </div>
       </div>
       <div class="navbar-breadcrumb">
         <h5 class="mb-0">{{ title }}</h5>
-        <!--BreadCrumbStyle1 :items="breadCrumb"/-->
+        <!--BreadCrumbStyle1 :items="breadCrumb"></BreadCrumbStyle1-->
       </div>
       <nav class="navbar navbar-expand-lg navbar-light p-0">
         <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,15 +46,11 @@ export default {
       default: () => ([
         {
           text: 'Home',
-          href: '#'
+          href: '/admin'
         },
         {
-          text: 'Library',
+          text: 'Edit Profile',
           href: '#'
-        },
-        {
-          text: 'data',
-          active: true
         }
       ])
     },

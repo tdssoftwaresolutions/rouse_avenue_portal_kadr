@@ -790,6 +790,13 @@ class Helper {
             name: true,
             email: true
           }
+        },
+        user_cases_judgeTouser: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
         }
       }
     })
@@ -895,6 +902,7 @@ class Helper {
         mediator: true,
         first_party: true,
         second_party: true,
+        judge: true,
         caseId: true,
         judge_document_url: true,
         nature_of_suit: true,
@@ -913,7 +921,6 @@ class Helper {
         respondent_signature: true,
         respondent_phone: true,
         respondent_advocate: true,
-        judge: true,
         user_cases_first_partyTouser: {
           select: {
             id: true,
@@ -1237,56 +1244,51 @@ class Helper {
     }
   }
 
+  static renderSignature (signature, altText) {
+    if (signature?.startsWith('data:')) {
+      return `<img src="${signature}" alt="${altText}" />`
+    } else {
+      return `<div style="margin-top:40px;border-bottom:1px solid #000;display:inline-block;padding:4px 20px">${signature}</div>`
+    }
+  }
+
   static generateMediationHTML (data) {
     const {
       caseId,
-      caseType,
-      dateOfCaseRegistration,
       mediationCompletionDate,
       firstPartyName,
       secondPartyName,
       mediatorName,
-      numberOfSessions,
-      sessionDates,
       mutualAgreement,
-      firstPartySignatureImage, // base64 or URL
+      firstPartySignatureImage,
       secondPartySignatureImage,
-      mediatorSignatureImage
+      mediatorSignatureImage,
+      judgeName
     } = data
 
+    // Format mediationCompletionDate as DD.MM.YYYY
+    let formattedCompletionDate = ''
+    if (mediationCompletionDate) {
+      const d = new Date(mediationCompletionDate)
+      const day = String(d.getDate()).padStart(2, '0')
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const year = d.getFullYear()
+      formattedCompletionDate = `${day}.${month}.${year}`
+    }
+
     return `
-      <html>
-      <head>
+    <html>
+       <head>
+       <title> Mediaton ${firstPartyName} vs ${secondPartyName}</title> 
         <style>
           body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            padding: 40px;
-            color: #333;
-          }
-  
-          h1, h2, h3 {
-            text-align: center;
-            margin-bottom: 5px;
+            padding: 20px;
           }
   
           hr {
             margin: 20px 0;
             border: none;
             border-top: 2px solid #aaa;
-          }
-  
-          .section {
-            margin-top: 30px;
-          }
-  
-          .section h4 {
-            margin-bottom: 10px;
-            text-decoration: underline;
-          }
-  
-          .info p {
-            margin: 4px 0;
           }
   
           .signature-block {
@@ -1300,7 +1302,7 @@ class Helper {
           }
   
           .signature-col {
-            width: 30%;
+            width: 50%;
             text-align: center;
           }
   
@@ -1309,76 +1311,61 @@ class Helper {
             height: auto;
             border-bottom: 1px solid #000;
           }
-  
-          .note {
-            margin-top: 30px;
-            font-size: 0.95em;
-            color: #555;
-          }
         </style>
       </head>
       <body>
-        <h1>ROUSE AVENUE MEDIATION CENTER</h1>
-        <h2>MEDIATION COMPLETION DOCUMENT</h2>
-        <hr/>
-  
-        <div class="section info">
-          <h4>1. Case Information</h4>
-          <p><strong>Case ID:</strong> ${caseId}</p>
-          <p><strong>Case Type:</strong> ${caseType}</p>
-          <p><strong>Date of Case Registration:</strong> ${dateOfCaseRegistration}</p>
-          <p><strong>Mediation Completion Date:</strong> ${mediationCompletionDate}</p>
-        </div>
-  
-        <div class="section info">
-          <h4>2. Party Details</h4>
-          <p><strong>First Party (Name):</strong> ${firstPartyName}</p>
-          <p><strong>Second Party (Name):</strong> ${secondPartyName}</p>
-        </div>
-  
-        <div class="section info">
-          <h4>3. Mediator Details</h4>
-          <p><strong>Mediator Name:</strong> ${mediatorName}</p>
-          <p><strong>Number of Mediation Sessions Held:</strong> ${numberOfSessions}</p>
-          <p><strong>Dates of Mediation Sessions:</strong> ${sessionDates}</p>
-        </div>
-  
-        <div class="section">
-          <h4>4. Outcome of Mediation</h4>
-          <p>This is to certify that the mediation process initiated at <strong>Rouse Avenue Mediation Center</strong> has been completed successfully. Both parties, with the assistance of the assigned mediator, have mutually agreed upon the following resolution:</p>
-          <div style="margin-top:15px; border:1px solid #ccc; padding:10px; background:#f9f9f9;">
-            ${mutualAgreement}
-          </div>
-        </div>
-  
-        <div class="section">
-          <h4>5. Acknowledgement</h4>
-          <p>By signing below, both parties confirm that they participated voluntarily in the mediation sessions and are in full agreement with the outcome as stated above.</p>
-        </div>
-  
-        <div class="section signature-block">
-          <h4>6. Signatures</h4>
-          <div class="signature-row">
-            <div class="signature-col">
-              <p><strong>First Party</strong></p>
-              <img src="${firstPartySignatureImage}" alt="First Party Signature"/>
-            </div>
-            <div class="signature-col">
-              <p><strong>Second Party</strong></p>
-              <img src="${secondPartySignatureImage}" alt="Second Party Signature"/>
-            </div>
-            <div class="signature-col">
-              <p><strong>Mediator</strong></p>
-              <img src="${mediatorSignatureImage}" alt="Mediator Signature"/>
+        <div>
+          <h3 style="text-align:center;width:100%;text-decoration:underline">IN THE DELHI MEDIATION CENTRE, ROHINI DISTRICT COURTS, DELHI</h3>
+
+          <p style="text-decoration:underline"><strong>In the matter of:</p>
+          <p><strong>Ct. Cases No.:</strong> ${caseId} </p>
+          <p><strong>Case Title:</strong> ${firstPartyName} Vs. ${secondPartyName}</p>
+          <p style="text-decoration:underline"><strong>Complaint Case:</strong> U/s. 138 N.I. Act</p>
+          <p  style="text-decoration:underline><strong>Case received from the Court of:</strong></p>
+          <p> ${judgeName}, North District, Rohini Courts, Delhi</p>
+
+          <h3 style="text-align:center;text-decoration:underline;width:100%">Settlement / Agreement</h3>
+
+          ${formattedCompletionDate}
+          <p><strong>Present:</strong></p>
+          <ul>
+            <li>${firstPartyName}</li>
+            <li>${secondPartyName}</li>
+          </ul>
+
+          <p>The present case has been received from the court of ${judgeName}, North District, Rohini Courts, Delhi and assigned to me for mediation.</p>
+
+          ${mutualAgreement}
+
+          <p>The parties have entered into the present scttlement/agreement without any prcssure, coercion, fear or undue influence from any side. Thepartics shall remain bound by the terms of present settlement, and that the parties shall co-operate for performance of the same.</p>
+
+          <div class="section signature-block">
+            <div class="signature-row">
+              <div class="signature-col">
+                <p><strong>${firstPartyName}</strong></p>
+                ${this.renderSignature(firstPartySignatureImage, 'First Party Signature')}
+              </div>
+              <div class="signature-col">
+                <p><strong>${secondPartyName}</strong></p>
+                ${this.renderSignature(secondPartySignatureImage, 'Second Party Signature')}
+              </div>
             </div>
           </div>
-        </div>
-  
-        <div class="note">
-          <strong>Note:</strong> This document serves as a formal record of the completion of mediation. Any further disputes regarding this agreement must be addressed as per the terms mentioned above or escalated as per the relevant legal procedures.
+          <div class="section signature-block">
+            <div class="signature-row">
+              <div class="signature-col">
+                <p><strong>${mediatorName}</strong></p>
+                ${this.renderSignature(mediatorSignatureImage, 'Mediator Signature')}
+              </div>
+              <div class="signature-col">
+              </div>
+            </div>
+          </div>
+
+          <p>The contents of the settlement have been explained to the parties in Hindi and they have understood the same and have admitted the same to be correct. The setlement proceedings be sent to the Ld. Referral Court.</p>
         </div>
       </body>
-      </html>
+    </html>
     `
   }
 }

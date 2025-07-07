@@ -10,179 +10,156 @@
 
     <b-tabs v-model="activeTab" class="mb-3">
       <b-tab title="Case Details">
-        <form @submit.prevent="submitForm" class="form-section">
-          <div class="form-row">
-            <label>CASE ID:</label>
-            <input disabled :value="`${form.caseId || uniquecaseId}`" />
-            <label>Next Date of Hearing in Referral Court:</label>
-            <input type="date" v-model="form.hearingDate" :min="today" :disabled="viewMode" />
+        <div class="form-row">
+          <label>CASE ID:</label>
+          <input disabled :value="form.caseId" />
+          <label>Next Date of Hearing in Referral Court:</label>
+          <input type="date" v-model="form.hearingDate" disabled/>
+        </div>
+
+        <div class="form-row">
+          <label>Name of the Referral Judge:</label>
+          <input :value="form.judgeName" disabled />
+        </div>
+
+        <div class="form-row">
+          <label>Suit No/Case No:</label>
+          <input v-model="form.suitNo" disabled />
+        </div>
+
+        <div class="form-row">
+          <label>Name of the Parties:</label>
+          <div class="party-input-group">
+            <input v-model="form.party1" placeholder="Party 1" disabled />
+            <br />
+            <input v-model="form.party1Email" placeholder="Party 1 Email" disabled />
           </div>
+          <span style="margin-left:1rem;margin-right: 1rem;">vs</span>
+          <div class="party-input-group">
+            <input v-model="form.party2" placeholder="Party 2" disabled />
+            <br />
+            <input v-model="form.party2Email" placeholder="Party 2 Email" disabled />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Date of Institution of Case:</label>
+          <input type="date" v-model="form.institutionDate" disabled />
+          <label>Nature of Suit:</label>
+          <input v-model="form.natureOfSuit" disabled />
+        </div>
+
+        <div class="form-row">
+          <label>Stage of the Case at Time of Referral:</label>
+          <input v-model="form.stage" disabled />
+          <label>Number of Hearings at Time of Referral:</label>
+          <input type="number" v-model.number="form.hearingCount" min="0" disabled />
+        </div>
+
+        <!-- Mediation Referral Order Block -->
+        <div class="referral-section">
+          <h2>Mediation Referral Order</h2>
+          <p>
+            This Court, having conferred with the parties and having determined that this matter could benefit from
+            mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
+            provided by the court at no cost to the Parties.
+          </p>
+
+          <p>
+            The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
+            New Delhi</strong> on:
+            <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" disabled />.
+            If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
+            date for mediation convenient to the parties.
+          </p>
+
+          <p>
+            The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
+          </p>
+
+          <p>
+            If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
+            by the parties/their counsel and returned to this Court for further appropriate orders.
+          </p>
+
+          <p>
+            If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
+            anything that was discussed at the mediation.
+          </p>
 
           <div class="form-row">
-            <label>Name of the Referral Judge:</label>
-            <input :value="userName" disabled />
-          </div>
-
-          <div class="form-row">
-            <label>Suit No/Case No:</label>
-            <input v-model="form.suitNo" :disabled="viewMode" />
-          </div>
-
-          <div class="form-row">
-            <label>Name of the Parties:</label>
-            <div class="party-input-group">
-              <input v-model="form.party1" placeholder="Party 1" :disabled="viewMode" />
-              <br />
-              <input v-model="form.party1Email" placeholder="Party 1 Email" :disabled="viewMode" />
+            <label>Signature of Referral Judge:</label>
+            <div>
+              <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
+                <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
+              </div>
+              <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                <span class="cursive-signature">{{ form.referralJudgeSignature }}</span>
+              </div>
             </div>
-            <span style="margin-left:1rem;margin-right: 1rem;">vs</span>
-            <div class="party-input-group">
-              <input v-model="form.party2" placeholder="Party 2" :disabled="viewMode" />
-              <br />
-              <input v-model="form.party2Email" placeholder="Party 2 Email" :disabled="viewMode" />
-            </div>
           </div>
+        </div>
 
-          <div class="form-row">
-            <label>Date of Institution of Case:</label>
-            <input type="date" v-model="form.institutionDate" :disabled="viewMode" />
-            <label>Nature of Suit:</label>
-            <input v-model="form.natureOfSuit" :disabled="viewMode" />
-          </div>
-
-          <div class="form-row">
-            <label>Stage of the Case at Time of Referral:</label>
-            <input v-model="form.stage" :disabled="viewMode" />
-            <label>Number of Hearings at Time of Referral:</label>
-            <input type="number" v-model.number="form.hearingCount" min="0" :disabled="viewMode" />
-          </div>
-
-          <!-- Mediation Referral Order Block -->
-          <div class="referral-section">
-            <h2>Mediation Referral Order</h2>
-            <p>
-              This Court, having conferred with the parties and having determined that this matter could benefit from
-              mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
-              provided by the court at no cost to the Parties.
-            </p>
-
-            <p>
-              The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
-              New Delhi</strong> on:
-              <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" />.
-              If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
-              date for mediation convenient to the parties.
-            </p>
-
-            <p>
-              The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
-            </p>
-
-            <p>
-              If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
-              by the parties/their counsel and returned to this Court for further appropriate orders.
-            </p>
-
-            <p>
-              If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
-              anything that was discussed at the mediation.
-            </p>
-
+        <!-- Signatures Section -->
+        <div class="form-row signature-section">
+          <div>
+            <h4>Plaintiff/Complainant</h4>
             <div class="form-row">
-              <label>Signature of Referral Judge:</label>
-              <div v-if="viewMode">
-                <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
-                  <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
+              <label >Signature:</label>
+              <div>
+                <div v-if="form.plaintiffSignature.startsWith('data:image/')">
+                  <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
                 </div>
                 <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                  <span class="cursive-signature">{{ userInitials }}</span>
-                </div>
-              </div>
-              <div v-else>
-                <div class="signature-type-selector" v-if="!viewMode">
-                  <button
-                    type="button"
-                    :class="{ active: signatureType === 'digital' }"
-                    @click="setSignatureType('digital')">
-                    Digital Signature
-                  </button>
-                  <button
-                    type="button"
-                    :class="{ active: signatureType === 'manual' }"
-                    @click="setSignatureType('manual')">
-                    Sign Manually
-                  </button>
-                </div>
-                <div v-if="signatureType === 'digital'" class="digital-signature-box">
-                  <span class="cursive-signature">{{ userInitials }}</span>
-                </div>
-                <div v-else-if="signatureType === 'manual'" class="manual-signature">
-                  <canvas ref="signaturePad" class="signature-canvas" :disabled="viewMode"></canvas>
-                  <button type="button" @click="clearSignature" class="btn btn-secondary" style="margin: 0px;width: 100%;" v-if="!viewMode">
-                    Clear <i class="ri-refresh-line"></i>
-                  </button>
+                  <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
                 </div>
               </div>
             </div>
+            <label>Phone No:</label>
+            <input v-model="form.plaintiffPhone" disabled />
+            <label>Name of Advocate:</label>
+            <input v-model="form.plaintiffAdvocate" disabled />
           </div>
 
-          <!-- Signatures Section -->
-          <div class="form-row signature-section">
-            <div>
-              <h4>Plaintiff/Complainant</h4>
-              <div class="form-row">
-                <label >Signature:</label>
-                <div v-if="viewMode">
-                  <div v-if="form.plaintiffSignature.startsWith('data:image/')">
-                    <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
-                  </div>
-                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                    <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
-                  </div>
+          <div>
+            <h4>Respondent/Accused</h4>
+            <div class="form-row">
+              <label >Signature:</label>
+              <div>
+                <div v-if="form.respondentSignature.startsWith('data:image/')">
+                  <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
+                </div>
+                <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                  <span class="cursive-signature">{{ form.respondentSignature }}</span>
                 </div>
               </div>
-              <label>Phone No:</label>
-              <input v-model="form.plaintiffPhone" :disabled="viewMode" />
-              <label>Name of Advocate:</label>
-              <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
             </div>
-
-            <div>
-              <h4>Respondent/Accused</h4>
-              <div class="form-row">
-                <label >Signature:</label>
-                <div v-if="viewMode">
-                  <div v-if="form.respondentSignature.startsWith('data:image/')">
-                    <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
-                  </div>
-                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                    <span class="cursive-signature">{{ form.respondentSignature }}</span>
-                  </div>
-                </div>
-              </div>
-              <label>Phone No:</label>
-              <input v-model="form.respondentPhone" :disabled="viewMode" />
-              <label>Name of Advocate:</label>
-              <input v-model="form.respondentAdvocate" :disabled="viewMode" />
-            </div>
+            <label>Phone No:</label>
+            <input v-model="form.respondentPhone" disabled />
+            <label>Name of Advocate:</label>
+            <input v-model="form.respondentAdvocate" disabled />
           </div>
-          <div class="form-row">
-            <label>Additional Document:</label>
-            <div v-if="viewMode">
-              <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
-            </div>
-            <div v-else>
-              <input type="file" @change="handleFileUpload"  />
-            </div>
+        </div>
+        <div class="form-row">
+          <label>Additional Document:</label>
+          <div>
+            <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
           </div>
-          <button v-if="!viewMode" type="submit">Submit</button>
-        </form>
+        </div>
       </b-tab>
       <b-tab title="Mediation">
         <div v-if="mediationData && mediationData.data">
           <div class="mediation-section">
             <h3>Mediation Summary</h3>
             <div class="mediation-row">
+              <div>
+                <strong>Mediator:</strong>
+                {{ mediationData.data.mediator?.name || 'Not Assigned' }}
+              </div>
+              <div>
+                <strong>Mediator Email:</strong>
+                {{ mediationData.data.mediator?.email || 'Not Assigned' }}
+              </div>
               <div>
                 <strong>Status:</strong>
                 {{ getStatusLabel(mediationData.data.status) }}
@@ -303,7 +280,6 @@
 </template>
 
 <script>
-import SignaturePad from 'signature_pad'
 import Alert from '../../components/sofbox/alert/Alert.vue'
 
 export default {
@@ -312,18 +288,6 @@ export default {
     Alert
   },
   props: {
-    nextCaseId: {
-      type: Number,
-      default: 1
-    },
-    userName: {
-      type: String,
-      default: ''
-    },
-    viewMode: {
-      type: Boolean,
-      default: false
-    },
     formData: {
       type: Object,
       default: () => ({})
@@ -356,15 +320,12 @@ export default {
         respondentAdvocate: '',
         document: null
       },
-      signaturePad: null,
       alert: {
         visible: false,
         message: '',
         timeout: 5000,
         type: 'primary'
       },
-      today: new Date().toISOString().split('T')[0],
-      now: new Date().toISOString().slice(0, 16),
       mediationData: null, // Store fetched mediation data
       statusValueMap: {
         failed: 'Failed',
@@ -386,18 +347,6 @@ export default {
       }
     }
   },
-  computed: {
-    userInitials () {
-      return this.userName
-        .split(' ')
-        .map((name) => name[0])
-        .join('')
-        .toUpperCase()
-    },
-    uniquecaseId () {
-      return `ROUSE-MED-${this.nextCaseId}`
-    }
-  },
   methods: {
     showAlert (message, type) {
       this.alert = {
@@ -405,95 +354,6 @@ export default {
         type,
         visible: true
       }
-    },
-    setSignatureType (type) {
-      this.signatureType = type
-      if (type === 'manual') {
-        this.initializeSignaturePad()
-      }
-    },
-    initializeSignaturePad () {
-      this.$nextTick(() => {
-        const canvas = this.$refs.signaturePad
-        this.adjustCanvasSize(canvas)
-        this.signaturePad = new SignaturePad(canvas, {
-          backgroundColor: 'rgb(255, 255, 255)',
-          penColor: 'rgb(0, 0, 0)'
-        })
-      })
-    },
-    adjustCanvasSize (canvas) {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1)
-      canvas.width = canvas.offsetWidth * ratio
-      canvas.height = canvas.offsetHeight * ratio
-      canvas.getContext('2d').scale(ratio, ratio)
-    },
-    clearSignature () {
-      if (this.signaturePad) {
-        this.signaturePad.clear()
-      }
-    },
-    validateForm () {
-      if (this.viewMode) return true // Skip validation in view mode
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-      if (!this.form.hearingDate) {
-        this.showAlert('Please enter the next date of hearing in referral court.', 'danger')
-        return false
-      }
-      if (!this.form.suitNo) {
-        this.showAlert('Please enter the suit number or case number.', 'danger')
-        return false
-      }
-      if (!this.form.party1) {
-        this.showAlert('Please enter the name of Party 1.', 'danger')
-        return false
-      }
-      if (!this.form.party1Email) {
-        this.showAlert('Please enter the email of Party 1.', 'danger')
-        return false
-      }
-      if (!emailRegex.test(this.form.party1Email)) {
-        this.showAlert('Please enter a valid email for Party 1.', 'danger')
-        return false
-      }
-      if (!this.form.party2) {
-        this.showAlert('Please enter the name of Party 2.', 'danger')
-        return false
-      }
-      if (!this.form.party2Email) {
-        this.showAlert('Please enter the email of Party 2.', 'danger')
-        return false
-      }
-      if (!emailRegex.test(this.form.party2Email)) {
-        this.showAlert('Please enter a valid email for Party 2.', 'danger')
-        return false
-      }
-      if (!this.form.institutionDate) {
-        this.showAlert('Please enter the date of institution of the case.', 'danger')
-        return false
-      }
-      if (!this.form.natureOfSuit) {
-        this.showAlert('Please enter the nature of the suit.', 'danger')
-        return false
-      }
-      if (!this.form.stage) {
-        this.showAlert('Please enter the stage of the case at the time of referral.', 'danger')
-        return false
-      }
-      if (!this.form.hearingCount) {
-        this.showAlert('Please enter the number of hearings at the time of referral.', 'danger')
-        return false
-      }
-      if (!this.form.mediationDateTime) {
-        this.showAlert('Please enter the mediation date and time.', 'danger')
-        return false
-      }
-      if (!this.form.referralJudgeSignature) {
-        this.showAlert('Please provide the signature of the referral judge.', 'danger')
-        return false
-      }
-      return true
     },
     async fetchMediationData () {
       // Replace with your actual Vuex action or API call
@@ -521,69 +381,56 @@ export default {
         .replace(/\b\w/g, l => l.toUpperCase())
         .replace(/\s+/g, ' ')
     },
-    submitForm () {
-      if (this.viewMode) {
-        this.closeForm()
-        return
-      }
-      if (this.signatureType === 'manual') {
-        if (this.signaturePad && !this.signaturePad.isEmpty()) {
-          this.form.referralJudgeSignature = this.signaturePad.toDataURL()
-        }
-      } else {
-        this.form.referralJudgeSignature = this.userInitials
-      }
-      if (!this.validateForm()) {
-        return
-      }
-      console.log('Form submitted:', this.form)
-      this.$emit('close', this.form)
-    },
-    handleFileUpload (event) {
-      const file = event.target.files[0]
-      if (file) {
-        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/gif']
-        const maxFileSize = 5 * 1024 * 1024 // 5MB
-
-        if (!allowedTypes.includes(file.type)) {
-          this.showAlert('Invalid file type. Only PDF, DOC, DOCX, and image files are allowed.', 'danger')
-          return
-        }
-
-        if (file.size > maxFileSize) {
-          this.showAlert('File size exceeds the maximum limit of 5MB.', 'danger')
-          return
-        }
-
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          this.form.document = e.target.result // Store Base64 string in form.document
-        }
-        reader.readAsDataURL(file) // Convert file to Base64
-      }
-    },
-    closeForm () {
-      this.$emit('close')
-    },
-    formatDate (dateString, type) {
+    formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''
+
       const date = new Date(dateString)
-      if (type === 'date') {
-        return date.toISOString().split('T')[0] // Format as YYYY-MM-DD
-      } else if (type === 'datetime-local') {
-        return date.toISOString().slice(0, 16) // Format as YYYY-MM-DDTHH:mm
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
       }
-      return dateString
     }
   },
   created () {
-    if (this.viewMode && this.formData) {
+    if (this.formData) {
       this.form = {
         id: this.formData.id || '',
         caseId: this.formData.caseId || '',
         hearingDate: this.formatDate(this.formData.hearing_date, 'date') || '',
         suitNo: this.formData.suit_no || '',
         party1: this.formData.user_cases_first_partyTouser?.name || '',
+        judgeName: this.formData.user_cases_judgeTouser?.name || '',
         party1Email: this.formData.user_cases_first_partyTouser?.email || '',
         party2: this.formData.user_cases_second_partyTouser?.name || '',
         party2Email: this.formData.user_cases_second_partyTouser?.email || '',

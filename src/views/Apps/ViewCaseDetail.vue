@@ -19,11 +19,11 @@
             <div class="data-row">
                 <div class="col-6">
                     <div class="data-title">Next Date of Hearing in Referral Court</div>
-                    <div>{{ formatDate(caseObject.hearing_date) }}</div>
+                    <div>{{ formatDate(caseObject.hearing_date, 'display') }}</div>
                 </div>
                 <div class="col-6">
                     <div class="data-title">Date of Institution of Case</div>
-                    <div>{{ formatDate(caseObject.institution_date) }}</div>
+                    <div>{{ formatDate(caseObject.institution_date, 'display') }}</div>
                 </div>
             </div>
             <div class="data-row">
@@ -49,7 +49,7 @@
             <div class="data-row">
                 <div class="col-6">
                     <div class="data-title">Mediation Date & Time</div>
-                    <div>{{ formatDate(caseObject.mediation_date_time) }}</div>
+                    <div>{{ formatDate(caseObject.mediation_date_time,'display',{includeTime : true}) }}</div>
                 </div>
                 <div class="col-6">
                     <div class="data-title">Additional Document</div>
@@ -114,15 +114,15 @@
         <!-- Events Section -->
         <div>
             <div class="section-title">Meetings ({{caseObject.events.length}})
-            <b-button variant="primary" style="float:right" onclick="window.open('/admin/app/calendar','_blank')">New</b-button>
+            <b-button variant="primary" style="float:right" onclick="window.open('/admin/app/calendar','_self')">New</b-button>
             </div>
             <div class="table-content">
                 <b-table bordered hover :items="caseObject.events" :fields="caseColumns" responsive="xl" v-if="caseObject.events.length>0">
                     <template v-slot:cell(start_datetime)="data">
-                      {{formatDate(data.item.start_datetime)}}
+                      {{formatDate(data.item.start_datetime, 'display', { includeTime: true })}}
                     </template>
                     <template v-slot:cell(end_datetime)="data">
-                      {{formatDate(data.item.end_datetime)}}
+                      {{formatDate(data.item.end_datetime, 'display', { includeTime: true })}}
                     </template>
                     <template v-slot:cell(meeting_link)="data">
                       <span v-if="isURL(data.item.meeting_link)">
@@ -172,6 +172,46 @@ export default {
     // this.firstPartyPreferredLanguages = await this.getPreferredLanguages(this.caseObject.user_cases_first_partyTouser.preferred_languages)
   },
   methods: {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
+      const date = new Date(dateString)
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
+    },
     onNoteChange () {
       this.isNoteModified = true
     },
@@ -232,19 +272,7 @@ export default {
         visible: true
       }
     },
-    formatDate (dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        weekday: 'long', // 'Monday'
-        year: 'numeric', // '2024'
-        month: 'long', // 'December'
-        day: 'numeric', // '10'
-        hour: 'numeric', // '6 PM'
-        minute: 'numeric', // '52'
-        second: 'numeric', // '47'
-        hour12: true // 12-hour clock
-      })
-    },
+
     isURL (value) {
       const urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i
       return urlPattern.test(value)

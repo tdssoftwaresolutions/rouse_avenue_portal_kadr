@@ -35,9 +35,9 @@ model user {
   profile_picture_url            String?                   @db.VarChar(255)
   working_day_of_week            user_working_day_of_week?
   blogs                          blogs[]
+  cases_cases_judgeTouser        cases[]                   @relation("cases_judgeTouser")
   cases_cases_first_partyTouser  cases[]                   @relation("cases_first_partyTouser")
   cases_cases_second_partyTouser cases[]                   @relation("cases_second_partyTouser")
-  cases_cases_judgeTouser        cases[]                   @relation("cases_judgeTouser")
   cases_cases_mediatorTouser     cases[]                   @relation("cases_mediatorTouser")
   events                         events[]
   notes                          notes[]
@@ -74,13 +74,15 @@ model cases {
   suit_no                       String?                  @db.Text
   hearing_count                 Int?
   case_agreement                String?                  @db.Char(36)
+  plaintiff_advocate_email      String?                  @db.Text
+  respondent_advocate_email     String?                  @db.Text
   case_history                  case_history[]
   case_agreement_tracking       case_agreement_tracking? @relation(fields: [case_agreement], references: [id], map: "fk_case_agreement_tracking")
+  user_cases_judgeTouser        user?                    @relation("cases_judgeTouser", fields: [judge], references: [id], map: "fk_judge")
   case_statuses                 case_statuses?           @relation(fields: [status], references: [id], onDelete: Cascade, map: "fk_cases_status")
   case_sub_statuses             case_sub_statuses?       @relation(fields: [sub_status], references: [id], onDelete: Cascade, map: "fk_cases_sub_status")
   user_cases_first_partyTouser  user?                    @relation("cases_first_partyTouser", fields: [first_party], references: [id], onUpdate: Restrict, map: "fk_client_1")
   user_cases_second_partyTouser user?                    @relation("cases_second_partyTouser", fields: [second_party], references: [id], onUpdate: Restrict, map: "fk_client_2")
-  user_cases_judgeTouser        user?                    @relation("cases_judgeTouser", fields: [judge], references: [id], map: "fk_judge")
   user_cases_mediatorTouser     user?                    @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
   events                        events[]
   signature_tracking            signature_tracking[]
@@ -91,8 +93,8 @@ model cases {
   @@index([second_party], map: "fk_second_party")
   @@index([status], map: "fk_cases_status")
   @@index([sub_status], map: "fk_cases_sub_status")
-  @@index([judge], map: "fk_judge")
   @@index([case_agreement], map: "fk_case_agreement_tracking")
+  @@index([judge], map: "fk_cases_judge_user")
 }
 
 model caseIdTracker {
@@ -303,7 +305,6 @@ model event_feedback {
 
 model case_agreement_tracking {
   id                       String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  both_parties_agreed      Boolean              @default(false)
   agreed_terms             String?              @db.Text
   signature_mediator       String?              @db.LongText
   first_party_signature    String?              @db.LongText

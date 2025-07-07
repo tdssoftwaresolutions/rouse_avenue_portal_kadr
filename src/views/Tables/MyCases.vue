@@ -18,10 +18,10 @@
                 {{ data.item.user_cases_first_partyTouser?.name }} vs {{ data.item.user_cases_second_partyTouser?.name }}
               </template>
               <template v-slot:cell(hearing_date)="data">
-                {{ data.item.hearing_date ? new Date(data.item.hearing_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '' }}
+                {{ formatDate(data.item.hearing_date,'display')}}
               </template>
               <template v-slot:cell(mediation_date_time)="data">
-                {{ data.item.mediation_date_time ? new Date(data.item.mediation_date_time).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}
+                {{ formatDate(data.item.mediation_date_time, 'display', { includeTime: true }) }}
               </template>
               <template v-slot:cell(action)="data"><b-button size="sm" v-b-modal.modal-lg @click="info(data.item)" class="ml-2">
                   View Details
@@ -38,16 +38,30 @@
       <b-modal id="modal-lg" size="xl" :title="caseTitle" scrollable>
         <view-case-details :caseObject="selectedUser"></view-case-details>
       </b-modal>
-      <b-modal id="resolve-modal" v-model="showResolveModal" title="Mark Case as Resolved" hide-footer>
+      <b-modal size="xl" id="resolve-modal" v-model="showResolveModal" title="Mark Case as Resolved" hide-footer>
         <form @submit.prevent="submitResolve">
           <div class="form-group mb-3">
-            <b-form-checkbox v-model="resolveForm.bothAgreed">
-              Both parties agreed mutually
-            </b-form-checkbox>
+            <label>Status</label>
+            <div class="resolve-status-selector">
+              <button
+                type="button"
+                :class="['resolve-status-btn', { active: resolveStatus === 'closed_success', success: resolveStatus === 'closed_success' }]"
+                @click="setResolveStatus('closed_success')"
+              >
+                Success
+              </button>
+              <button
+                type="button"
+                :class="['resolve-status-btn', { active: resolveStatus === 'closed_no_success', failed: resolveStatus === 'closed_no_success' }]"
+                @click="setResolveStatus('closed_no_success')"
+              >
+                Failed
+              </button>
+            </div>
           </div>
           <div class="form-group mb-3">
             <label>Agreed terms</label>
-            <b-form-textarea v-model="resolveForm.agreementText" rows="3" required></b-form-textarea>
+            <vue2-tinymce-editor v-model="resolveForm.agreementText" :options="options"></vue2-tinymce-editor>
           </div>
           <div class="form-group mb-3">
             <label>Signature:</label>
@@ -89,11 +103,12 @@ import Alert from '../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import ViewCaseDetails from '../Apps/ViewCaseDetail.vue'
 import SignaturePad from 'signature_pad'
+import { Vue2TinymceEditor } from 'vue2-tinymce-editor'
 
 export default {
   name: 'MyCases',
   components: {
-    Alert, Spinner, ViewCaseDetails
+    Alert, Spinner, ViewCaseDetails, Vue2TinymceEditor
   },
   props: {
     cases: {
@@ -133,6 +148,46 @@ export default {
     }
   },
   methods: {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
+      const date = new Date(dateString)
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
+    },
     getStatus (item) {
       const startDateTime = new Date(item.start_datetime)
       const currentDateTime = new Date()
@@ -217,6 +272,9 @@ export default {
         canvas.getContext('2d').scale(ratio, ratio)
       }
     },
+    setResolveStatus (status) {
+      this.resolveStatus = status
+    },
     openResolveModal (item) {
       this.resolveForm = {
         bothAgreed: true,
@@ -224,7 +282,8 @@ export default {
         signature: '',
         caseId: item.id
       }
-      this.signatureType = 'digital' // Reset to digital on open, like MediationForm
+      this.signatureType = 'digital'
+      this.resolveStatus = 'closed_success' // Default to success
       this.showResolveModal = true
       this.$nextTick(() => {
         if (this.signatureType === 'manual') {
@@ -238,6 +297,7 @@ export default {
       }
     },
     async submitResolve () {
+      this.loading = true
       // Get signature value
       if (this.signatureType === 'manual') {
         if (this.signaturePad && !this.signaturePad.isEmpty()) {
@@ -256,17 +316,109 @@ export default {
       // Prepare payload
       const payload = {
         caseId: this.resolveForm.caseId,
-        bothAgreed: this.resolveForm.bothAgreed,
+        resolveStatus: this.resolveStatus,
         agreementText: this.resolveForm.agreementText,
         signature: this.resolveForm.signature
       }
-      await this.$store.dispatch('markCaseResolved', payload)
-      this.showAlert('Case marked as resolved!', 'success')
-      this.showResolveModal = false
+      try {
+        const response = await this.$store.dispatch('markCaseResolved', payload)
+        if (response.errorCode) {
+          this.showAlert(response.message, 'danger')
+        } else {
+          this.showAlert('Case marked as resolved!', 'success')
+          this.showResolveModal = false
+          // Remove the resolved case from the UI
+          if (this.paginatedData && this.paginatedData.casesWithEvents) {
+            this.paginatedData.casesWithEvents = this.paginatedData.casesWithEvents.filter(
+              c => c.id !== this.resolveForm.caseId
+            )
+            if (typeof this.paginatedData.total === 'number') {
+              this.paginatedData.total = Math.max(0, this.paginatedData.total - 1)
+            }
+          }
+        }
+      } catch (error) {
+        this.showAlert(error.message, 'danger')
+      } finally {
+        this.loading = false
+      }
     }
   },
   data () {
     return {
+      options: {
+        height: 400,
+        plugins: [
+          'autosave lists link image table media fullscreen color preview',
+          'paste charmap hr anchor insertdatetime wordcount'
+        ],
+        toolbar: [
+          'undo redo | formatselect | fontselect fontsizeselect | bold italic underline strikethrough |',
+          'forecolor backcolor | alignleft aligncenter alignright alignjustify |',
+          'bullist numlist outdent indent | table | link image media | fullscreen preview | restoredraft'
+        ].join(' '),
+        menubar: 'file edit view insert format tools table help',
+        branding: false,
+        image_title: true,
+        automatic_uploads: true,
+        autosave_interval: '20s',
+        autosave_retention: '30m',
+        file_picker_types: 'image',
+        file_picker_callback: (callback, value, meta) => {
+          const ref = this
+          if (meta.filetype === 'image') {
+            ref.loading = true
+            const input = document.createElement('input')
+            input.setAttribute('type', 'file')
+            input.setAttribute('accept', 'image/*')
+            input.onchange = function () {
+              const file = input.files[0]
+              const maxFileSizeMB = 1
+              const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024
+              if (file.size > maxFileSizeBytes) {
+                alert(`The file size exceeds the ${maxFileSizeMB} MB limit.`)
+                ref.loading = false
+                return
+              }
+
+              const reader = new FileReader()
+              reader.onload = function (e) {
+                callback(e.target.result, { alt: file.name })
+                console.log('completed')
+                ref.loading = false
+              }
+              reader.onerror = function () {
+                alert('Failed to load the file. Please try again.')
+                ref.loading = false
+              }
+              reader.readAsDataURL(file)
+            }
+            input.click()
+          }
+        },
+        media_live_embeds: true,
+        setup: function (editor) {
+          editor.addShortcut('ctrl+s', 'Save', function () {
+            console.log('Saved!')
+          })
+        },
+        image_caption: true,
+        image_dimensions: true,
+        media_alt_source: true,
+        media_poster: true,
+        spellchecker_dialog: true,
+        browser_spellcheck: true,
+        contextmenu: false,
+        content_style: `
+          body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+          }
+        `,
+        wordcount_countregex: /[\w\u2019\x27-]+/g,
+        wordcount_cleanregex: /<\/?[a-z][^>]*>/g
+      },
       selectedUser: null,
       currentPage: 1,
       perPage: 10,
@@ -299,6 +451,7 @@ export default {
         signature: '',
         caseId: null
       },
+      resolveStatus: 'closed_success',
       resolveSignaturePad: null
     }
   }
@@ -390,5 +543,33 @@ ul li span strong {
   height: 150px;
   margin-top: 10px;
   cursor: crosshair;
+}
+.resolve-status-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.resolve-status-btn {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+  color: black;
+}
+.resolve-status-btn.active.success {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+.resolve-status-btn.active.failed {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+.resolve-status-btn:hover {
+  background-color: #d9e6f2;
 }
 </style>

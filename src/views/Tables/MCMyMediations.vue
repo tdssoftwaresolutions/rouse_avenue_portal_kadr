@@ -25,7 +25,7 @@
                     {{ data.item.user_cases_first_partyTouser?.name }} vs {{ data.item.user_cases_second_partyTouser?.name }}
                   </template>
                   <template v-slot:cell(mediation_date_time)="data">
-                    {{ formatDate(data.item.mediation_date_time) }}
+                    {{ formatDate(data.item.mediation_date_time,'display', {includeTime : true}) }}
                   </template>
                   <template v-slot:cell(status)="data">
                     {{ getStatusLabel(data.item.status) }}
@@ -41,7 +41,7 @@
                       size="sm"
                       class="ml-2"
                       @click="openAssignMediatorModal(data.item)"
-                      :style="{ visibility: data.item.status === 'closed_success' ? 'hidden' : 'visible' }"
+                      :style="{ visibility: data.item.status === 'closed_success' || data.item.sub_status === 'mediator_assigned' ? 'hidden' : 'visible' }"
                     >
                       Assign Mediator
                     </b-button>
@@ -57,9 +57,6 @@
         <b-modal id="modal-lg" size="xl" :title="caseTitle" scrollable v-model="showViewDetails" hide-footer>
           <mediation-form
             :formData="selectedCase"
-            :viewMode="true"
-            :userName="user.name"
-            @close="closeViewDetails"
           />
         </b-modal>
         <b-modal id="assign-mediator-modal" size="lg" title="Assign Mediator" scrollable v-model="showAssignMediatorModal" hide-footer>
@@ -129,16 +126,45 @@ export default {
     }
   },
   methods: {
-    formatDate (dateString) {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
       const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      })
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
     },
     async onCloseNewMediationForm (formData) {
       formData.judgeId = this.user.id // Add judgeId to formData
@@ -217,9 +243,6 @@ export default {
       this.selectedCase = item || null // Ensure selectedCase is properly set
       this.showViewDetails = true // Open the modal for viewing details
     },
-    closeViewDetails () {
-      this.showViewDetails = false // Close the modal
-    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -286,6 +309,7 @@ export default {
         this.showAlert('An error occurred while assigning mediator.', 'danger')
       } finally {
         this.loading = false
+        window.location.reload() // Reload the page to reflect changes
       }
     },
     getStatusLabel (status) {

@@ -25,7 +25,9 @@ import ECommerceListing from '../views/Apps/Ecommerce/Listing'
 import EditableTable from '../views/Tables/EditableTable'
 /* User View */
 import UserList from '../views/User/UserList'
+import ProfileEdit from '../views/User/ProfileEdit.vue'
 import AdminUsersListView from '../views/User/AdminUsersListView.vue'
+import MCAllMediators from '../views/Tables/MCAllMediators.vue'
 
 import Signature from '../views/Client/Signature.vue'
 import AgreementSignature from '../views/Client/AgreementSignature.vue'
@@ -37,6 +39,11 @@ const childRoutes = (prop) => [
     path: '',
     name: prop + '.home',
     component: Dashboard
+  },
+  {
+    path: 'mediators',
+    name: prop + '.mediators',
+    component: MCAllMediators
   }
 ]
 const appChildRoute = (prop) => [
@@ -139,6 +146,11 @@ const userChildRoute = (prop) => [
     path: 'user-list',
     name: prop + '.list',
     component: UserList
+  },
+  {
+    path: 'profile-edit',
+    name: prop + '.edit',
+    component: ProfileEdit
   }
 ]
 const routes = [
