@@ -121,7 +121,8 @@ class Helper {
     const caseEvents = casesWithEvents.flatMap(caseItem => {
       return (caseItem.events)
         .filter(event => {
-          return new Date(event.start_datetime).toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+          const date = new Date()
+          return new Date(event.start_datetime).toISOString().split('T')[0] === new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0]
         })
         .map(event => ({
           type: 'ROUSE',
@@ -134,7 +135,8 @@ class Helper {
         }))
     })
     const pEvents = personalEvents.filter(event => {
-      return new Date(event.start_datetime).toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+      const date = new Date()
+      return new Date(event.start_datetime).toISOString().split('T')[0] === new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0]
     })
       .map(event => ({
         type: 'PERSONAL',

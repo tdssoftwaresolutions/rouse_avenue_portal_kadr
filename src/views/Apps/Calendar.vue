@@ -187,7 +187,7 @@
             </div>
             <div class="col-6">
                 <div class="data-title">End Time</div>
-                <div> {{ formatDate(selectedAppointment.end, 'display', {includeTime : false}) }} </div>
+                <div> {{ formatDate(selectedAppointment.end, 'display', {includeTime : true}) }} </div>
             </div>
         </div>
 
