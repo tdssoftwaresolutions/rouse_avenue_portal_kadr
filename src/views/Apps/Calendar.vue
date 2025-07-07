@@ -60,13 +60,13 @@
                     <span  style="font-weight: bold">Case #{{ event.caseNumber }}</span>
                     <span>{{ event.firstPartyName }} vs {{ event.secondPartyName }}</span>
                     <span>
-                      {{ formatTime(event.startDate) }} to {{ formatTime(event.endDate) }}
+                      {{ formatDate(event.startDate, 'display', {includeDate: false, includeTime: true} ) }} to {{ formatDate(event.endDate,'display', {includeDate: false, includeTime: true} ) }}
                     </span>
                   </div>
                   <div class="schedule-text" v-else>
                     <span  style="font-weight: bold">{{ event.title }}</span>
                     <span>
-                      {{ formatTime(event.startDate) }} to {{ formatTime(event.endDate) }}
+                      {{ formatDate(event.startDate,'display', {includeDate: false, includeTime: true} ) }} to {{ formatDate(event.endDate, 'display', {includeDate: false, includeTime: true} ) }}
                     </span>
                   </div>
                 </div>
@@ -183,11 +183,11 @@
         <div class="data-row">
             <div class="col-6">
                 <div class="data-title">Start Time</div>
-                <div>{{ formatDateTime(selectedAppointment.start) }}</div>
+                <div>{{ formatDate(selectedAppointment.start,'display',{includeTime : true}) }}</div>
             </div>
             <div class="col-6">
                 <div class="data-title">End Time</div>
-                <div> {{ formatDateTime(selectedAppointment.end) }} </div>
+                <div> {{ formatDate(selectedAppointment.end, 'display', {includeTime : false}) }} </div>
             </div>
         </div>
 
@@ -335,14 +335,6 @@ export default {
       }
       this.loading = false
     },
-    formatTime (dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        hour: 'numeric', // '6 PM'
-        minute: 'numeric', // '52'
-        hour12: true // 12-hour clock
-      })
-    },
     scrollLeft () {
       const container = this.$refs.casesHorizontalScroll
       container.scrollBy({ left: -300, behavior: 'smooth' })
@@ -351,18 +343,56 @@ export default {
       const container = this.$refs.casesHorizontalScroll
       container.scrollBy({ left: 300, behavior: 'smooth' })
     },
-    formatDateTime (dateString) {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
       const date = new Date(dateString)
-      const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeDate = true, includeTime = false } = options
+          if (includeDate && includeTime) {
+            return date.toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          } else if (includeDate) {
+            return date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          } else if (includeTime) {
+            return date.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          }
+        }
       }
-      return new Intl.DateTimeFormat('en-US', options).format(date)
     },
     getYesterdayDate () {
       const yesterday = new Date()

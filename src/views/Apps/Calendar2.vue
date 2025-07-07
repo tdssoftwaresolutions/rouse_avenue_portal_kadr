@@ -27,11 +27,11 @@
         <div class="data-row">
             <div class="col-6">
                 <div class="data-title">Start Time</div>
-                <div>{{ formatDateTime(selectedAppointment.start) }}</div>
+                <div>{{ formatDate(selectedAppointment.start,'display',{includeTime : true}) }}</div>
             </div>
             <div class="col-6">
                 <div class="data-title">End Time</div>
-                <div> {{ formatDateTime(selectedAppointment.end) }} </div>
+                <div> {{ formatDate(selectedAppointment.end, 'display', {includeTime : false}) }} </div>
             </div>
         </div>
 
@@ -72,6 +72,46 @@ export default {
     this.initCalendar()
   },
   methods: {
+    formatDate (dateString, type = 'display', options = {}) {
+      if (!dateString) return ''
+
+      const date = new Date(dateString)
+
+      // Helper to pad single digits with a leading zero
+      const pad = (n) => (n < 10 ? '0' + n : n)
+
+      switch (type) {
+        case 'date':
+          // For <input type="date"> – UTC is fine
+          return date.toISOString().split('T')[0]
+
+        case 'datetime-local': {
+          // Build local date-time string manually
+          const year = date.getFullYear()
+          const month = pad(date.getMonth() + 1)
+          const day = pad(date.getDate())
+          const hours = pad(date.getHours())
+          const minutes = pad(date.getMinutes())
+          return `${year}-${month}-${day}T${hours}:${minutes}`
+        }
+
+        case 'display':
+        default: {
+          const { includeTime = false } = options
+
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            ...(includeTime && {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+          })
+        }
+      }
+    },
     async initCalendar () {
       this.loading = true
       const response = await this.$store.dispatch('getDashboardContent')
@@ -95,27 +135,6 @@ export default {
         })
       }
       this.loading = false
-    },
-    formatDateTime (dateString) {
-      const date = new Date(dateString)
-      const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      }
-      return new Intl.DateTimeFormat('en-US', options).format(date)
-    },
-    formatTime (dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        hour: 'numeric', // '6 PM'
-        minute: 'numeric', // '52'
-        hour12: true // 12-hour clock
-      })
     },
     openDetailsModal (event) {
       this.selectedAppointment = {
