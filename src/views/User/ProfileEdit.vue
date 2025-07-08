@@ -88,8 +88,8 @@
                         <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility"  :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
                       </div>
                       <div class="mb-3 position-relative">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input v-model="form.confirmPassword" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" >
+                        <label for="exampleInputPassword1">Confirm Password</label>
+                        <input v-model="form.confirmPassword" :type="showPassword ? 'text' : 'password'" class="form-control mb-0" id="exampleInputPassword1" placeholder="Confirm Password" >
                         <i class="ri-eye-line password-toggle-icon" @click="togglePasswordVisibility"  :class="{'ri-eye-off-line': !showPassword, 'ri-eye-line': showPassword}"></i>
                       </div>
                       <button type="submit" class="btn btn-primary mr-2">

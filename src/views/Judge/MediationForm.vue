@@ -67,7 +67,7 @@
         <p>
           The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
           New Delhi</strong> on
-          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" disabled="viewMode"/>.
+          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode"/>.
           If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
           date for mediation convenient to the parties.
         </p>
