@@ -224,7 +224,7 @@
                   <div class="agreement-col">
                     <div>
                       <strong>Agreed Terms:</strong>
-                      <div>{{ mediationData.data.agreement.agreed_terms }}</div>
+                      <div v-html="mediationData.data.agreement.agreed_terms"></div>
                     </div>
                   </div>
                 </div>
