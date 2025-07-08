@@ -184,10 +184,10 @@
               class="mb-4"
             >
               <template #cell(start_datetime)="data">
-                {{ new Date(data.item.start_datetime).toLocaleString() }}
+                {{ formatDate(data.item.start_datetime,'display',{includeTime: true}) }}
               </template>
               <template #cell(end_datetime)="data">
-                {{ new Date(data.item.end_datetime).toLocaleString() }}
+                {{ formatDate(data.item.end_datetime,'display',{includeTime: true}) }}
               </template>
               <template #cell(meeting_link)="data">
                 <a :href="data.item.meeting_link" target="_blank" v-if="data.item.meeting_link">Join</a>
@@ -218,14 +218,7 @@
                   <div class="agreement-col">
                     <div>
                       <strong>Date:</strong>
-                      <div>{{ new Date(mediationData.data.agreement.created_at).toLocaleString() }}</div>
-                    </div>
-                    <div>
-                      <strong>Both Parties Agreed:</strong>
-                      <div>
-                        <span v-if="mediationData.data.agreement.both_parties_agreed">Yes</span>
-                        <span v-else>No</span>
-                      </div>
+                      <div>{{ formatDate(mediationData.data.agreement.created_at,'display')}}</div>
                     </div>
                   </div>
                   <div class="agreement-col">

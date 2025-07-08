@@ -151,6 +151,7 @@ export default {
     async onClickSignOut () {
       const response = await this.$store.dispatch('logout')
       if (!response.errorCode) {
+        this.$store.commit('setUserData', null)
         this.$cookies.remove('accessToken')
         this.$router.push({ path: '/auth/sign-in' })
       }

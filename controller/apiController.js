@@ -1375,7 +1375,6 @@ module.exports = {
           },
           select: {
             id: true,
-            both_parties_agreed: true,
             agreed_terms: true,
             signature_mediator: true,
             first_party_signature: true,
