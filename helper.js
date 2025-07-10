@@ -1187,7 +1187,7 @@ class Helper {
       const newTokens = tokens.credentials
 
       // Update user record in DB
-      await prisma.user.update({
+      await prisma.user.updateMany({
         where: {
           OR: [
             { user_type: 'MEDIATOR' },
