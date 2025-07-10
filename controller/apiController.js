@@ -225,7 +225,14 @@ module.exports = {
           // MC statistics
           (async () => {
             const totalAssigned = await prisma.cases.count({
-              where: { mediator: { not: null } }
+              where: {
+                mediator: { not: null },
+                NOT: {
+                  status: {
+                    in: [CaseTypes.CLOSED_SUCCESS, CaseTypes.CLOSED_NO_SUCCESS]
+                  }
+                }
+              }
             })
             const successCases = await prisma.cases.count({
               where: { status: CaseTypes.CLOSED_SUCCESS }
