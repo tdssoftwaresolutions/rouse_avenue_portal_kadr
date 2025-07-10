@@ -6,6 +6,7 @@ const errorCodes = require('./errorCodes')
 const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
+const { google } = require('googleapis')
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
 const CaseTypes = Object.freeze({
@@ -27,6 +28,12 @@ const CaseSubTypes = Object.freeze({
   PENDING_RESPONDENT_SIGNATURE: 'pending_respondent_signature',
   PENDING_MEDIATION_CENTER: 'pending_mc'
 })
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  `${process.env.BASE_URL}/api/googleCallback`
+)
 
 class Helper {
   static generateRandomPassword (length = 12) {
@@ -1124,6 +1131,113 @@ class Helper {
       total: totalInactiveUsers,
       page,
       perPage
+    }
+  }
+
+  static async getGoogleAccessToken (prisma, code) {
+    try {
+      const { tokens } = await oauth2Client.getToken(code)
+      await prisma.user.updateMany({
+        where: {
+          OR: [
+            { user_type: 'MEDIATOR' },
+            { user_type: 'MC' }
+          ]
+        },
+        data: {
+          google_token: JSON.stringify(tokens)
+        }
+      })
+      return true
+    } catch (e) {
+      console.error('Error retrieving access token', e)
+      return false
+    }
+  }
+
+  static async generateGoogleAuthUrl (userId) {
+    const scopes = [
+      'https://www.googleapis.com/auth/calendar.events',
+      'https://www.googleapis.com/auth/calendar'
+    ]
+
+    const url = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: scopes,
+      prompt: 'consent',
+      state: userId
+    })
+    return url
+  }
+
+  static isAccessTokenExpired (googleToken) {
+    return Date.now() >= googleToken.expiry_date
+  }
+
+  static async getValidAccessToken (prisma, googleToken) {
+    oauth2Client.setCredentials({
+      access_token: googleToken.access_token,
+      refresh_token: googleToken.refresh_token,
+      expiry_date: googleToken.expiry_date
+    })
+
+    // Auto-refresh if expired
+    if (this.isAccessTokenExpired(googleToken)) {
+      const tokens = await oauth2Client.refreshAccessToken()
+      const newTokens = tokens.credentials
+
+      // Update user record in DB
+      await prisma.user.update({
+        where: {
+          OR: [
+            { user_type: 'MEDIATOR' },
+            { user_type: 'MC' }
+          ]
+        },
+        data: {
+          google_token: JSON.stringify(tokens)
+        }
+      })
+
+      oauth2Client.setCredentials(newTokens)
+    }
+
+    return oauth2Client
+  }
+
+  static async createGoogleEvent (title, description, startDateTime, endDateTime, attendees, requestId, oauth2Client) {
+    try {
+      const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
+
+      // Create Google Calendar event
+      const event = {
+        summary: title,
+        description,
+        start: { dateTime: startDateTime, timeZone: 'Asia/Kolkata' },
+        end: { dateTime: endDateTime, timeZone: 'Asia/Kolkata' },
+        attendees,
+        conferenceData: {
+          createRequest: {
+            requestId,
+            conferenceSolutionKey: { type: 'hangoutsMeet' }
+          }
+        },
+        guestsCanInviteOthers: true,
+        guestsCanModify: false,
+        guestsCanSeeOtherGuests: true,
+        anyoneCanAddSelf: true
+      }
+
+      const response = await calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+        conferenceDataVersion: 1
+      })
+
+      return response
+    } catch (error) {
+      console.error('Error creating Google event:', error)
+      throw error
     }
   }
 
