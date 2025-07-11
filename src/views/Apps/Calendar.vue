@@ -405,10 +405,29 @@ export default {
     closeViewModal () {
       this.$refs['view-appointment-modal'].hide()
     },
-    onSave () {
+    onSave (evt) {
+      if (this.newAppointment.type === 'ROUSE') {
+        if (!this.newAppointment.caseId) {
+          this.showAlert('Please select a case before saving the appointment.', 'danger')
+          evt.preventDefault()
+          return
+        }
+      } else if (this.newAppointment.type === 'personal') {
+        if (!this.newAppointment.title) {
+          this.showAlert('Please enter the title before saving the appointment.', 'danger')
+          evt.preventDefault()
+          return
+        }
+      }
+
+      if (!this.newAppointment.start) {
+        evt.preventDefault()
+        this.showAlert('Please select a date and time for the appointment.', 'danger')
+        return
+      }
+
       const endDate = new Date(this.newAppointment.start)
       endDate.setMinutes(endDate.getMinutes() + 30)
-      console.log(this.newAppointment)
       if (this.newAppointment.start) {
         console.log(this.newAppointment)
         this.storeNewEvent({

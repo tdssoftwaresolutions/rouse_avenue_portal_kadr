@@ -904,7 +904,7 @@ module.exports = {
       if (!user.google_token) {
         return res.status(400).json({ success: false, message: 'Google Calendar not connected.' })
       }
-      const oauth2Client = await helper.getValidAccessToken(prisma, JSON.parse(user.google_token))
+      const oauth2Client = await helper.getValidAccessToken(prisma, JSON.parse(user.google_token).credentials)
 
       let attendees = [{ email: req.user.email }]
       if (lCase.user_cases_first_partyTouser) { attendees.push({ email: lCase?.user_cases_first_partyTouser?.email }) }
@@ -1563,7 +1563,7 @@ module.exports = {
       if (!mediator.google_token) {
         return res.status(400).json({ success: false, message: 'Google Calendar not connected.' })
       }
-      const oauth2Client = await helper.getValidAccessToken(prisma, JSON.parse(mediator.google_token))
+      const oauth2Client = await helper.getValidAccessToken(prisma, JSON.parse(mediator.google_token).credentials)
 
       const title = 'First mediation meeting'
       const description = `First mediation meeting for case ${caseDetails.caseId} between ${caseDetails.user_cases_first_partyTouser.name} and ${caseDetails.user_cases_second_partyTouser.name}.`
