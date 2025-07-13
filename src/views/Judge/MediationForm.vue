@@ -274,7 +274,7 @@ export default {
       }
     },
     validateForm () {
-      if (this.viewMode) return true // Skip validation in view mode
+      if (this.viewMode) return true
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
       if (!this.form.hearingDate) {
@@ -350,7 +350,6 @@ export default {
       if (!this.validateForm()) {
         return
       }
-      console.log('Form submitted:', this.form)
       this.$emit('close', this.form)
     },
     handleFileUpload (event) {
@@ -371,9 +370,9 @@ export default {
 
         const reader = new FileReader()
         reader.onload = (e) => {
-          this.form.document = e.target.result // Store Base64 string in form.document
+          this.form.document = e.target.result
         }
-        reader.readAsDataURL(file) // Convert file to Base64
+        reader.readAsDataURL(file)
       }
     },
     closeForm () {
@@ -384,16 +383,13 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())

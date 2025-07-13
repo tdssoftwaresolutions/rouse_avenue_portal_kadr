@@ -3,6 +3,7 @@ const path = require('path')
 const app = express()
 const port = process.env.PORT || 3000
 const cookieParser = require('cookie-parser')
+const errorHandler = require('./middleware/errorHandler')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.use('/api', require('./routes/apiRoutes'))
+
+app.use(errorHandler)
 
 // Serve static files from the 'public/home' directory (Static website)
 app.use(express.static(path.join(__dirname, 'public/home')))

@@ -2,35 +2,26 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
+import alert from './alertStore'
+import spinner from './spinnerStore'
+
 Vue.use(Vuex)
 
 const LOGIN_ENDPOINT = '/login'
 const RESET_PASSWORD_ENDPOINT = '/resetPassword'
 const CONFIRM_PASSWORD_CHANGE_ENDPOINT = '/confirmPasswordChange'
-const NEW_USER_SIGNUP_ENDPOINT = '/newUserSignup'
-const NEW_MEDIATOR_SIGNUP_ENDPOINT = '/newMediatorSignup'
-const IS_EMAIL_EXIST_ENDPOINT = '/isEmailExist'
 const LOGOUT_ENDPOINT = '/logout'
 const GET_USER_DATA_ENDPOINT = '/getUserData'
 const VERIFY_SIGNATURE_ENDPOINT = '/verify-signature'
-const AVAILABLE_LANGUAGES_ENDPOINT = '/getAvailableLanguages'
 const GET_INACTIVE_USERS_ENDPOINT = '/getInactiveUsers'
-const GET_ACTIVE_USERS_ENDPOINT = '/getActiveUsers'
-const UPDATE_INACTIVE_USER_ENDPOINT = '/updateInactiveUser'
 const REFRESH_TOKEN_ENDPOINT = '/refresh-token'
 const SAVE_NOTE_ENDPOINT = '/saveNote'
 const GET_DASHBOARD_CONTENT_ENDPOINT = '/getDashboardContent'
 const DELETE_NOTE_ENDPOINT = '/deleteNote'
-const GET_EXISTING_USER_ENDPOINT = '/getExistingUser'
 const GET_CALENDAR_INIT_ENDPOINT = '/getCalendarInit'
 const NEW_CALENDAR_EVENT_ENDPOINT = '/newCalendarEvent'
 const GET_MY_CASES_ENDPOINT = '/getMyCases'
-const GET_MY_BLOGS_ENDPOINT = '/getMyBlogs'
-const SAVE_BLOG_ENDPOINT = '/saveBlog'
-const GET_BLOG_ASSETS = '/getBlogAssets'
-const ACCEPT_MEDIATION_REQUEST = '/acceptMediationRequest'
 const GOOGLE_AUTH_ENDPOINT = '/authenticateWithGoogle'
-const SET_CLIENT_PAYMENT_ENDPOINT = '/setClientPayment'
 const NEW_CASE_ENDPOINT = '/newCase'
 const SUBMIT_SIGNATURE = '/submitSignature'
 const GET_SIGNATURE_REQUEST_DETAILS = '/getSignatureRequestDetails'
@@ -68,7 +59,7 @@ const plugin = (router) => (store) => {
 }
 
 apiClient.interceptors.request.use((config) => {
-  const excludedEndpoints = [LOGIN_ENDPOINT, GET_EXISTING_USER_ENDPOINT, RESET_PASSWORD_ENDPOINT, CONFIRM_PASSWORD_CHANGE_ENDPOINT, NEW_USER_SIGNUP_ENDPOINT, NEW_MEDIATOR_SIGNUP_ENDPOINT, IS_EMAIL_EXIST_ENDPOINT]
+  const excludedEndpoints = [LOGIN_ENDPOINT, RESET_PASSWORD_ENDPOINT, CONFIRM_PASSWORD_CHANGE_ENDPOINT ]
   const isExcluded = excludedEndpoints.some((endpoint) =>
     config.url.includes(endpoint)
   )
@@ -103,6 +94,9 @@ apiClient.interceptors.response.use(
 
 export default (router) => {
   const store = new Vuex.Store({
+    modules: {
+      alert, spinner
+    },
     state: getDefaultState(),
     mutations: {
       RESET_STATE (state) {
@@ -113,15 +107,6 @@ export default (router) => {
       },
       setUser (state, user) {
         state.user = user
-      },
-      setAvailableLanguages (state, data) {
-        state.availableLanguages = data
-      },
-      setAvailableStates (state, data) {
-        state.availableStates = data
-      },
-      setAllLanguages (state, data) {
-        state.allLanguages = data
       },
       setDashboardContent (state, data) {
         state.dashboardContent = data
@@ -140,14 +125,26 @@ export default (router) => {
       updateLoader (context, payload) {
         context.commit('commitLoader', payload)
       },
-      async login ({ commit }, { username, password }) {
+      async login ({ commit, dispatch }, { username, password }) {
         try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.post(LOGIN_ENDPOINT, { username, password })
-          store.$cookies.set('accessToken', data.accessToken, '1d', '/', '', true, 'None')
-          store.$router.push({ name: 'dashboard1.home' })
+
+          if (!data.success) throw new Error(data.error.message)
+
+          store.$cookies.set('accessToken', data.data.accessToken, '1d', '/', '', true, 'None')
+          store.$router.push({ name: 'dashboard.home' })
           return data
         } catch (error) {
-          return error.response.data
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async resetPassword ({ commit }, { emailAddress }) {
@@ -155,27 +152,29 @@ export default (router) => {
           const { data } = await apiClient.post(RESET_PASSWORD_ENDPOINT, { emailAddress })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
-      async updateUserProfile ({ commit }, { name, phone_number, profile_picture, password }) {
+      async updateUserProfile ({ commit, dispatch }, { name, phone_number, profile_picture, password }) {
         try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.post(UPDATE_USER_PROFILE, { name, phone_number, profile_picture, password })
+          if (!data.success) throw new Error(data.error.message)
+
           return data
         } catch (error) {
-          return error
-        }
-      },
-      async getExistingUser ({ commit }, { token }) {
-        try {
-          const { data } = await apiClient.get(GET_EXISTING_USER_ENDPOINT, {
-            headers: {
-              'Authorization': token
-            }
-          })
-          return data
-        } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async getAgreementDetailsForSignature ({ commit }, { requestId }) {
@@ -183,15 +182,27 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_AGREEMENT_DETAILS_FOR_SIGNATURE}?id=${encodeURIComponent(requestId)}`)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
-      async logout ({ commit }) {
+      async logout ({ commit, dispatch }) {
         try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.get(LOGOUT_ENDPOINT)
           return data
         } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async LIST_ALL_MEDIATORS_WITH_CASES ({ commit }) {
@@ -199,7 +210,10 @@ export default (router) => {
           const { data } = await apiClient.get(LIST_ALL_MEDIATORS_WITH_CASES)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async confirmPasswordChange ({ commit }, { emailAddress, otp, password }) {
@@ -207,7 +221,10 @@ export default (router) => {
           const { data } = await apiClient.post(CONFIRM_PASSWORD_CHANGE_ENDPOINT, { emailAddress, otp, password })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async markCaseResolved ({ commit }, { caseId, resolveStatus, agreementText, signature }) {
@@ -215,7 +232,10 @@ export default (router) => {
           const { data } = await apiClient.post(MARK_CASE_RESOLVED, { caseId, resolveStatus, agreementText, signature })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async getMediationData ({ commit }, { caseId }) {
@@ -223,7 +243,10 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_MEDIATION_DATA}?caseId=${encodeURIComponent(caseId)}`)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async submitAgreementSignature ({ commit }, { signature, requestId }) {
@@ -231,7 +254,10 @@ export default (router) => {
           const { data } = await apiClient.post(SUBMIT_AGREEMENT_SIGNATURE, { signature, requestId })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async submitSignature ({ commit }, { signature, requestId }) {
@@ -239,7 +265,10 @@ export default (router) => {
           const { data } = await apiClient.post(SUBMIT_SIGNATURE, { signature, requestId })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async submitEventFeedback ({ commit }, { event_feedback, case_id, event_id }) {
@@ -247,7 +276,10 @@ export default (router) => {
           const { data } = await apiClient.post(SUBMIT_EVENT_FEEDBACK, { event_feedback, case_id, event_id })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async getSignatureRequestDetails ({ commit }, { requestId }) {
@@ -255,63 +287,65 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_SIGNATURE_REQUEST_DETAILS}?requestId=${encodeURIComponent(requestId)}`)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
-      async verifySignature ({ commit }, { signature, userData }) {
+      async verifySignature ({ commit, dispatch }, { signature, userData }) {
         try {
           const { data } = await apiClient.post(VERIFY_SIGNATURE_ENDPOINT, { signature, userData })
+
+          if (!data.success || !data.data.valid) return dispatch('logout')
+
           return data
         } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
         }
       },
-      async createNewCase ({ commit }, { caseData, userId }) {
+      async createNewCase ({ commit, dispatch }, { caseData, userId }) {
         try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.post(NEW_CASE_ENDPOINT, { caseData, userId })
+
+          if (!data.success) throw new Error(data.error.message)
+
           return data
         } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
-      async acceptMediationRequest ({ commit }, { caseId }) {
+      async saveNote ({ commit, dispatch }, { content, id }) {
         try {
-          const { data } = await apiClient.post(ACCEPT_MEDIATION_REQUEST, { caseId })
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async newUserSignup ({ commit }, { userDetails, existingUser }) {
-        try {
-          const { data } = await apiClient.post(NEW_USER_SIGNUP_ENDPOINT, { ...userDetails, existingUser })
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async newMediatorSignup ({ commit }, { userDetails }) {
-        try {
-          const { data } = await apiClient.post(NEW_MEDIATOR_SIGNUP_ENDPOINT, { userDetails })
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async saveNote ({ commit }, { content, id }) {
-        try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.post(SAVE_NOTE_ENDPOINT, { content, id })
+          if (!data.success) throw new Error(data.error.message)
+
           return data
         } catch (error) {
-          return error
-        }
-      },
-      async setClientPayment ({ commit }, { payload }) {
-        try {
-          const { data } = await apiClient.post(SET_CLIENT_PAYMENT_ENDPOINT, { ...payload })
-          return data
-        } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async assignMediator ({ commit }, { caseId, mediatorId }) {
@@ -319,7 +353,10 @@ export default (router) => {
           const { data } = await apiClient.post(ASSIGN_MEDIATOR, { caseId, mediatorId })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async getAvailableMediators ({ commit }, { caseId }) {
@@ -327,7 +364,10 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_AVAILABLE_MEDIATORS}?caseId=${encodeURIComponent(caseId)}`)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async googleAuth ({ commit }) {
@@ -335,7 +375,10 @@ export default (router) => {
           const { data } = await apiClient.get(GOOGLE_AUTH_ENDPOINT)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async newCalendarEvent ({ commit }, { event }) {
@@ -343,56 +386,77 @@ export default (router) => {
           const { data } = await apiClient.post(NEW_CALENDAR_EVENT_ENDPOINT, { ...event })
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
 
-      async getUserData ({ state, commit }) {
+      async getUserData ({ state, commit, dispatch }) {
         try {
-          if (state.userData) {
-            return state.userData
-          }
+          dispatch('spinner/showSpinner')
+
+          if (state.userData) return state.userData
+
           const { data } = await apiClient.get(GET_USER_DATA_ENDPOINT)
+
+          if (!data.success) return dispatch('logout')
+
           commit('setUserData', data)
           return data
         } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
-      async getDashboardContent ({ state, commit }) {
+      async getDashboardContent ({ state, commit, dispatch }) {
         try {
-          if (state.dashboardContent) {
-            return state.dashboardContent
-          }
+          dispatch('spinner/showSpinner')
+
+          if (state.dashboardContent) return state.dashboardContent
+
           const { data } = await apiClient.get(GET_DASHBOARD_CONTENT_ENDPOINT)
+
+          if (!data.success) throw new Error(data.error.message)
+
           commit('setDashboardContent', data)
           return data
         } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
-      async deleteNote ({ commit }, { id }) {
+      async deleteNote ({ commit, dispatch }, { id }) {
         try {
+          dispatch('spinner/showSpinner')
+
           const { data } = await apiClient.post(DELETE_NOTE_ENDPOINT, { id })
+
+          if (!data.success) throw new Error(data.error.message)
+
           return data
         } catch (error) {
-          return error
-        }
-      },
-      async updateInactiveUsers ({ commit }, { isActive, caseId, userId, caseType }) {
-        try {
-          const { data } = await apiClient.post(UPDATE_INACTIVE_USER_ENDPOINT, { isActive, caseId, userId, caseType })
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async isEmailExist ({ commit }, { emailAddress }) {
-        try {
-          const { data } = await apiClient.get(`${IS_EMAIL_EXIST_ENDPOINT}?email=${encodeURIComponent(emailAddress)}`)
-          return data
-        } catch (error) {
-          return error
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async getCalendarInit ({ commit, state }, { skipCache }) {
@@ -404,7 +468,10 @@ export default (router) => {
           commit('setCalendarInit', data)
           return data
         } catch (error) {
-          return error
+          return {
+            success: false,
+            error
+          }
         }
       },
       async getInactiveUsers ({ commit }, { page, type }) {
@@ -412,108 +479,36 @@ export default (router) => {
           const { data } = await apiClient.get(`${GET_INACTIVE_USERS_ENDPOINT}?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}`)
           return data
         } catch (error) {
-          return error
-        }
-      },
-      async getActiveUsers ({ commit }, { page, type }) {
-        try {
-          const params = type ? `?page=${encodeURIComponent(page)}&type=${encodeURIComponent(type)}` : `?page=${encodeURIComponent(page)}`
-          const { data } = await apiClient.get(`${GET_ACTIVE_USERS_ENDPOINT}${params}`)
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async getMyCases ({ commit }, { page }) {
-        try {
-          const { data } = await apiClient.get(`${GET_MY_CASES_ENDPOINT}?page=${encodeURIComponent(page)}`)
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async getMyBlogs ({ commit }, { page }) {
-        try {
-          const { data } = await apiClient.get(`${GET_MY_BLOGS_ENDPOINT}?page=${encodeURIComponent(page)}`)
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async getBlogAssets ({ commit }) {
-        try {
-          const { data } = await apiClient.get(GET_BLOG_ASSETS)
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async saveBlog  ({ commit }, { blog, status }) {
-        try {
-          const { data } = await apiClient.post(SAVE_BLOG_ENDPOINT, { blog, status })
-          return data
-        } catch (error) {
-          return error
-        }
-      },
-      async getAllLanguages ({ state, commit }) {
-        try {
-          if (state.allLanguages) {
-            return state.allLanguages
+          return {
+            success: false,
+            error
           }
-          const response = await fetch('/languages.json')
-          if (!response.ok) {
-            return {
-              'errorCode': 'E256',
-              'message': 'Network response was not ok'
-            }
-          }
-          const jsonData = await response.json()
-          commit('setAllLanguages', jsonData)
-          return jsonData
-        } catch (error) {
-          return error
         }
       },
-      async getAvailableLanguages ({ state, commit }) {
+      async getMyCases ({ commit, dispatch }, { page }) {
         try {
-          if (state.availableLanguages) {
-            return state.availableLanguages
-          }
+          dispatch('spinner/showSpinner')
 
-          const { data } = await apiClient.get(AVAILABLE_LANGUAGES_ENDPOINT)
-          commit('setAvailableLanguages', data)
+          const { data } = await apiClient.get(`${GET_MY_CASES_ENDPOINT}?page=${encodeURIComponent(page)}`)
+
+          if (!data.success) throw new Error(data.error.message)
+
           return data
         } catch (error) {
-          return error
-        }
-      },
-      async getStates ({ state, commit }) {
-        try {
-          if (state.availableStates) {
-            return state.availableStates
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
           }
-          const response = await fetch('/states.json')
-          if (!response.ok) {
-            return {
-              'errorCode': 'E256',
-              'message': 'Network response was not ok'
-            }
-          }
-          const jsonData = await response.json()
-          commit('setAvailableStates', jsonData)
-          return jsonData
-        } catch (error) {
-          return error
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       }
     },
     getters: {
       loader: state => state.loader,
       user: (state) => state.user,
-      availableLanguages: (state) => state.availableLanguages,
-      availableStates: (state) => state.availableStates,
-      allLanguages: (state) => state.allLanguages,
       dashboardContent: (state) => state.dashboardContent,
       calendarInit: (state) => state.calendarInit
     },
