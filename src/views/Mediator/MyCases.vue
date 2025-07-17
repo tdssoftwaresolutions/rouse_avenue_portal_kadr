@@ -101,7 +101,7 @@
 import { sofbox } from '../../config/pluginInit'
 import Alert from '../../components/sofbox/alert/Alert.vue'
 import Spinner from '../../components/sofbox/spinner/spinner.vue'
-import ViewCaseDetails from '../Apps/ViewCaseDetail.vue'
+import ViewCaseDetails from './ViewCaseDetail.vue'
 import SignaturePad from 'signature_pad'
 import { Vue2TinymceEditor } from 'vue2-tinymce-editor'
 

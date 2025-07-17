@@ -111,7 +111,7 @@ module.exports = {
                 }),
                 prisma.cases.count({ where: { status: CaseTypes.CLOSED_SUCCESS } }),
                 prisma.cases.count({ where: { status: CaseTypes.CLOSED_NO_SUCCESS } }),
-                prisma.cases.count({ where: { sub_status: helper.CaseSubTypes.PENDING_MEDIATION_CENTER } })
+                prisma.cases.count({ where: { sub_status: CaseSubTypes.PENDING_MEDIATION_CENTER } })
               ])
               return { totalAssigned, successCases, failedCases, pendingMC }
             })()
@@ -230,16 +230,6 @@ module.exports = {
       await helper.sendEmail('Signature Required: Mediation Request from Rouse Avenue Court', party1Email, htmlBody)
 
       success(res, {}, 'New case created successfully!')
-    } catch (error) {
-      next(error)
-    }
-  },
-  getInactiveUsers: async function (req, res, next) {
-    try {
-      const type = req.query.type
-      const relationField = type === 'CLIENT' ? 'cases_cases_first_partyTouser' : 'cases_cases_mediatorTouser'
-      const inactiveUsers = await helper.getUsers(false, prisma, req.query.page, type, relationField)
-      success(res, inactiveUsers)
     } catch (error) {
       next(error)
     }

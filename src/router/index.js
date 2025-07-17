@@ -5,8 +5,7 @@ import Dashboard from '../views/Standard/Dashboard.vue'
 import AuthLayout from '../layouts/AuthLayout'
 import SignIn from '../views/AuthPages/SignIn'
 import RecoverPassword from '../views/AuthPages/RecoverPassword'
-import Calendar from '../views/Apps/Calendar'
-import Calendar2 from '../views/Apps/Calendar2'
+import Calendar from '../views/Mediator/Calendar.vue'
 import ProfileEdit from '../views/Standard/ProfileEdit.vue'
 import MCAllMediators from '../views/MC/MCAllMediators.vue'
 import Signature from '../views/Client/Signature.vue'
@@ -31,11 +30,6 @@ const appChildRoute = (prop) => [
     path: 'calendar',
     name: prop + '.calendar',
     component: Calendar
-  },
-  {
-    path: 'calendar2',
-    name: prop + '.calendar2',
-    component: Calendar2
   }
 ]
 const authChildRoutes = (prop) => [

@@ -1,7 +1,6 @@
 <template>
     <b-container fluid>
       <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-      <Spinner :isVisible="loading" />
       <b-row>
         <b-col lg="3" md="12">
           <iq-card class="iq-profile-card text-center">
@@ -122,7 +121,6 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import MCMyMediations from './MCMyMediations.vue'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
 const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
@@ -134,7 +132,7 @@ export default {
     content: null
   },
   components: {
-    Alert, Spinner, MCMyMediations
+    Alert, MCMyMediations
   },
   methods: {
     formatDate (dateString) {
@@ -156,12 +154,14 @@ export default {
       if (confirm('Are you sure you want to delete this note?')) {
         const noteToDelete = this.notes[index]
         if (noteToDelete.id !== '') {
-          await this.$store.dispatch('deleteNote', {
+          const response = await this.$store.dispatch('deleteNote', {
             id: noteToDelete.id
           })
+          if (response.success) {
+            this.notes.splice(index, 1)
+            this.showAlert(response.message, 'success')
+          }
         }
-        this.notes.splice(index, 1)
-        this.showAlert('Your note has been deleted successfully!', 'success')
       }
     },
     onContentChange (index) {
@@ -180,10 +180,13 @@ export default {
           content: note.content,
           id: note.id
         })
-        if (!response.errorCode) {
-          this.showAlert('Your note has been successfully saved!', 'success')
+        if (response.success) {
+          if (response.data && response.data.noteId) {
+            this.$set(this.notes[index], 'id', response.data.noteId)
+          }
+          this.showAlert(response.message, 'success')
+          this.$set(note, 'isModified', false)
         }
-        this.$set(note, 'isModified', false)
       }
     }
   },
@@ -218,89 +221,7 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false,
-      notes: [],
-      chart1: {
-        chart: {
-          height: 80,
-          type: 'area',
-          sparkline: {
-            enabled: true
-          },
-          group: 'sparklines'
-
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: 3,
-          curve: 'smooth'
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.5,
-            opacityTo: 0
-          }
-        },
-        series: [{
-          name: 'series1',
-          data: [60, 15, 50, 30, 70]
-        }],
-        colors: ['#0084ff'],
-
-        xaxis: {
-          type: 'datetime',
-          categories: ['2018-08-19T00:00:00', '2018-09-19T01:30:00', '2018-10-19T02:30:00', '2018-11-19T01:30:00', '2018-12-19T01:30:00']
-        },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm'
-          }
-        }
-      },
-      chart4: {
-        chart: {
-          height: 80,
-          type: 'area',
-          sparkline: {
-            enabled: true
-          },
-          group: 'sparklines'
-
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: 3,
-          curve: 'smooth'
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.5,
-            opacityTo: 0
-          }
-        },
-        series: [{
-          name: 'series1',
-          data: [75, 30, 60, 35, 60]
-        }],
-        colors: ['#e64141'],
-        xaxis: {
-          type: 'datetime',
-          categories: ['2018-08-19T00:00:00', '2018-09-19T01:30:00', '2018-10-19T02:30:00', '2018-11-19T01:30:00', '2018-12-19T01:30:00']
-        },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm'
-          }
-        }
-      }
+      notes: []
     }
   }
 }

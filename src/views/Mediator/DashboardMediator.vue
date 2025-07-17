@@ -1,7 +1,6 @@
 <template>
     <b-container fluid>
       <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-      <Spinner :isVisible="loading" />
       <b-row>
         <b-col lg="3" md="12">
           <iq-card class="iq-profile-card text-center">
@@ -154,7 +153,6 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import MyCases from './MyCases.vue'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
 const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
@@ -166,7 +164,7 @@ export default {
     content: null
   },
   components: {
-    Alert, Spinner, MyCases
+    Alert, MyCases
   },
   methods: {
     formatDate (dateString, type = 'display', options = {}) {
@@ -174,16 +172,13 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())
@@ -231,12 +226,14 @@ export default {
       if (confirm('Are you sure you want to delete this note?')) {
         const noteToDelete = this.notes[index]
         if (noteToDelete.id !== '') {
-          await this.$store.dispatch('deleteNote', {
+          const response = await this.$store.dispatch('deleteNote', {
             id: noteToDelete.id
           })
+          if (response.success) {
+            this.notes.splice(index, 1)
+            this.showAlert(response.message, 'success')
+          }
         }
-        this.notes.splice(index, 1)
-        this.showAlert('Your note has been deleted successfully!', 'success')
       }
     },
     onContentChange (index) {
@@ -255,10 +252,13 @@ export default {
           content: note.content,
           id: note.id
         })
-        if (!response.errorCode) {
-          this.showAlert('Your note has been successfully saved!', 'success')
+        if (response.success) {
+          if (response.data && response.data.noteId) {
+            this.$set(this.notes[index], 'id', response.data.noteId)
+          }
+          this.showAlert(response.message, 'success')
+          this.$set(note, 'isModified', false)
         }
-        this.$set(note, 'isModified', false)
       }
     },
     openFeedbackModal (item) {
@@ -292,32 +292,28 @@ export default {
         case_id: this.feedbackTarget.case.id,
         event_id: this.feedbackTarget.event.id
       }
-      await this.$store.dispatch('submitEventFeedback', payload)
-      this.showAlert('Feedback submitted successfully!', 'success')
-      this.showFeedbackModal = false
-      // Remove the submitted feedback from UI
-      // Remove the event from the case's events array directly for reactivity
-      if (
-        this.content &&
-        this.content.myCases &&
-        Array.isArray(this.content.myCases.casesWithEvents)
-      ) {
-        const caseIdx = this.content.myCases.casesWithEvents.findIndex(
-          c => c.id === this.feedbackTarget.case.id
-        )
-        if (caseIdx !== -1) {
-          const eventsArr = this.content.myCases.casesWithEvents[caseIdx].events
-          if (Array.isArray(eventsArr)) {
-            const eventIdx = eventsArr.findIndex(
-              e => e.id === this.feedbackTarget.event.id
-            )
-            if (eventIdx !== -1) {
-              this.$delete(eventsArr, eventIdx)
+      const response = await this.$store.dispatch('submitEventFeedback', payload)
+      if (response.success) {
+        this.showAlert(response.message, 'success')
+        this.showFeedbackModal = false
+        if (this.content && this.content.myCases && Array.isArray(this.content.myCases.casesWithEvents)) {
+          const caseIdx = this.content.myCases.casesWithEvents.findIndex(
+            c => c.id === this.feedbackTarget.case.id
+          )
+          if (caseIdx !== -1) {
+            const eventsArr = this.content.myCases.casesWithEvents[caseIdx].events
+            if (Array.isArray(eventsArr)) {
+              const eventIdx = eventsArr.findIndex(
+                e => e.id === this.feedbackTarget.event.id
+              )
+              if (eventIdx !== -1) {
+                this.$delete(eventsArr, eventIdx)
+              }
             }
           }
         }
+        this.resetFeedbackForm()
       }
-      this.resetFeedbackForm()
     }
   },
   mounted () {
@@ -351,7 +347,6 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false,
       notes: [],
       showFeedbackModal: false,
       feedbackForm: {

@@ -65,7 +65,7 @@ module.exports = {
         }
       })
 
-      success(res, {}, 'Mediator assigned and event created successfully')
+      success(res, {}, 'Mediator assigned and first meeting initiated successfully')
     } catch (error) {
       next(error)
     }

@@ -166,57 +166,6 @@ export default {
         }
       }
     },
-    async onCloseNewMediationForm (formData) {
-      formData.judgeId = this.user.id // Add judgeId to formData
-      const response = await this.$store.dispatch('createNewCase', {
-        caseData: formData
-      })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-      } else {
-        this.showNewCaseForm = false
-        this.showAlert('Successfully initiated the request!', 'success')
-
-        const newCase = {
-          caseId: `ROUSE-MED-${this.localNextCaseId}`,
-          hearing_date: formData.hearingDate || '',
-          suit_no: formData.suitNo || '',
-          user_cases_first_partyTouser: {
-            ...formData.user_cases_first_partyTouser,
-            name: formData.party1 || '',
-            email: formData.party1Email || ''
-          },
-          user_cases_second_partyTouser: {
-            ...formData.user_cases_second_partyTouser,
-            name: formData.party2 || '',
-            email: formData.party2Email || ''
-          },
-          institution_date: formData.institutionDate || '',
-          nature_of_suit: formData.natureOfSuit || '',
-          stage: formData.stage || '',
-          hearing_count: formData.hearingCount || 0,
-          mediation_date_time: formData.mediationDateTime || '',
-          referral_judge_signature: formData.referralJudgeSignature || '',
-          plaintiff_signature: formData.plaintiffSignature || '',
-          plaintiff_phone: formData.plaintiffPhone || '',
-          plaintiff_advocate: formData.plaintiffAdvocate || '',
-          respondent_signature: formData.respondentSignature || '',
-          respondent_phone: formData.respondentPhone || '',
-          respondent_advocate: formData.respondentAdvocate || '',
-          judge_document_url: formData.document || null
-        }
-
-        this.localNextCaseId += 1
-
-        // Add newCase to the first position in paginatedData.casesWithEvents
-        this.paginatedData.casesWithEvents = [newCase, ...this.paginatedData.casesWithEvents]
-        this.paginatedData.total += 1 // Increment total count
-        this.currentPage = 1 // Reset to the first page
-      }
-    },
-    openNewCaseForm () {
-      this.showNewCaseForm = true
-    },
     getStatus (item) {
       const startDateTime = new Date(item.start_datetime)
       const currentDateTime = new Date()
@@ -240,8 +189,8 @@ export default {
     },
     info (item) {
       this.caseTitle = `Case #${item.caseId}`
-      this.selectedCase = item || null // Ensure selectedCase is properly set
-      this.showViewDetails = true // Open the modal for viewing details
+      this.selectedCase = item || null
+      this.showViewDetails = true
     },
     showAlert (message, type) {
       this.alert = {
@@ -251,13 +200,7 @@ export default {
       }
     },
     syncWithProp () {
-      // Create a deep copy of the cases prop to avoid mutating it
       this.paginatedData = JSON.parse(JSON.stringify(this.cases))
-    },
-    async scheduleMeeting (item) {
-      this.loading = true
-
-      this.loading = false
     },
     async fetchCases (newPage) {
       this.currentPage = newPage
@@ -268,48 +211,32 @@ export default {
       const response = await this.$store.dispatch('getMyCases', {
         page: this.currentPage
       })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-      } else {
-        this.casesCache[this.currentPage] = response
-        this.paginatedData = response
+      if (response.success) {
+        this.casesCache[this.currentPage] = response.data
+        this.paginatedData = response.data
       }
     },
     async openAssignMediatorModal (caseItem) {
       this.selectedCaseId = caseItem.id
-      this.loading = true // Use the existing loading property
-      try {
-        const response = await this.$store.dispatch('getAvailableMediators', { caseId: this.selectedCaseId })
-        this.availableMediators = response.mediators || []
-        this.assignedMediator = response.assignedMediator || null
+      const response = await this.$store.dispatch('getAvailableMediators', { caseId: this.selectedCaseId })
+      if (response.success) {
+        this.availableMediators = response.data.mediators || []
+        this.assignedMediator = response.data.assignedMediator || null
         this.selectedMediatorId = this.availableMediators.reduce((prev, curr) =>
           curr.cases_cases_mediatorTouser.length < prev.cases_cases_mediatorTouser.length ? curr : prev
         ).id
         this.showAssignMediatorModal = true
-      } catch (error) {
-        this.showAlert('Failed to fetch mediators.', 'danger')
-      } finally {
-        this.loading = false
       }
     },
     selectMediator (mediatorId) {
-      this.selectedMediatorId = mediatorId // Update the selected mediator ID
+      this.selectedMediatorId = mediatorId
     },
     async assignMediator (mediatorId) {
-      this.loading = true // Use the existing loading property
-      try {
-        const response = await this.$store.dispatch('assignMediator', { caseId: this.selectedCaseId, mediatorId })
-        if (response.success) {
-          this.showAlert('Mediator assigned successfully.', 'success')
-          this.showAssignMediatorModal = false
-        } else {
-          this.showAlert(response.message || 'Failed to assign mediator.', 'danger')
-        }
-      } catch (error) {
-        this.showAlert('An error occurred while assigning mediator.', 'danger')
-      } finally {
-        this.loading = false
-        window.location.reload() // Reload the page to reflect changes
+      const response = await this.$store.dispatch('assignMediator', { caseId: this.selectedCaseId, mediatorId })
+      if (response.success) {
+        this.showAssignMediatorModal = false
+        this.showAlert(response.message, 'success')
+        window.location.reload()
       }
     },
     getStatusLabel (status) {
@@ -330,14 +257,14 @@ export default {
   },
   data () {
     return {
-      selectedCase: null, // Ensure selectedCase is initialized to null
-      showViewDetails: false, // Track the visibility of the view details modal
+      selectedCase: null,
+      showViewDetails: false,
       currentPage: 1,
       perPage: 10,
       caseTitle: '',
       paginatedData: {},
       showNewCaseForm: false,
-      localNextCaseId: this.nextCaseId, // Initialize local property with prop value
+      localNextCaseId: this.nextCaseId,
       columns: [
         { label: 'Case Number', key: 'caseId', class: 'text-left', sortable: true },
         { label: 'Party', key: 'party', class: 'text-left', sortable: true },

@@ -148,21 +148,21 @@
         </div>
       </b-tab>
       <b-tab title="Mediation">
-        <div v-if="mediationData && mediationData.data">
+        <div v-if="mediationData && mediationData">
           <div class="mediation-section">
             <h3>Mediation Summary</h3>
             <div class="mediation-row">
               <div>
                 <strong>Mediator:</strong>
-                {{ mediationData.data.mediator?.name || 'Not Assigned' }}
+                {{ mediationData.mediator?.name || 'Not Assigned' }}
               </div>
               <div>
                 <strong>Mediator Email:</strong>
-                {{ mediationData.data.mediator?.email || 'Not Assigned' }}
+                {{ mediationData.mediator?.email || 'Not Assigned' }}
               </div>
               <div>
                 <strong>Status:</strong>
-                {{ getStatusLabel(mediationData.data.status) }}
+                {{ getStatusLabel(mediationData.status) }}
               </div>
               <div>
               </div>
@@ -170,7 +170,7 @@
 
             <h4 style="margin-top: 2rem;">Mediation Meetings</h4>
             <b-table
-              :items="mediationData.data.events"
+              :items="mediationData.events"
               :fields="[
                 { key: 'title', label: 'Title' },
                 { key: 'start_datetime', label: 'Start' },
@@ -212,48 +212,48 @@
             </b-table>
 
             <h4>Mediation Agreement</h4>
-            <div v-if="mediationData.data.agreement">
+            <div v-if="mediationData.agreement">
               <div class="agreement-block">
                 <div class="agreement-row">
                   <div class="agreement-col">
                     <div>
                       <strong>Date:</strong>
-                      <div>{{ formatDate(mediationData.data.agreement.created_at,'display')}}</div>
+                      <div>{{ formatDate(mediationData.agreement.created_at,'display')}}</div>
                     </div>
                   </div>
                   <div class="agreement-col">
                     <div>
                       <strong>Agreed Terms:</strong>
-                      <div v-html="mediationData.data.agreement.agreed_terms"></div>
+                      <div v-html="mediationData.agreement.agreed_terms"></div>
                     </div>
                   </div>
                 </div>
                 <div class="agreement-signatures">
                   <div class="signature-col">
                     <div><strong>Mediator Signature</strong></div>
-                    <div v-if="mediationData.data.agreement.signature_mediator && mediationData.data.agreement.signature_mediator.startsWith('data:image/')">
-                      <img :src="mediationData.data.agreement.signature_mediator" alt="Mediator Signature" class="signature-img" />
+                    <div v-if="mediationData.agreement.signature_mediator && mediationData.agreement.signature_mediator.startsWith('data:image/')">
+                      <img :src="mediationData.agreement.signature_mediator" alt="Mediator Signature" class="signature-img" />
                     </div>
                     <div v-else>
-                      <span class="cursive-signature">{{ mediationData.data.agreement.signature_mediator }}</span>
+                      <span class="cursive-signature">{{ mediationData.agreement.signature_mediator }}</span>
                     </div>
                   </div>
                   <div class="signature-col">
                     <div><strong>First Party Signature</strong></div>
-                    <div v-if="mediationData.data.agreement.first_party_signature && mediationData.data.agreement.first_party_signature.startsWith('data:image/')">
-                      <img :src="mediationData.data.agreement.first_party_signature" alt="First Party Signature" class="signature-img" />
+                    <div v-if="mediationData.agreement.first_party_signature && mediationData.agreement.first_party_signature.startsWith('data:image/')">
+                      <img :src="mediationData.agreement.first_party_signature" alt="First Party Signature" class="signature-img" />
                     </div>
                     <div v-else>
-                      <span class="cursive-signature">{{ mediationData.data.agreement.first_party_signature }}</span>
+                      <span class="cursive-signature">{{ mediationData.agreement.first_party_signature }}</span>
                     </div>
                   </div>
                   <div class="signature-col">
                     <div><strong>Second Party Signature</strong></div>
-                    <div v-if="mediationData.data.agreement.second_party_signature && mediationData.data.agreement.second_party_signature.startsWith('data:image/')">
-                      <img :src="mediationData.data.agreement.second_party_signature" alt="Second Party Signature" class="signature-img" />
+                    <div v-if="mediationData.agreement.second_party_signature && mediationData.agreement.second_party_signature.startsWith('data:image/')">
+                      <img :src="mediationData.agreement.second_party_signature" alt="Second Party Signature" class="signature-img" />
                     </div>
                     <div v-else>
-                      <span class="cursive-signature">{{ mediationData.data.agreement.second_party_signature }}</span>
+                      <span class="cursive-signature">{{ mediationData.agreement.second_party_signature }}</span>
                     </div>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      mediationData: null, // Store fetched mediation data
+      mediationData: null,
       statusValueMap: {
         failed: 'Failed',
         in_progress: 'In Progress',
@@ -349,15 +349,8 @@ export default {
       }
     },
     async fetchMediationData () {
-      // Replace with your actual Vuex action or API call
-      try {
-        const caseId = this.form.id
-        // Example: fetch mediation data for this caseId
-        const result = await this.$store.dispatch('getMediationData', { caseId })
-        this.mediationData = result
-      } catch (e) {
-        this.showAlert('Failed to fetch mediation data.', 'danger')
-      }
+      const result = await this.$store.dispatch('getMediationData', { caseId: this.form.id })
+      if (result.success) this.mediationData = result.data
     },
     getStatusLabel (status) {
       if (!status) return '-'
@@ -379,16 +372,13 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())

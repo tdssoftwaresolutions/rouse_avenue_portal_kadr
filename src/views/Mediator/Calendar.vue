@@ -158,6 +158,7 @@
       <div class="data-row">
         <div class="col-12">
             <div class="data-title">Select Date and Time</div>
+            {{ typeof newAppointment.start }}
             <VueMaterialDateTimePicker
               id="appointment-datetime"
               v-model="newAppointment.start"
@@ -285,11 +286,9 @@ export default {
     },
     async authenticate () {
       const response = await this.$store.dispatch('googleAuth')
-      if (response.errorCode) {
-
-      } else {
+      if (response.success) {
         const ref = this
-        const popup = window.open(response.url, '_blank', 'width=500,height=600')
+        const popup = window.open(response.data.url, '_blank', 'width=500,height=600')
         const checkPopupClosed = setInterval(() => {
           if (popup.closed) {
             clearInterval(checkPopupClosed)
@@ -300,17 +299,11 @@ export default {
       }
     },
     async initCalendar (skipCache) {
-      console.log('init calendar')
-      this.loading = true
       const response = await this.$store.dispatch('getCalendarInit', { skipCache })
-      console.log(response)
-      if (response.errorCode) {
-        this.googleAuthError = response.message
-        this.$refs['my-modal'].show()
-      } else {
+      if (response.success) {
         this.$refs['my-modal'].hide()
-        for (let i = 0; i < response.events.length; i++) {
-          const event = response.events[i]
+        for (let i = 0; i < response.data.events.length; i++) {
+          const event = response.data.events[i]
           this.events.push({
             id: event.id,
             title: event.title,
@@ -326,14 +319,9 @@ export default {
         }
         if (this.dashboardContent == null) {
           const response = await this.$store.dispatch('getDashboardContent')
-          if (response.error) {
-
-          } else {
-            this.dashboardContent = JSON.parse(JSON.stringify(response.dashboardContent))
-          }
+          if (response.success) this.dashboardContent = JSON.parse(JSON.stringify(response.data.dashboardContent))
         }
       }
-      this.loading = false
     },
     scrollLeft () {
       const container = this.$refs.casesHorizontalScroll
@@ -348,16 +336,13 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())
@@ -444,12 +429,9 @@ export default {
       }
     },
     async storeNewEvent (event) {
-      this.loading = true
       const response = await this.$store.dispatch('newCalendarEvent', { event })
-      if (response.error) {
-
-      } else {
-        event.meetingLink = response.meetLink
+      if (response.success) {
+        event.meetingLink = response.data.meetLink
         this.events.push(event)
         this.closeModal()
         this.resetForm()
@@ -464,9 +446,7 @@ export default {
           startDate: event.start,
           type: event.type.toUpperCase()
         })
-        console.log(this.dashboardContent.todaysEvent)
       }
-      this.loading = false
     },
     openDetailsModal (event) {
       this.selectedAppointment = {
@@ -489,8 +469,9 @@ export default {
       this.$refs['new-appointment-modal'].show()
     },
     onDateClick (selectedInfo) {
+      this.newAppointment.start = new Date()
+      console.log(this.newAppointment)
       this.resetForm()
-      // this.newAppointment.start = selectedInfo.startStr
       this.$refs['new-appointment-modal'].show()
     },
     onClickAppointmentType () {

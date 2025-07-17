@@ -2,7 +2,6 @@ const { AppError } = require('../utils/errors')
 const { error } = require('../utils/responses')
 
 module.exports = (err, req, res, next) => {
-  console.log(typeof AppError)
   if (err instanceof AppError) {
     return error(res, {
       code: err.errorCode,

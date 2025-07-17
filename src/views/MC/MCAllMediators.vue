@@ -133,18 +133,9 @@ export default {
   },
   methods: {
     async fetchMediators () {
-      this.loading = true
-      try {
-        const response = await this.$store.dispatch('LIST_ALL_MEDIATORS_WITH_CASES')
-        if (response.success) {
-          this.mediators = response.mediators || []
-        } else {
-          this.showAlert('Failed to fetch mediators.', 'danger')
-        }
-      } catch (e) {
-        this.showAlert('Error fetching mediators.', 'danger')
-      } finally {
-        this.loading = false
+      const response = await this.$store.dispatch('listAllMediatorsWithCases')
+      if (response.success) {
+        this.mediators = response.data.mediators || []
       }
     },
     getClosedSuccessCount (mediator) {

@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rouse Avenue Mediation Center (NI Courts)</title>
-  <!-- Font Awesome CDN --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
     * {
@@ -14,39 +15,57 @@
     }
 
     body {
-      height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
+      background-color: #f4f6f9;
+      color: #2c3e50;
     }
 
     header {
-      height: 30vh;
-      background-color: #2c3e50;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
+      height: 38vh;
+      background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('/img/rouse.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-bottom: 3px solid #e0e0e0;
     }
 
-    header h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      letter-spacing: 1px;
-    }
-
-    main {
+    .content {
       flex: 1;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      background-color: #f4f6f9;
+      padding: 40px 20px 60px;
+      background: linear-gradient(to bottom right, #f9fafb, #eaeff3);
+    }
+
+    .title-section {
+      text-align: center;
+      margin-bottom: 50px;
+      max-width: 700px;
+    }
+
+    .title-section h1 {
+      font-size: 2.6rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 12px;
+    }
+
+    .title-section p {
+      font-size: 1.15rem;
+      color: #555;
+      line-height: 1.5;
     }
 
     .button-section {
       display: grid;
-      grid-template-columns: repeat(3, 180px);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 30px;
+      width: 100%;
+      max-width: 600px;
     }
 
     .login-button {
@@ -55,10 +74,10 @@
       background-color: #34495e;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -71,47 +90,62 @@
 
     .login-button:hover {
       background-color: #3d5a73;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
     }
 
     footer {
-      height: 60px;
+      height: 50px;
       background-color: #2c3e50;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      padding: 0 20px;
+      border-top: 2px solid #1f2f40;
     }
 
     @media (max-width: 600px) {
-      .button-section {
-        grid-template-columns: 1fr;
+      header {
+        height: 30vh;
+      }
+
+      .title-section h1 {
+        font-size: 1.9rem;
+      }
+
+      .title-section p {
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Rouse Avenue Mediation Center (NI Courts)</h1>
-  </header>
+  <header></header>
 
-  <main>
+  <div class="content">
+    <div class="title-section">
+      <h1>Rouse Avenue Mediation Center (NI Courts)</h1>
+      <p>An initiative to support fair & efficient mediation</p>
+    </div>
+
     <div class="button-section">
-      <button class="login-button"  onclick="window.open('/admin/auth/sign-in','_self')">
-        <i class="fas fa-handshake"></i>
-        Mediator Login
-      </button>
-      <button class="login-button"  onclick="window.open('/admin/auth/sign-in','_self')">
-        <i class="fas fa-building"></i>
-        MC Login
-      </button>
       <button class="login-button" onclick="window.open('/admin/auth/sign-in','_self')">
         <i class="fas fa-gavel"></i>
         Judge Login
       </button>
+      <button class="login-button" onclick="window.open('/admin/auth/sign-in','_self')">
+        <i class="fas fa-building"></i>
+        MC Login
+      </button>
+      <button class="login-button" onclick="window.open('/admin/auth/sign-in','_self')">
+        <i class="fas fa-handshake"></i>
+        Mediator Login
+      </button>
     </div>
-  </main>
+  </div>
 
   <footer>
     Powered by Kadr.live

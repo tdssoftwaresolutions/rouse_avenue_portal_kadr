@@ -1,7 +1,6 @@
 <template>
   <div>
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
-    <Spinner :isVisible="loading" />
     <h1 class="mb-0">Reset Password</h1>
     <p v-if="otpOption == false">Enter your email address and we'll send you an email with OTP (One Time Password) to reset your password.</p>
     <form v-if="otpOption == false" class="mt-4">
@@ -39,12 +38,11 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 
 export default {
   name: 'RecoverPassword',
   components: {
-    Alert, Spinner
+    Alert
   },
   mounted () {
   },
@@ -60,8 +58,7 @@ export default {
         visible: false,
         message: '',
         type: 'primary'
-      },
-      loading: false
+      }
     }
   },
   methods: {
@@ -89,17 +86,13 @@ export default {
         return
       }
 
-      this.loading = true
       const response = await this.$store.dispatch('resetPassword', {
         emailAddress: this.emailAddress
       })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-      } else {
+      if (response.success) {
         this.showAlert('If the email address exists on our platform, you will receive an email with an OTP to reset your password', 'success')
         this.otpOption = true
       }
-      this.loading = false
     },
     validatePassword (password) {
       if (password.length < 7) {
@@ -169,24 +162,17 @@ export default {
         this.showAlert('Password and confirm password didn\'t match', 'danger')
         return
       }
-      this.loading = true
       const response = await this.$store.dispatch('confirmPasswordChange', {
         emailAddress: this.emailAddress,
         otp: this.otp,
         password: this.password
       })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-        if (response.errorCode === 'E306') {
-          this.otpOption = false
-        }
-      } else {
+      if (response.success) {
         this.showAlert(response.message, 'success')
         setTimeout(() => {
           this.onClickBack()
         }, 1000)
       }
-      this.loading = false
     },
     onClickBack () {
       this.$router.push({ path: '/auth/sign-in' })

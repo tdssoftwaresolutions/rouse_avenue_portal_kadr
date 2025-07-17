@@ -152,7 +152,6 @@
         </div>
         <div v-else-if="phoneStep === 3">
           <div class="phone-verification-success">
-            <b-icon icon="check-circle-fill" variant="success" font-scale="2"></b-icon>
             <h5>Verification Successful!</h5>
             <p>
               Phone number matched with our record:<br>
@@ -226,25 +225,13 @@ export default {
   },
   methods: {
     async fetchSignatureRequestDetails () {
-      const requestId = this.$route.query?.requestId // Access requestId from query parameters
-      if (!requestId) {
-        this.showAlert('Request ID is missing in the URL.', 'danger')
-        return
-      }
-      try {
-        const response = await this.$store.dispatch('getSignatureRequestDetails', { requestId })
-        console.log(response)
-        if (response.response?.data?.success === false) {
-          this.showAlert('Already submitted the signature, no action required!', 'success')
-          return
-        }
-
-        this.signatureRequestDetails = response.caseData // Store the response in a variable
-        this.userName = response.userName
-        this.isFirstPaty = response.isFirstPaty
-      } catch (error) {
-        console.log(error)
-        this.showAlert('Failed to fetch signature request details.', 'danger')
+      const requestId = this.$route.query?.requestId
+      if (!requestId) return this.showAlert('Request ID is missing in the URL.', 'danger')
+      const response = await this.$store.dispatch('getSignatureRequestDetails', { requestId })
+      if (response.success) {
+        this.signatureRequestDetails = response.data.caseData
+        this.userName = response.data.userName
+        this.isFirstPaty = response.data.isFirstPaty
       }
     },
     showAlert (message, type) {
@@ -257,12 +244,12 @@ export default {
     setSignatureType (type) {
       this.signature_type = type
       if (type === 'manual') {
-        this.initializeSignaturePad() // Ensure this is called after the DOM is updated
+        this.initializeSignaturePad()
       }
     },
     initializeSignaturePad () {
       this.$nextTick(() => {
-        const canvas = this.$refs.signaturePad // Ensure canvas is properly referenced
+        const canvas = this.$refs.signaturePad
         if (!canvas) {
           console.error('SignaturePad canvas element is not found.')
           return
@@ -286,14 +273,12 @@ export default {
       }
     },
     openPhoneModal () {
-      // Called instead of submitForm, triggers Phone modal
       this.showPhoneModal = true
       this.phoneStep = 1
       this.phoneNumber = ''
       this.phoneOtp = ''
     },
     sendPhoneOtp () {
-      // Check if phone matches expected phone
       /** if (this.phoneNumber !== this.expectedPhone) {
         this.$bvToast.toast('Phone number does not match our records.', {
           title: 'Phone Verification',
@@ -333,36 +318,22 @@ export default {
       this.phoneNumber = ''
       this.phoneOtp = ''
     },
-    submitFormReal () {
-      this.loading = true
+    async submitFormReal () {
       const requestBody = {
         requestId: this.$route.query.requestId,
         signature: ''
       }
       if (this.signature_type === 'digital') {
-        // For digital signature, just send the initials
         requestBody.signature = this.userInitials
       } else if (this.signature_type === 'manual' && this.signaturePad) {
-        // For manual signature, send the signature image
         requestBody.signature = this.signaturePad.toDataURL()
       }
 
-      this.$store.dispatch('submitSignature', requestBody)
-        .then(response => {
-          if (response.errorCode) {
-            this.showAlert(response.message, 'danger')
-          } else {
-            this.showAlert('Signature submitted successfully!', 'success')
-            this.signatureRequestDetails = null
-          }
-        })
-        .catch(error => {
-          console.error('Error submitting signature:', error)
-          this.showAlert('Failed to submit signature. Please try again.', 'danger')
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      const response = await this.$store.dispatch('submitSignature', requestBody)
+      if (response.success) {
+        this.showAlert(response.message, 'success')
+        this.signatureRequestDetails = null
+      }
     },
     formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''

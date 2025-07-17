@@ -189,7 +189,6 @@ export default {
         }
 
         this.localNextCaseId += 1
-        console.log(typeof this.paginatedData.casesWithEvents)
         this.paginatedData.casesWithEvents = [newCase, ...(this.paginatedData.casesWithEvents || [])]
         this.paginatedData.total += 1
         this.currentPage = 1

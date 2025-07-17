@@ -228,22 +228,9 @@ export default {
     },
     async getAgreementDetailsForSignature () {
       const requestId = this.$route.query?.requestId
-      if (!requestId) {
-        this.showAlert('Request ID is missing in the URL.', 'danger')
-        return
-      }
-      try {
-        const response = await this.$store.dispatch('getAgreementDetailsForSignature', { requestId })
-        if (response.response?.data?.success === false) {
-          this.data = null
-          this.showAlert('Already submitted the signature, no action required!', 'success')
-          return
-        }
-        this.data = response.data
-      } catch (error) {
-        console.log(error)
-        this.showAlert('Failed to fetch signature request details.', 'danger')
-      }
+      if (!requestId) return this.showAlert('Request ID is missing in the URL.', 'danger')
+      const response = await this.$store.dispatch('getAgreementDetailsForSignature', { requestId })
+      if (response.success) this.data = response.data
     },
     showAlert (message, type) {
       this.alert = {
@@ -334,8 +321,7 @@ export default {
       this.phoneOtp = ''
       this.matchedPhone = ''
     },
-    submitFormReal () {
-      this.loading = true
+    async submitFormReal () {
       const requestBody = {
         requestId: this.$route.query.requestId,
         signature: ''
@@ -346,21 +332,11 @@ export default {
         requestBody.signature = this.signaturePad.toDataURL()
       }
 
-      this.$store.dispatch('submitAgreementSignature', requestBody)
-        .then(response => {
-          if (response.errorCode) {
-            this.showAlert(response.message, 'danger')
-          } else {
-            this.showAlert('Signature submitted successfully!', 'success')
-            this.data = null
-          }
-        })
-        .catch(error => {
-          console.error('Error submitting signature:', error)
-          this.showAlert('Failed to submit signature. Please try again.', 'danger')
-        }).finally(() => {
-          this.loading = false
-        })
+      const response = await this.$store.dispatch('submitAgreementSignature', requestBody)
+      if (response.success) {
+        this.showAlert(response.message, 'success')
+        this.data = null
+      }
     },
     formatSessionDates (dates) {
       if (!dates || !Array.isArray(dates) || dates.length === 0) return '-'

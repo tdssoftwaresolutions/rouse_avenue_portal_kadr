@@ -168,25 +168,19 @@ export default {
       required: true
     }
   },
-  async mounted () {
-    // this.firstPartyPreferredLanguages = await this.getPreferredLanguages(this.caseObject.user_cases_first_partyTouser.preferred_languages)
-  },
   methods: {
     formatDate (dateString, type = 'display', options = {}) {
       if (!dateString) return ''
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())
@@ -214,24 +208,6 @@ export default {
     },
     onNoteChange () {
       this.isNoteModified = true
-    },
-    async getPreferredLanguages (data) {
-      let languages = ''
-      let availableLanguagesArray = JSON.parse(data)
-      try {
-        const allLanguages = await this.$store.dispatch('getAllLanguages')
-        availableLanguagesArray.forEach((key) => {
-          if (Object.prototype.hasOwnProperty.call(allLanguages.languages, key)) {
-            languages += allLanguages.languages[key] + ', '
-          }
-        })
-        if (languages.endsWith(', ')) {
-          languages = languages.slice(0, -2)
-        }
-      } catch (error) {
-        console.error('Error fetching languages:', error)
-      }
-      return languages
     },
     getStatus (item) {
       const startDateTime = new Date(item.start_datetime)

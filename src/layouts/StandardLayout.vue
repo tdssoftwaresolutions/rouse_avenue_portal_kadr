@@ -111,24 +111,26 @@ export default {
       return false
     },
     async validateData (data) {
-      await this.$store.dispatch('verifySignature', {
+      const response = await this.$store.dispatch('verifySignature', {
         signature: data.signature,
         userData: data.userData
       })
-      switch (data.userData.type) {
-        case 'MEDIATOR':
-          this.sidebar = SideBarItemsMediator
-          break
-        case 'JUDGE':
-          this.sidebar = SideBarItemsJudge
-          break
-        case 'MC':
-          this.sidebar = SideBarItemsMC
-          break
-      }
 
-      this.user = data.userData
-      this.userProfile = data.userData.photo || profile
+      if (response.success) {
+        switch (data.userData.type) {
+          case 'MEDIATOR':
+            this.sidebar = SideBarItemsMediator
+            break
+          case 'JUDGE':
+            this.sidebar = SideBarItemsJudge
+            break
+          case 'MC':
+            this.sidebar = SideBarItemsMC
+            break
+        }
+        this.user = data.userData
+        this.userProfile = data.userData.photo || profile
+      }
     },
     handleComplete () {},
     onClickEditProfile () {
