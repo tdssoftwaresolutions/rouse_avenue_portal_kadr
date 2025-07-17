@@ -153,16 +153,13 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())
@@ -224,9 +221,7 @@ export default {
       this.paginatedData = { ...this.cases }
     },
     async scheduleMeeting (item) {
-      this.loading = true
       window.open('/admin/app/calendar', '_self')
-      this.loading = false
     },
     async fetchUsers (newPage) {
       this.currentPage = newPage
@@ -237,11 +232,9 @@ export default {
       const response = await this.$store.dispatch('getMyCases', {
         page: this.currentPage
       })
-      if (response.errorCode) {
-        this.showAlert(response.message, 'danger')
-      } else {
-        this.casesCache[this.currentPage] = response
-        this.paginatedData = response
+      if (response.success) {
+        this.casesCache[this.currentPage] = response.data
+        this.paginatedData = response.data
       }
     },
     setSignatureType (type) {
@@ -254,7 +247,7 @@ export default {
     },
     initializeSignaturePad () {
       this.$nextTick(() => {
-        const canvas = this.$refs.signaturePad // Use 'signaturePad' as ref name, like MediationForm
+        const canvas = this.$refs.signaturePad
         if (!canvas) return
         this.adjustCanvasSize(canvas)
         this.signaturePad = new SignaturePad(canvas, {
@@ -283,7 +276,7 @@ export default {
         caseId: item.id
       }
       this.signatureType = 'digital'
-      this.resolveStatus = 'closed_success' // Default to success
+      this.resolveStatus = 'closed_success'
       this.showResolveModal = true
       this.$nextTick(() => {
         if (this.signatureType === 'manual') {
@@ -297,50 +290,27 @@ export default {
       }
     },
     async submitResolve () {
-      this.loading = true
-      // Get signature value
       if (this.signatureType === 'manual') {
-        if (this.signaturePad && !this.signaturePad.isEmpty()) {
-          this.resolveForm.signature = this.signaturePad.toDataURL()
-        } else {
-          this.showAlert('Please provide a manual signature.', 'danger')
-          return
-        }
-      } else {
-        this.resolveForm.signature = this.resolveUserInitials
-      }
-      if (!this.resolveForm.agreementText.trim()) {
-        this.showAlert('Please enter what both parties agreed.', 'danger')
-        return
-      }
-      // Prepare payload
+        if (this.signaturePad && !this.signaturePad.isEmpty()) this.resolveForm.signature = this.signaturePad.toDataURL()
+        else return this.showAlert('Please provide a manual signature.', 'danger')
+      } else this.resolveForm.signature = this.resolveUserInitials
+      if (!this.resolveForm.agreementText.trim()) return this.showAlert('Please enter what both parties agreed.', 'danger')
       const payload = {
         caseId: this.resolveForm.caseId,
         resolveStatus: this.resolveStatus,
         agreementText: this.resolveForm.agreementText,
         signature: this.resolveForm.signature
       }
-      try {
-        const response = await this.$store.dispatch('markCaseResolved', payload)
-        if (response.errorCode) {
-          this.showAlert(response.message, 'danger')
-        } else {
-          this.showAlert('Case marked as resolved!', 'success')
-          this.showResolveModal = false
-          // Remove the resolved case from the UI
-          if (this.paginatedData && this.paginatedData.casesWithEvents) {
-            this.paginatedData.casesWithEvents = this.paginatedData.casesWithEvents.filter(
-              c => c.id !== this.resolveForm.caseId
-            )
-            if (typeof this.paginatedData.total === 'number') {
-              this.paginatedData.total = Math.max(0, this.paginatedData.total - 1)
-            }
-          }
+      const response = await this.$store.dispatch('markCaseResolved', payload)
+      if (response.success) {
+        this.showAlert(response.message, 'success')
+        this.showResolveModal = false
+        if (this.paginatedData && this.paginatedData.casesWithEvents) {
+          this.paginatedData.casesWithEvents = this.paginatedData.casesWithEvents.filter(
+            c => c.id !== this.resolveForm.caseId
+          )
+          if (typeof this.paginatedData.total === 'number') this.paginatedData.total = Math.max(0, this.paginatedData.total - 1)
         }
-      } catch (error) {
-        this.showAlert(error.message, 'danger')
-      } finally {
-        this.loading = false
       }
     }
   },
@@ -376,19 +346,17 @@ export default {
               const maxFileSizeMB = 1
               const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024
               if (file.size > maxFileSizeBytes) {
-                alert(`The file size exceeds the ${maxFileSizeMB} MB limit.`)
+                ref.showAlert(`The file size exceeds the ${maxFileSizeMB} MB limit.`, 'danger')
                 ref.loading = false
                 return
               }
-
               const reader = new FileReader()
               reader.onload = function (e) {
                 callback(e.target.result, { alt: file.name })
-                console.log('completed')
                 ref.loading = false
               }
               reader.onerror = function () {
-                alert('Failed to load the file. Please try again.')
+                ref.showAlert('Failed to load the file. Please try again.', 'danger')
                 ref.loading = false
               }
               reader.readAsDataURL(file)

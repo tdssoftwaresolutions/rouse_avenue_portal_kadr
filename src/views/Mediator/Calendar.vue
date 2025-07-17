@@ -1,7 +1,6 @@
 <template>
   <b-container fluid>
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-    <Spinner :isVisible="loading" />
     <b-modal no-close-on-backdrop hide-header-close ref="my-modal" hide-footer>
       <template #modal-title>
         Google Authentication
@@ -213,7 +212,6 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import { sofbox } from '../../config/pluginInit'
 import VueMaterialDateTimePicker from 'vue-material-date-time-picker'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
@@ -222,7 +220,7 @@ const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
 export default {
   name: 'calendar',
   components: {
-    VueMaterialDateTimePicker, Alert, Spinner
+    VueMaterialDateTimePicker, Alert
   },
   data () {
     return {
@@ -232,7 +230,6 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false,
       dashboardContent: null,
       googleAuthError: '',
       incrementalId: 1,

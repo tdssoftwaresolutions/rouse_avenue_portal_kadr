@@ -1,6 +1,5 @@
 <template>
   <div class="form-container">
-    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
 
     <h1 class="header">
       MEDIATION CENTRE<br />
@@ -273,13 +272,9 @@
 </template>
 
 <script>
-import Alert from '../../components/sofbox/alert/Alert.vue'
 
 export default {
   name: 'MediationForm',
-  components: {
-    Alert
-  },
   props: {
     formData: {
       type: Object,
@@ -313,12 +308,6 @@ export default {
         respondentAdvocate: '',
         document: null
       },
-      alert: {
-        visible: false,
-        message: '',
-        timeout: 5000,
-        type: 'primary'
-      },
       mediationData: null,
       statusValueMap: {
         failed: 'Failed',
@@ -341,13 +330,6 @@ export default {
     }
   },
   methods: {
-    showAlert (message, type) {
-      this.alert = {
-        message,
-        type,
-        visible: true
-      }
-    },
     async fetchMediationData () {
       const result = await this.$store.dispatch('getMediationData', { caseId: this.form.id })
       if (result.success) this.mediationData = result.data

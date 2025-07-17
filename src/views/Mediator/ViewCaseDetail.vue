@@ -1,7 +1,5 @@
 <template>
     <div class="container mt-4">
-        <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-        <Spinner :isVisible="loading" />
         <div>
           <div>
             <div class="section-title">Case Details</div>
@@ -154,14 +152,8 @@
     </div>
 </template>
 <script>
-import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
-
 export default {
   name: 'ViewCaseDetails',
-  components: {
-    Alert, Spinner
-  },
   props: {
     caseObject: {
       type: Object,
@@ -241,14 +233,6 @@ export default {
         this.isNoteModified = false
       }
     },
-    showAlert (message, type) {
-      this.alert = {
-        message,
-        type,
-        visible: true
-      }
-    },
-
     isURL (value) {
       const urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i
       return urlPattern.test(value)
@@ -259,13 +243,6 @@ export default {
       note: '',
       isNoteModified: false,
       firstPartyPreferredLanguages: '',
-      alert: {
-        visible: false,
-        message: '',
-        timeout: 5000,
-        type: 'primary'
-      },
-      loading: false,
       caseColumns: [
         { label: 'Start Date Time', key: 'start_datetime', class: 'text-left', sortable: true },
         { label: 'End Date Time', key: 'end_datetime', class: 'text-left', sortable: true },

@@ -1,7 +1,6 @@
 <template>
   <b-container fluid>
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-    <Spinner :isVisible="loading" />
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -110,7 +109,6 @@
 import { sofbox } from '../../config/pluginInit'
 import profile from '../../assets/images/user/1.jpeg'
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 const allowedTypes = [
   'image/jpeg',
   'image/png'
@@ -120,7 +118,7 @@ const maxSize = 2 * 1024 * 1024
 export default {
   name: 'ProfileEdit',
   components: {
-    Alert, Spinner
+    Alert
   },
   data () {
     return {
@@ -148,8 +146,7 @@ export default {
         message: '',
         timeout: 5000,
         type: 'primary'
-      },
-      loading: false
+      }
     }
   },
   created () {

@@ -1,7 +1,6 @@
 <template>
     <b-row>
       <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-      <Spinner :isVisible="loading" />
       <b-col md="12">
         <iq-card>
           <template v-slot:headerTitle>
@@ -88,14 +87,12 @@
 <script>
 import { sofbox } from '../../config/pluginInit'
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import MediationForm from '../MC/MediationForm.vue'
 
 export default {
   name: 'MyCases',
   components: {
     Alert,
-    Spinner,
     MediationForm
   },
   props: {
@@ -280,7 +277,6 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false,
       assignedMediator: null,
       showAssignMediatorModal: false,
       availableMediators: [],

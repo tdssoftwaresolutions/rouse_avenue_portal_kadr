@@ -1,7 +1,5 @@
 <template>
   <b-row>
-    <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-    <Spinner :isVisible="loading" />
     <b-col md="12">
       <iq-card>
         <template v-slot:headerTitle>
@@ -67,23 +65,13 @@
 </template>
 
 <script>
-import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import { sofbox } from '../../config/pluginInit'
 
 export default {
   name: 'MCAllMediators',
-  components: { Alert, Spinner },
   data () {
     return {
       mediators: [],
-      loading: false,
-      alert: {
-        visible: false,
-        message: '',
-        timeout: 5000,
-        type: 'primary'
-      },
       columns: [
         { label: 'Mediator Name', key: 'name', class: 'text-left', sortable: true },
         { label: 'Phone', key: 'phone_number', class: 'text-left', sortable: false },
@@ -146,9 +134,6 @@ export default {
       this.selectedMediator = mediator
       this.detailTitle = `Mediator: ${mediator.name}`
       this.showDetailModal = true
-    },
-    showAlert (message, type) {
-      this.alert = { message, type, visible: true }
     },
     getStatusLabel (status) {
       if (!status) return '-'

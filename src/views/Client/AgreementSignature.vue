@@ -1,7 +1,6 @@
 <template>
   <div class="form-container">
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-    <Spinner :isVisible="loading" />
     <h1>ROUSE AVENUE MEDIATION CENTER</h1>
         <h2>MEDIATION COMPLETION DOCUMENT</h2>
         <hr />
@@ -139,16 +138,14 @@
 <script>
 import SignaturePad from 'signature_pad'
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 
 export default {
   name: 'Signature',
   components: {
-    Alert, Spinner
+    Alert
   },
   data () {
     return {
-      loading: false,
       signature_type: 'digital',
       signaturePad: null,
       data: null,

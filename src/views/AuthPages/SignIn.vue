@@ -1,7 +1,6 @@
 <template>
   <div>
     <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" ></Alert>
-    <Spinner :isVisible="loading" />
     <h1 class="mb-0">Sign in</h1>
     <div class="mt-4">
       <div class="mb-3">
@@ -22,12 +21,11 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 
 export default {
   name: 'SignIn',
   components: {
-    Alert, Spinner
+    Alert
   },
   data () {
     return {
@@ -38,8 +36,7 @@ export default {
         visible: false,
         message: '',
         type: 'primary'
-      },
-      loading: false
+      }
     }
   },
   mounted () {

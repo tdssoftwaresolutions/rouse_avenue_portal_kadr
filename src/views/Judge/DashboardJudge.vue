@@ -1,7 +1,6 @@
 <template>
     <b-container fluid>
       <Alert :message="alert.message" :type="alert.type" v-model="alert.visible" :timeout="alert.timeout"></Alert>
-      <Spinner :isVisible="loading" />
       <b-row>
         <b-col lg="3" md="12">
           <iq-card class="iq-profile-card text-center">
@@ -157,7 +156,6 @@
 </template>
 <script>
 import Alert from '../../components/sofbox/alert/Alert.vue'
-import Spinner from '../../components/sofbox/spinner/spinner.vue'
 import JudgeMyMediations from '../Judge/JudgeMyMediations.vue'
 const PERSONAL_EVENT_COLOR = 'rgb(244, 81, 30)'
 const KADR_EVENT_COLOR = 'rgb(121, 134, 203)'
@@ -169,7 +167,7 @@ export default {
     content: null
   },
   components: {
-    Alert, Spinner, JudgeMyMediations
+    Alert, JudgeMyMediations
   },
   methods: {
     formatDate (dateString) {
@@ -258,7 +256,6 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      loading: false,
       notes: []
     }
   }
