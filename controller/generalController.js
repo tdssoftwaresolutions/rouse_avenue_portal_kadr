@@ -220,7 +220,7 @@ module.exports = {
             Hi ${party1},
           </p>
           <p style="font-size: 16px; color: #444444; line-height: 1.5;">
-            A mediation request has been initiated by <strong>Rouse Avenue Court</strong>. You are identified as the <strong>first party</strong> in this mediation case.
+            A mediation request in the matter of <strong>${party1} vs ${party2}</strong> (Case No. <strong>ROUSE-MED-${newCaseId}</strong>) has been initiated by <strong>Rouse Avenue Court</strong>. You are identified as the <strong>first party</strong> in this mediation case.
           </p>
           <p style="font-size: 16px; color: #444444; line-height: 1.5;">
             To proceed further, we kindly request you to review the case and provide your signature for verification.
@@ -537,6 +537,7 @@ module.exports = {
         where: { id: caseId },
         select: {
           id: true,
+          caseId: true,
           user_cases_first_partyTouser: {
             select: {
               id: true,
@@ -574,7 +575,7 @@ module.exports = {
             Hi ${caseRecord.user_cases_first_partyTouser.name},
           </p>
           <p style="font-size: 16px; color: #444444; line-height: 1.5;">
-            Congratulations! The mediation initiated at <strong>Rouse Avenue Court</strong> has been successfully resolved. You are identified as the <strong>first party</strong> in this mediation case.
+            Congratulations! The mediation initiated at <strong>Rouse Avenue Court</strong> (Case No. <strong>${caseRecord.caseId}</strong>) has been successfully resolved. You are identified as the <strong>first party</strong> in this mediation case.
           </p>
           <p style="font-size: 16px; color: #444444; line-height: 1.5;">
             To complete the process, we require your signature on the final agreement.

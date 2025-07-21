@@ -40,11 +40,17 @@ module.exports = {
         select: {
           id: true,
           first_party: true,
+          caseId: true,
           second_party: true,
           user_cases_second_partyTouser: {
             select: {
               id: true,
               email: true,
+              name: true
+            }
+          },
+          user_cases_first_partyTouser: {
+            select: {
               name: true
             }
           }
@@ -77,7 +83,7 @@ module.exports = {
               Hi ${caseRecord.user_cases_second_partyTouser.name},
             </p>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
-              A mediation request has been initiated by <strong>Rouse Avenue Court</strong>. You are identified as the <strong>second party</strong> in this mediation case.
+              A mediation request  in the matter of <strong>${caseRecord.user_cases_first_partyTouser.name} vs ${caseRecord.user_cases_second_partyTouser.name}</strong> (Case No. <strong>${caseRecord.caseId}</strong>) has been initiated by <strong>Rouse Avenue Court</strong>. You are identified as the <strong>second party</strong> in this mediation case.
             </p>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
               To proceed further, we kindly request you to review the case and provide your signature for verification.
@@ -291,7 +297,7 @@ module.exports = {
               Hi ${caseRecord.user_cases_second_partyTouser.name},
             </p>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
-              Congratulations! The mediation initiated at <strong>Rouse Avenue Court</strong> has been successfully resolved. You are identified as the <strong>second party</strong> in this mediation case.
+              Congratulations! The mediation initiated at <strong>Rouse Avenue Court</strong> (Case No. <strong>${caseRecord.caseId}</strong>) has been successfully resolved. You are identified as the <strong>second party</strong> in this mediation case.
             </p>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
               To complete the process, we require your signature on the final agreement.
@@ -369,6 +375,9 @@ module.exports = {
             <h2 style="color: #333333; font-size: 22px; margin-bottom: 20px;">Signed Agreement Available</h2>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
               Hi,
+            </p>
+            <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+              This is regarding the mediation case <strong>#${caseRecord.caseId}</strong> between <strong>${caseRecord.user_cases_first_partyTouser.name}</strong> vs <strong>${caseRecord.user_cases_second_partyTouser.name}</strong>.
             </p>
             <p style="font-size: 16px; color: #444444; line-height: 1.5;">
               Please find below the link to the signed agreement for your reference:
