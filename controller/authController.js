@@ -110,10 +110,33 @@ module.exports = {
         }
       })
       const htmlBody = `
-                        <p>Hi, we have recieved your request to reset password for your account on Rouse Avenue Mediation Center.</p>
-                        <p>To go ahead with this, please enter OTP: ${otp} on our platform to reset the password</p>
-                      `
-      await helper.sendEmail(email, htmlBody)
+        <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 6px; padding: 30px;">
+            <h2 style="color: #333333; font-size: 22px; margin-bottom: 20px;">Password Reset Request</h2>
+            <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+              Hello,
+            </p>
+            <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+              We have received a request to reset the password for your account on <strong>Rouse Avenue Mediation Center</strong>.
+            </p>
+            <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+              To proceed, please use the following One-Time Password (OTP) on our platform to complete your password reset:
+            </p>
+            <div style="margin: 20px 0; padding: 12px; background-color: #f0f4ff; border-left: 4px solid #3c78d8; font-size: 18px; font-weight: bold; color: #2a2a2a;">
+              ${otp}
+            </div>
+            <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+              If you did not request this password reset, please ignore this email. Your account remains secure.
+            </p>
+            <p style="font-size: 14px; color: #888888; margin-top: 30px; border-top: 1px solid #eeeeee; padding-top: 15px;">
+              Regards,<br />
+              Team Rouse Avenue Mediation Center
+            </p>
+          </div>
+        </div>
+      `
+
+      await helper.sendEmail('Password Reset Request – Rouse Avenue Mediation Center', email, htmlBody)
       success(res, next)
     } catch (error) {
       next(error)

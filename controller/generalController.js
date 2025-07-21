@@ -225,9 +225,35 @@ module.exports = {
       const newSignatureRecord = await helper.createSignatureTrackingRecord(prisma, firstPartyId, newCaseRecord.id, null)
 
       const htmlBody = `
-      <p>Hi ${party1}, <br/> A mediation request has been initiated by Rouse Avenue Court.<br/>You are identified as the first party in this mediation case. To proceed further with the case, we require your signature verification. <br/> Please click the link below to review and provide your signature:</p>
-      <p><br/> Link to register - ${process.env.BASE_URL}/admin/signature?requestId=${newSignatureRecord.id}</p>`
-      await helper.sendEmail('Signature Required: Mediation Request from Rouse Avenue Court', party1Email, htmlBody)
+      <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 6px; padding: 30px;">
+          <h2 style="color: #333333; font-size: 22px; margin-bottom: 20px;">Signature Verification Request</h2>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            Hi ${party1},
+          </p>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            A mediation request has been initiated by <strong>Rouse Avenue Court</strong>. You are identified as the <strong>first party</strong> in this mediation case.
+          </p>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            To proceed further, we kindly request you to review the case and provide your signature for verification.
+          </p>
+          <div style="margin: 25px 0;">
+            <a href="${process.env.BASE_URL}/admin/signature?requestId=${newSignatureRecord.id}"
+               style="display: inline-block; background-color: #3c78d8; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 4px; font-size: 16px;">
+              Review & Sign Now
+            </a>
+          </div>
+          <p style="font-size: 16px; color: #444444;">
+            If you believe this message was sent to you in error, please contact our support team immediately.
+          </p>
+          <p style="font-size: 14px; color: #888888; margin-top: 30px; border-top: 1px solid #eeeeee; padding-top: 15px;">
+            Regards,<br />
+            Team Rouse Avenue Mediation Center
+          </p>
+        </div>
+      </div>
+    `
+      await helper.sendEmail('Action Required – Signature Verification for Mediation Request', party1Email, htmlBody)
 
       success(res, {}, 'New case created successfully!')
     } catch (error) {
@@ -553,10 +579,36 @@ module.exports = {
       const newSignatureRecord = await helper.createSignatureTrackingRecord(prisma, caseRecord.user_cases_first_partyTouser.id, null, agreementRecord.id)
 
       const htmlBody = `
-     <p>Hi ${caseRecord.user_cases_first_partyTouser.name}, <br/> Congratulations, the mediation Rouse Avenue Court is now resolved.<br/>You are the first party in this mediation case. To proceed with the final agreement, we require your signature verification. <br/> Please click the link below to review and provide your signature:</p>
-     <p><br/> Link to register - ${process.env.BASE_URL}/admin/agreement-signature?requestId=${newSignatureRecord.id}</p>`
+      <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 6px; padding: 30px;">
+          <h2 style="color: #333333; font-size: 22px; margin-bottom: 20px;">Mediation Resolved – Final Agreement Signature</h2>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            Hi ${caseRecord.user_cases_first_partyTouser.name},
+          </p>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            Congratulations! The mediation initiated at <strong>Rouse Avenue Court</strong> has been successfully resolved. You are identified as the <strong>first party</strong> in this mediation case.
+          </p>
+          <p style="font-size: 16px; color: #444444; line-height: 1.5;">
+            To complete the process, we require your signature on the final agreement.
+          </p>
+          <div style="margin: 25px 0;">
+            <a href="${process.env.BASE_URL}/admin/agreement-signature?requestId=${newSignatureRecord.id}"
+               style="display: inline-block; background-color: #3c78d8; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 4px; font-size: 16px;">
+              Review & Sign Final Agreement
+            </a>
+          </div>
+          <p style="font-size: 16px; color: #444444;">
+            If you believe this message was sent to you in error, or you have any questions, please contact our support team.
+          </p>
+          <p style="font-size: 14px; color: #888888; margin-top: 30px; border-top: 1px solid #eeeeee; padding-top: 15px;">
+            Regards,<br />
+            Team Rouse Avenue Mediation Center
+          </p>
+        </div>
+      </div>
+    `
 
-      await helper.sendEmail('Signature Required: Mediation Agreement from Rouse Avenue Court', caseRecord.user_cases_first_partyTouser.email, htmlBody)
+      await helper.sendEmail('Final Step – Signature Required for Mediation Agreement', caseRecord.user_cases_first_partyTouser.email, htmlBody)
 
       success(res, {}, 'Case marked as resolved')
     } catch (error) {
