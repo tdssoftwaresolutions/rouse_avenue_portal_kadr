@@ -153,35 +153,23 @@ module.exports = {
         judgeId
       } = req.body.caseData
 
-      async function getOrCreateUser (email, name) {
-        let user = await prisma.user.findUnique({
-          where: {
-            email
+      async function createUser (email, name) {
+        const user = await prisma.user.create({
+          data: {
+            name,
+            email,
+            user_type: 'CLIENT',
+            active: true
           },
           select: {
             id: true
           }
         })
-
-        if (!user) {
-          user = await prisma.user.create({
-            data: {
-              name,
-              email,
-              user_type: 'CLIENT',
-              active: true
-            },
-            select: {
-              id: true
-            }
-          })
-        }
-
         return user.id
       }
 
-      const firstPartyId = await getOrCreateUser(party1Email, party1)
-      const secondPartyId = await getOrCreateUser(party2Email, party2)
+      const firstPartyId = await createUser(party1Email, party1)
+      const secondPartyId = await createUser(party2Email, party2)
 
       let uploadedDocumentResponse = null
       if (document) { uploadedDocumentResponse = await helper.deployToS3Bucket(document, `case-reference-document-${uuidv4()}`) }
@@ -610,7 +598,7 @@ module.exports = {
 
       await helper.sendEmail('Final Step – Signature Required for Mediation Agreement', caseRecord.user_cases_first_partyTouser.email, htmlBody)
 
-      success(res, {}, 'Case marked as resolved')
+      success(res, {}, 'Case marked as resolved!')
     } catch (error) {
       next(error)
     }

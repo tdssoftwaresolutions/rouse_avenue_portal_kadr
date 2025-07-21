@@ -244,15 +244,21 @@ export default (router) => {
           dispatch('spinner/hideSpinner')
         }
       },
-      async markCaseResolved ({ commit }, { caseId, resolveStatus, agreementText, signature }) {
+      async markCaseResolved ({ commit, dispatch }, { caseId, resolveStatus, agreementText, signature }) {
         try {
+          dispatch('spinner/showSpinner')
           const { data } = await apiClient.post(MARK_CASE_RESOLVED, { caseId, resolveStatus, agreementText, signature })
+          if (!data.success) throw new Error(data.error.message)
           return data
         } catch (error) {
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
           return {
             success: false,
             error
           }
+        } finally {
+          dispatch('spinner/hideSpinner')
         }
       },
       async getMediationData ({ commit, dispatch }, { caseId }) {

@@ -46,7 +46,6 @@ export default {
       const response = await this.$store.dispatch('getDashboardContent')
       if (response.success) {
         this.dashboardContent = response.data.dashboardContent
-        console.log(this.dashboardContent)
       }
     }
   }

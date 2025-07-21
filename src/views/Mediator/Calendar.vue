@@ -157,7 +157,6 @@
       <div class="data-row">
         <div class="col-12">
             <div class="data-title">Select Date and Time</div>
-            {{ typeof newAppointment.start }}
             <VueMaterialDateTimePicker
               id="appointment-datetime"
               v-model="newAppointment.start"
@@ -289,7 +288,6 @@ export default {
         const checkPopupClosed = setInterval(() => {
           if (popup.closed) {
             clearInterval(checkPopupClosed)
-            console.log('Popup has been closed')
             ref.initCalendar(true)
           }
         }, 500)
@@ -411,7 +409,6 @@ export default {
       const endDate = new Date(this.newAppointment.start)
       endDate.setMinutes(endDate.getMinutes() + 30)
       if (this.newAppointment.start) {
-        console.log(this.newAppointment)
         this.storeNewEvent({
           id: this.incrementalId++,
           title: this.newAppointment.title,
@@ -467,7 +464,6 @@ export default {
     },
     onDateClick (selectedInfo) {
       this.newAppointment.start = new Date()
-      console.log(this.newAppointment)
       this.resetForm()
       this.$refs['new-appointment-modal'].show()
     },

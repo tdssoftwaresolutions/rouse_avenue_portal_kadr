@@ -367,7 +367,6 @@ export default {
         media_live_embeds: true,
         setup: function (editor) {
           editor.addShortcut('ctrl+s', 'Save', function () {
-            console.log('Saved!')
           })
         },
         image_caption: true,

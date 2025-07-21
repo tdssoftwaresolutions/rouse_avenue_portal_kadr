@@ -421,7 +421,6 @@ class Helper {
           secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
         }
       })
-      console.log(base64Content)
       // Extract file extension from base64 string
       let mimeType, fileBuffer, extension, fullFileName
 

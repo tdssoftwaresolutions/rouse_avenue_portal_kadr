@@ -10,7 +10,7 @@ datasource db {
 model user {
   id                             String                    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   name                           String                    @db.VarChar(255)
-  email                          String                    @unique(map: "email") @db.VarChar(255)
+  email                          String                    @db.VarChar(255)
   phone_number                   String?                   @db.VarChar(20)
   password_hash                  String?                   @db.VarChar(255)
   created_at                     DateTime?                 @default(now()) @db.Timestamp(0)
@@ -34,6 +34,7 @@ model user {
   llb_certificate_url            String?                   @db.VarChar(255)
   profile_picture_url            String?                   @db.VarChar(255)
   working_day_of_week            user_working_day_of_week?
+  unique_email_for_non_clients   String?                   @unique(map: "unique_non_client_email") @db.VarChar(255)
   blogs                          blogs[]
   cases_cases_judgeTouser        cases[]                   @relation("cases_judgeTouser")
   cases_cases_first_partyTouser  cases[]                   @relation("cases_first_partyTouser")
