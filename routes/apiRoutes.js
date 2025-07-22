@@ -13,6 +13,8 @@ router.get('/authenticateWithGoogle', authMiddleware, authController.authenticat
 router.get('/googleCallback', authController.googleCallback)
 router.post('/resetPassword', authController.resetPassword)
 router.post('/confirmPasswordChange', authController.confirmPasswordChange)
+router.post('/sendOtp', authController.sendOtp)
+router.post('/verifyOTP', authController.verifyOtp)
 
 router.get('/getUserData', authMiddleware, generalController.getUserData)
 router.post('/verify-signature', authMiddleware, generalController.verifySignature)

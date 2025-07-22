@@ -119,24 +119,19 @@
     </form>
 
     <!-- Phone Verification Modal -->
-    <b-modal v-model="showPhoneModal" hide-footer title="Phone Verification" @hidden="resetPhoneModal">
+    <b-modal v-model="showPhoneModal" hide-footer title="OTP Verification" @hidden="resetPhoneModal">
       <div class="phone-modal-content">
-        <div v-if="phoneStep === 1">
-          <h5>Enter your Phone Number</h5>
-          <b-form-group>
-            <b-form-input
-              v-model="phoneNumber"
-              maxlength="10"
-              placeholder="Enter 10-digit Phone Number"
-              type="text"
-              pattern="[0-9]{10}"
-              autocomplete="off"
-            ></b-form-input>
-          </b-form-group>
-          <b-button variant="primary" block :disabled="!isPhoneValid" @click="sendPhoneOtp">Send OTP</b-button>
+        <div v-if="phoneStep === 1" class="phone-step-card">
+          <h5 class="section-title">Verify Your Identity</h5>
+          <small class="text-muted">We'll send an OTP to this number to confirm your identity before accepting the mediation.</small>
+          <div class="phone-display">{{ phoneNumber }}</div>
+          <b-button variant="primary" block @click="sendPhoneOtp">Send OTP</b-button>
         </div>
         <div v-else-if="phoneStep === 2">
-          <h5>OTP sent to your phone</h5>
+          <h5 class="section-title">OTP Sent to Your Phone</h5>
+          <small class="text-muted">
+            Please enter the 6-digit OTP sent to your registered mobile number.
+          </small>
           <b-form-group>
             <b-form-input
               v-model="phoneOtp"
@@ -151,12 +146,10 @@
         </div>
         <div v-else-if="phoneStep === 3">
           <div class="phone-verification-success">
-            <h5>Verification Successful!</h5>
-            <p>
-              Phone number matched with our record:<br>
-              <strong>{{ phoneNumber }}</strong>
-            </p>
-            <b-alert show variant="success" class="mt-2">Congrats! Your identity is verified via phone.</b-alert>
+            <h5 class="section-title">Verification Complete</h5>
+            <small class="text-muted">
+            Your phone number has been successfully verified. You may now proceed to accept the mediation.
+            </small>
             <b-button variant="success" block @click="finalSubmit">Proceed</b-button>
           </div>
         </div>
@@ -192,6 +185,7 @@ export default {
       phoneStep: 1,
       phoneNumber: '',
       phoneOtp: '',
+      requestId: null,
       fakePhoneOtp: '123456'
     }
   },
@@ -202,9 +196,6 @@ export default {
         .map((name) => name[0])
         .join('')
         .toUpperCase()
-    },
-    isPhoneValid () {
-      return /^[0-9]{10}$/.test(this.phoneNumber)
     },
     isPhoneOtpValid () {
       return /^[0-9]{6}$/.test(this.phoneOtp)
@@ -272,37 +263,27 @@ export default {
     openPhoneModal () {
       this.showPhoneModal = true
       this.phoneStep = 1
-      this.phoneNumber = ''
+      this.phoneNumber = this.isFirstPaty ? this.signatureRequestDetails.plaintiff_phone : this.signatureRequestDetails.respondent_phone
       this.phoneOtp = ''
     },
-    sendPhoneOtp () {
-      /** if (this.phoneNumber !== this.expectedPhone) {
-        this.$bvToast.toast('Phone number does not match our records.', {
+    async sendPhoneOtp () {
+      const response = await this.$store.dispatch('sendOtp', { recordId: 'fsdfdfd' })
+      if (response.success) {
+        this.requestId = response.data.requestId
+        this.phoneStep = 2
+        this.phoneOtp = ''
+        this.$bvToast.toast('OTP sent to your phone number.', {
           title: 'Phone Verification',
-          variant: 'danger',
+          variant: 'info',
           solid: true
         })
-        return
-      }**/
-      // Simulate sending OTP
-      this.phoneStep = 2
-      this.phoneOtp = ''
-      this.$bvToast.toast('OTP sent to your phone number.', {
-        title: 'Phone Verification',
-        variant: 'info',
-        solid: true
-      })
+      }
     },
-    verifyPhoneOtp () {
+    async verifyPhoneOtp () {
       // Simulate OTP verification
-      if (this.phoneOtp === this.fakePhoneOtp) {
+      const response = await this.$store.dispatch('verifyOtp', { requestId: this.requestId, otp: this.phoneOtp })
+      if (response.success) {
         this.phoneStep = 3
-      } else {
-        this.$bvToast.toast('Invalid OTP. Please try again.', {
-          title: 'Phone Verification',
-          variant: 'danger',
-          solid: true
-        })
       }
     },
     finalSubmit () {
@@ -404,6 +385,33 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.phone-step-card {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.phone-display {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #555;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
 }
 
 .form-row {

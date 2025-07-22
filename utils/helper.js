@@ -5,6 +5,8 @@ const crypto = require('crypto')
 const errorCodes = require('./errors/errorCodes')
 const { google } = require('googleapis')
 const { CaseSubTypes, CaseTypes } = require('../utils/caseConstants')
+const qs = require('qs')
+const axios = require('axios')
 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
@@ -732,6 +734,36 @@ class Helper {
 
   static generateRefreshToken (user) {
     return jwt.sign({ id: user.id, email: user.email, type: user.user_type ? user.user_type : user.type, name: user.name }, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' })
+  }
+
+  static async sendOtpSMS (otp, toNumber) {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID
+    const authToken = process.env.TWILIO_AUTH_TOKEN
+
+    const data = qs.stringify({
+      To: toNumber,
+      From: process.env.TWILIO_SENDER_NUMBER,
+      Body: `Your OTP for identity verification on RAMC is ${otp}. Please enter this code to continue. Do not share it with anyone.`
+    })
+
+    try {
+      const response = await axios.post(
+        `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+        data,
+        {
+          auth: {
+            username: accountSid,
+            password: authToken
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      )
+      console.log('Message sent successfully:', response.data)
+    } catch (error) {
+      console.error('Error sending SMS:', error.response?.data || error.message)
+    }
   }
 
   static async sendEmail (subject = 'Mail from Rouse Avenue Mediaton Center', emailId, htmlBody) {

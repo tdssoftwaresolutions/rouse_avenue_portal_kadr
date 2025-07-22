@@ -76,6 +76,67 @@ module.exports = {
       next(error)
     }
   },
+  sendOtp: async function (req, res, next) {
+    try {
+      const { id } = req.body
+      if (!id) throw createError(errorCodes.INVALID_REQUEST)
+
+      const otp = Math.floor(100000 + Math.random() * 900000)
+      const createdAt = new Date()
+      const expiresAt = new Date(createdAt.getTime() + 10 * 60000)
+      const response = await prisma.otp_resets.create({
+        data: {
+          otp,
+          created_at: createdAt,
+          expires_at: expiresAt,
+          email: 'dummy@gmail.com',
+          type: 'AGREEMENT'
+        },
+        select: {
+          id: true
+        }
+      })
+
+      await helper.sendOtpSMS(otp)
+      success(res, {
+        requestId: response.id
+      }, 'OTP sent successfully')
+    } catch (error) {
+      next(error)
+    }
+  },
+  verifyOtp: async function (req, res, next) {
+    try {
+      const { requestId, otp } = req.body
+      if (!requestId || !otp) throw createError(errorCodes.INVALID_REQUEST)
+
+      const otpReset = await prisma.otp_resets.findUnique({
+        where: {
+          id: requestId
+        },
+        select: {
+          otp: true,
+          expires_at: true
+        }
+      })
+
+      if (!otpReset) throw createError(errorCodes.INVALID_REQUEST)
+
+      if (Number(otpReset.otp) !== Number(otp)) throw createError(errorCodes.INVALID_OTP)
+
+      if (otpReset.expires_at < new Date()) throw createError(errorCodes.OTP_EXPIRED)
+
+      await prisma.otp_resets.delete({
+        where: {
+          id: requestId
+        }
+      })
+
+      success(res, {}, 'OTP verified successfully')
+    } catch (error) {
+      next(error)
+    }
+  },
   resetPassword: async function (req, res, next) {
     try {
       const email = req.body.emailAddress
@@ -95,7 +156,14 @@ module.exports = {
       const otp = Math.floor(100000 + Math.random() * 900000)
       await prisma.otp_resets.upsert({
         where: {
-          email
+          and: [
+            {
+              email
+            },
+            {
+              type: 'RESET_PASSWORD'
+            }
+          ]
         },
         update: {
           otp,

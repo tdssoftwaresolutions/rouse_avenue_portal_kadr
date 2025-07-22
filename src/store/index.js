@@ -33,6 +33,8 @@ const GET_MEDIATION_DATA = '/getMediationData'
 const GET_AGREEMENT_DETAILS_FOR_SIGNATURE = '/getAgreementDetailsForSignature'
 const SUBMIT_AGREEMENT_SIGNATURE = '/submitAgreementSignature'
 const LIST_ALL_MEDIATORS_WITH_CASES = '/listAllMediatorsWithCases'
+const SEND_OTP = '/sendOtp'
+const VERIFY_OTP = '/verifyOTP'
 const debug = process.env.NODE_ENV !== 'production'
 const getDefaultState = () => {
   return {
@@ -131,6 +133,40 @@ export default (router) => {
           if (!data.success) throw new Error(data.error.message)
           store.$cookies.set('accessToken', data.data.accessToken, '1d', '/', '', true, 'None')
           store.$router.push({ name: 'dashboard.home' })
+          return data
+        } catch (error) {
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
+        }
+      },
+      async sendOtp ({ commit, dispatch }, { recordId }) {
+        try {
+          dispatch('spinner/showSpinner')
+          const { data } = await apiClient.post(SEND_OTP, { id: recordId })
+          if (!data.success) throw new Error(data.error.message)
+          return data
+        } catch (error) {
+          const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
+          dispatch('alert/showAlert', { message: msg, type: 'danger' }, { root: true })
+          return {
+            success: false,
+            error
+          }
+        } finally {
+          dispatch('spinner/hideSpinner')
+        }
+      },
+      async verifyOtp ({ commit, dispatch }, { requestId, otp }) {
+        try {
+          dispatch('spinner/showSpinner')
+          const { data } = await apiClient.post(VERIFY_OTP, { requestId, otp })
+          if (!data.success) throw new Error(data.error.message)
           return data
         } catch (error) {
           const msg = error.response?.data?.error?.message || error.message || 'Something went wrong'
