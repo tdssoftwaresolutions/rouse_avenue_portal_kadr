@@ -153,13 +153,14 @@ module.exports = {
         judgeId
       } = req.body.caseData
 
-      async function createUser (email, name) {
+      async function createUser (email, name, phone) {
         const user = await prisma.user.create({
           data: {
             name,
             email,
             user_type: 'CLIENT',
-            active: true
+            active: false,
+            phone_number: phone
           },
           select: {
             id: true
@@ -168,8 +169,8 @@ module.exports = {
         return user.id
       }
 
-      const firstPartyId = await createUser(party1Email, party1)
-      const secondPartyId = await createUser(party2Email, party2)
+      const firstPartyId = await createUser(party1Email, party1, plaintiffPhone)
+      const secondPartyId = await createUser(party2Email, party2, respondentPhone)
 
       let uploadedDocumentResponse = null
       if (document) { uploadedDocumentResponse = await helper.deployToS3Bucket(document, `case-reference-document-${uuidv4()}`) }

@@ -741,7 +741,7 @@ class Helper {
     const authToken = process.env.TWILIO_AUTH_TOKEN
 
     const data = qs.stringify({
-      To: toNumber,
+      To: `+91${toNumber}`,
       From: process.env.TWILIO_SENDER_NUMBER,
       Body: `Your OTP for identity verification on RAMC is ${otp}. Please enter this code to continue. Do not share it with anyone.`
     })

@@ -90,22 +90,18 @@
 
     <!-- Phone Verification Modal -->
     <b-modal v-model="showPhoneModal" hide-footer title="Phone Verification" @hidden="resetPhoneModal">
-      <div class="phone-modal-content">
-        <div v-if="phoneStep === 1">
-          <h5>Enter your Phone Number</h5>
-          <b-form-group>
-            <b-form-input
-              v-model="phoneNumber"
-              maxlength="10"
-              placeholder="Enter your registered phone number"
-              type="text"
-              autocomplete="off"
-            ></b-form-input>
-          </b-form-group>
-          <b-button variant="primary" block :disabled="!isPhoneValid" @click="sendPhoneOtp">Send OTP</b-button>
+      <div>
+        <div v-if="phoneStep === 1" class="phone-step-card">
+          <h5 class="section-title">Verify Your Identity</h5>
+          <small class="text-muted">We'll send an OTP to this number to confirm your identity before signing the agreement.</small>
+          <div class="phone-display">{{ phoneNumber }}</div>
+          <b-button variant="primary" block @click="sendPhoneOtp">Send OTP</b-button>
         </div>
-        <div v-else-if="phoneStep === 2">
-          <h5>OTP sent to your phone</h5>
+        <div v-else-if="phoneStep === 2" class="phone-step-card">
+          <h5 class="section-title" style="text-align: center;">Enter OTP</h5>
+          <small class="text-muted">
+            Please enter the 6-digit OTP sent to your registered mobile number.
+          </small>
           <b-form-group>
             <b-form-input
               v-model="phoneOtp"
@@ -116,17 +112,14 @@
               autocomplete="off"
             ></b-form-input>
           </b-form-group>
-          <b-button variant="primary" block :disabled="!isOtpValid" @click="verifyPhoneOtp">Verify OTP</b-button>
+          <b-button variant="primary" block :disabled="!isPhoneOtpValid" @click="verifyPhoneOtp">Verify OTP</b-button>
         </div>
-        <div v-else-if="phoneStep === 3">
+        <div v-else-if="phoneStep === 3" class="phone-step-card">
           <div class="phone-verification-success">
-            <b-icon icon="check-circle-fill" variant="success" font-scale="2"></b-icon>
-            <h5>Verification Successful!</h5>
-            <p>
-              Phone number matched with our records:<br>
-              <strong>{{ phoneNumber }}</strong>
-            </p>
-            <b-alert show variant="success" class="mt-2">Congrats! Your identity is verified via phone.</b-alert>
+            <h5 class="section-title">Verification Complete</h5>
+            <small class="text-muted">
+            Your phone number has been successfully verified. You may now proceed to sign the agreement.
+            </small>
             <b-button variant="success" block @click="finalSubmit">Proceed</b-button>
           </div>
         </div>
@@ -155,12 +148,10 @@ export default {
         timeout: 5000,
         type: 'primary'
       },
-      // Phone verification modal state
       showPhoneModal: false,
       phoneStep: 1,
       phoneNumber: '',
       phoneOtp: '',
-      fakeOtp: '123456',
       matchedPhone: ''
     }
   },
@@ -171,15 +162,8 @@ export default {
         .join('')
         .toUpperCase()
     },
-    isPhoneValid () {
-      // Accept 10 digit or +91 format
-      return /^(?:\+91|0)?[789]\d{9}$/.test(this.phoneNumber)
-    },
-    isOtpValid () {
+    isPhoneOtpValid () {
       return /^[0-9]{6}$/.test(this.phoneOtp)
-    },
-    userInitialsName () {
-      return this.data?.userName
     }
   },
   methods: {
@@ -188,12 +172,10 @@ export default {
 
       const date = new Date(dateString)
 
-      // Helper to pad single digits with a leading zero
       const pad = (n) => (n < 10 ? '0' + n : n)
 
       switch (type) {
         case 'date':
-          // For <input type="date"> – UTC is fine
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
@@ -270,42 +252,23 @@ export default {
     openPhoneModal () {
       this.showPhoneModal = true
       this.phoneStep = 1
-      this.phoneNumber = ''
+      this.phoneNumber = this.data.partyPhoneNumber
       this.phoneOtp = ''
       this.matchedPhone = ''
     },
-    sendPhoneOtp () {
-      // Simulate sending OTP
-      // Check if entered phone matches the user's phone in data
-      // const phoneFromRecord = this.data?.phone_number || ''
-      // Normalize both numbers for comparison (remove +91, spaces, etc.)
-      // const normalize = (num) => num.replace(/[^0-9]/g, '').replace(/^91/, '')
-      // if (normalize(this.phoneNumber) !== normalize(phoneFromRecord)) {
-      //  this.$bvToast.toast('Phone number does not match our records.', {
-      //    title: 'Phone Verification',
-      //    variant: 'danger',
-      //    solid: true
-      //  })
-      //  return
-      // }
-      this.phoneStep = 2
-      this.phoneOtp = ''
-      // this.matchedPhone = phoneFromRecord
-      this.$bvToast.toast('OTP sent to your phone number.', {
-        title: 'Phone Verification',
-        variant: 'info',
-        solid: true
-      })
+    async sendPhoneOtp () {
+      const response = await this.$store.dispatch('sendOtp', { recordId: this.$route.query?.requestId })
+      if (response.success) {
+        this.requestId = response.data.requestId
+        this.phoneStep = 2
+        this.phoneOtp = ''
+        this.showAlert(response.message, 'success')
+      }
     },
-    verifyPhoneOtp () {
-      if (this.phoneOtp === this.fakeOtp) {
+    async verifyPhoneOtp () {
+      const response = await this.$store.dispatch('verifyOtp', { requestId: this.requestId, otp: this.phoneOtp })
+      if (response.success) {
         this.phoneStep = 3
-      } else {
-        this.$bvToast.toast('Invalid OTP. Please try again.', {
-          title: 'Phone Verification',
-          variant: 'danger',
-          solid: true
-        })
       }
     },
     finalSubmit () {
@@ -402,6 +365,33 @@ input {
   width: auto;
   margin-left: 10px;
   vertical-align: middle;
+}
+
+.phone-step-card {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.phone-display {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #555;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
 }
 
 .referral-section {
@@ -538,10 +528,6 @@ button {
 
 .aadhar-verification-success p {
   margin: 5px 0;
-}
-
-.phone-modal-content {
-  padding: 20px;
 }
 
 .phone-verification-success {

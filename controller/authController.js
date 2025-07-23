@@ -81,6 +81,52 @@ module.exports = {
       const { id } = req.body
       if (!id) throw createError(errorCodes.INVALID_REQUEST)
 
+      const signatureTracking = await prisma.signature_tracking.findUnique(
+        {
+          where: {
+            id
+          },
+          select: {
+            case_id: true,
+            user_id: true,
+            case_agreement_id: true,
+            cases: {
+              select: {
+                first_party: true,
+                second_party: true,
+                plaintiff_phone: true,
+                respondent_phone: true
+              }
+            }
+          }
+        }
+      )
+
+      if (!signatureTracking) throw createError(errorCodes.INVALID_REQUEST)
+
+      let phoneNumber = null
+
+      if (signatureTracking.case_id != null) {
+        if (signatureTracking.cases.first_party === signatureTracking.user_id) { phoneNumber = signatureTracking.cases.plaintiff_phone } else if (signatureTracking.cases.second_party === signatureTracking.user_id) { phoneNumber = signatureTracking.cases.respondent_phone }
+      } else if (signatureTracking.case_agreement_id != null) {
+        const caseRecord = await prisma.cases.findFirst({
+          where: {
+            case_agreement: {
+              equals: signatureTracking.case_agreement_id
+            }
+          },
+          select: {
+            first_party: true,
+            second_party: true,
+            plaintiff_phone: true,
+            respondent_phone: true
+          }
+        })
+        if (caseRecord.first_party === signatureTracking.user_id) { phoneNumber = caseRecord.plaintiff_phone } else if (caseRecord.second_party === signatureTracking.user_id) { phoneNumber = caseRecord.respondent_phone }
+      }
+
+      if (!phoneNumber) throw createError(errorCodes.INVALID_REQUEST)
+
       const otp = Math.floor(100000 + Math.random() * 900000)
       const createdAt = new Date()
       const expiresAt = new Date(createdAt.getTime() + 10 * 60000)
@@ -89,15 +135,14 @@ module.exports = {
           otp,
           created_at: createdAt,
           expires_at: expiresAt,
-          email: 'dummy@gmail.com',
-          type: 'AGREEMENT'
+          type: 'MEDIATION'
         },
         select: {
           id: true
         }
       })
 
-      await helper.sendOtpSMS(otp)
+      await helper.sendOtpSMS(otp, phoneNumber)
       success(res, {
         requestId: response.id
       }, 'OTP sent successfully')
@@ -140,10 +185,13 @@ module.exports = {
   resetPassword: async function (req, res, next) {
     try {
       const email = req.body.emailAddress
-      const user = await prisma.user.findUnique({
+      const user = await prisma.user.findFirst({
         where: {
           email,
-          active: true
+          active: true,
+          user_type: {
+            not: 'CLIENT'
+          }
         },
         select: {
           id: true
@@ -156,14 +204,10 @@ module.exports = {
       const otp = Math.floor(100000 + Math.random() * 900000)
       await prisma.otp_resets.upsert({
         where: {
-          and: [
-            {
-              email
-            },
-            {
-              type: 'RESET_PASSWORD'
-            }
-          ]
+          unique_email_type: {
+            email,
+            type: 'RESET_PASSWORD'
+          }
         },
         update: {
           otp,
@@ -174,7 +218,8 @@ module.exports = {
           email,
           otp,
           created_at: createdAt,
-          expires_at: expiresAt
+          expires_at: expiresAt,
+          type: 'RESET_PASSWORD'
         }
       })
       const htmlBody = `
@@ -213,7 +258,7 @@ module.exports = {
   confirmPasswordChange: async function (req, res, next) {
     try {
       const { emailAddress, otp, password } = req.body
-      const otpReset = await prisma.otp_resets.findUnique({
+      const otpReset = await prisma.otp_resets.findFirst({
         where: {
           email: emailAddress
         },
@@ -229,7 +274,7 @@ module.exports = {
       if (otpReset.expires_at < new Date()) throw createError(errorCodes.OTP_EXPIRED)
 
       const hashPassword = await helper.hashPassword(password)
-      await prisma.user.update({
+      await prisma.user.updateMany({
         where: {
           email: emailAddress
         },
@@ -237,7 +282,7 @@ module.exports = {
           password_hash: hashPassword
         }
       })
-      await prisma.otp_resets.delete({
+      await prisma.otp_resets.deleteMany({
         where: {
           email: emailAddress
         }

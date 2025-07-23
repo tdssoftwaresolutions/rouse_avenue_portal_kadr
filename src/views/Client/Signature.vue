@@ -120,7 +120,7 @@
 
     <!-- Phone Verification Modal -->
     <b-modal v-model="showPhoneModal" hide-footer title="OTP Verification" @hidden="resetPhoneModal">
-      <div class="phone-modal-content">
+      <div>
         <div v-if="phoneStep === 1" class="phone-step-card">
           <h5 class="section-title">Verify Your Identity</h5>
           <small class="text-muted">We'll send an OTP to this number to confirm your identity before accepting the mediation.</small>
@@ -128,7 +128,7 @@
           <b-button variant="primary" block @click="sendPhoneOtp">Send OTP</b-button>
         </div>
         <div v-else-if="phoneStep === 2">
-          <h5 class="section-title">OTP Sent to Your Phone</h5>
+          <h5 class="section-title">Enter OTP</h5>
           <small class="text-muted">
             Please enter the 6-digit OTP sent to your registered mobile number.
           </small>
@@ -173,20 +173,18 @@ export default {
       signaturePad: null,
       userName: '',
       isFirstPaty: false,
-      signatureRequestDetails: null, // Variable to store the response
+      signatureRequestDetails: null,
       alert: {
         visible: false,
         message: '',
         timeout: 5000,
         type: 'primary'
       },
-      // Phone verification modal state
       showPhoneModal: false,
       phoneStep: 1,
       phoneNumber: '',
       phoneOtp: '',
-      requestId: null,
-      fakePhoneOtp: '123456'
+      requestId: null
     }
   },
   computed: {
@@ -199,16 +197,6 @@ export default {
     },
     isPhoneOtpValid () {
       return /^[0-9]{6}$/.test(this.phoneOtp)
-    },
-    userInitialsName () {
-      // Show full name for verification
-      return this.userName
-    },
-    expectedPhone () {
-      if (!this.signatureRequestDetails) return ''
-      return this.isFirstPaty
-        ? this.signatureRequestDetails.plaintiff_phone
-        : this.signatureRequestDetails.respondent_phone
     }
   },
   methods: {
@@ -267,20 +255,15 @@ export default {
       this.phoneOtp = ''
     },
     async sendPhoneOtp () {
-      const response = await this.$store.dispatch('sendOtp', { recordId: 'fsdfdfd' })
+      const response = await this.$store.dispatch('sendOtp', { recordId: this.$route.query?.requestId })
       if (response.success) {
         this.requestId = response.data.requestId
         this.phoneStep = 2
         this.phoneOtp = ''
-        this.$bvToast.toast('OTP sent to your phone number.', {
-          title: 'Phone Verification',
-          variant: 'info',
-          solid: true
-        })
+        this.showAlert(response.message, 'success')
       }
     },
     async verifyPhoneOtp () {
-      // Simulate OTP verification
       const response = await this.$store.dispatch('verifyOtp', { requestId: this.requestId, otp: this.phoneOtp })
       if (response.success) {
         this.phoneStep = 3
@@ -288,7 +271,6 @@ export default {
     },
     finalSubmit () {
       this.showPhoneModal = false
-      // Now call the original submitForm logic
       this.submitFormReal()
     },
     resetPhoneModal () {
@@ -553,10 +535,6 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-}
-
-.phone-modal-content {
-  padding: 20px;
 }
 
 .phone-verification-success {

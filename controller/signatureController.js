@@ -443,6 +443,8 @@ module.exports = {
             nature_of_suit: true,
             created_at: true,
             case_agreement: true,
+            plaintiff_phone: true,
+            respondent_phone: true,
             user_cases_mediatorTouser: {
               select: {
                 name: true
@@ -485,12 +487,15 @@ module.exports = {
       const numberOfSessions = events.length
 
       let userName = ''
+      let phoneNumber = null
       let isFirstPaty = false
       if (caseRecord.user_cases_first_partyTouser.id === signatureTracking.user_id) {
         userName = caseRecord.user_cases_first_partyTouser.name
+        phoneNumber = caseRecord.plaintiff_phone
         isFirstPaty = true
       } else if (caseRecord.user_cases_second_partyTouser.id === signatureTracking.user_id) {
         userName = caseRecord.user_cases_second_partyTouser.name
+        phoneNumber = caseRecord.respondent_phone
         isFirstPaty = false
       }
 
@@ -506,7 +511,8 @@ module.exports = {
         userName,
         firstPartyName: caseRecord.user_cases_first_partyTouser.name,
         secondPartyName: caseRecord.user_cases_second_partyTouser.name,
-        isFirstPaty
+        isFirstPaty,
+        partyPhoneNumber: phoneNumber
       })
     } catch (error) {
       next(error)

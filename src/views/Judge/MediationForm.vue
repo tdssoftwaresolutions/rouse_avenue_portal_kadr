@@ -13,7 +13,7 @@
         <label>CASE ID:</label>
         <input disabled :value="`${form.caseId || uniquecaseId}`" />
         <label>Next Date of Hearing in Referral Court:</label>
-        <input type="date" v-model="form.hearingDate" :min="today" :disabled="viewMode" />
+        <input type="date" v-model="form.hearingDate" :min="today" :disabled="viewMode" onkeydown="return false;"/>
       </div>
 
       <div class="form-row">
@@ -43,7 +43,7 @@
 
       <div class="form-row">
         <label>Date of Institution of Case:</label>
-        <input type="date" v-model="form.institutionDate" :disabled="viewMode" />
+        <input type="date" v-model="form.institutionDate" :disabled="viewMode" onkeydown="return false;"/>
         <label>Nature of Suit:</label>
         <input v-model="form.natureOfSuit" :disabled="viewMode" />
       </div>
@@ -67,7 +67,7 @@
         <p>
           The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
           New Delhi</strong> on
-          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode"/>.
+          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" onkeydown="return false;"/>.
           If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
           date for mediation convenient to the parties.
         </p>
@@ -132,7 +132,7 @@
           <label v-if="form.plaintiffSignature">✅</label>
           <label v-else></label>
           <label>Phone No:</label>
-          <input v-model="form.plaintiffPhone" :disabled="viewMode" />
+          <input type="tel" v-model="form.plaintiffPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
           <label>Name of Advocate:</label>
           <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
         </div>
@@ -143,7 +143,7 @@
           <label v-if="form.respondentSignature">✅</label>
           <label v-else></label>
           <label>Phone No:</label>
-          <input v-model="form.respondentPhone" :disabled="viewMode" />
+          <input type="tel" v-model="form.respondentPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
           <label>Name of Advocate:</label>
           <input v-model="form.respondentAdvocate" :disabled="viewMode" />
         </div>
