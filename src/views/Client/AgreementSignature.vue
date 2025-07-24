@@ -179,7 +179,12 @@ export default {
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
-          // Build local date-time string manually
+          if (dateString.endsWith('Z')) {
+            const [datePart, timePart] = dateString.split('T')
+            const [hour, minute] = timePart.split(':')
+            return `${datePart}T${hour}:${minute}`
+          }
+
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())

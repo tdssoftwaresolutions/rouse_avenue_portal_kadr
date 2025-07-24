@@ -510,7 +510,6 @@ class Helper {
               evidence_document_url: true,
               description: true,
               category: true,
-              case_type: true,
               user_cases_second_partyTouser: {
                 select: {
                   id: true,

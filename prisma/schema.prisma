@@ -35,16 +35,13 @@ model user {
   profile_picture_url            String?                   @db.VarChar(255)
   working_day_of_week            user_working_day_of_week?
   unique_email_for_non_clients   String?                   @unique(map: "unique_non_client_email") @db.VarChar(255)
-  blogs                          blogs[]
   cases_cases_judgeTouser        cases[]                   @relation("cases_judgeTouser")
   cases_cases_first_partyTouser  cases[]                   @relation("cases_first_partyTouser")
   cases_cases_second_partyTouser cases[]                   @relation("cases_second_partyTouser")
   cases_cases_mediatorTouser     cases[]                   @relation("cases_mediatorTouser")
   events                         events[]
   notes                          notes[]
-  notifications                  notifications[]
   signature_tracking             signature_tracking[]
-  transactions                   transactions[]
 }
 
 model cases {
@@ -77,7 +74,6 @@ model cases {
   case_agreement                String?                  @db.Char(36)
   plaintiff_advocate_email      String?                  @db.Text
   respondent_advocate_email     String?                  @db.Text
-  case_history                  case_history[]
   case_agreement_tracking       case_agreement_tracking? @relation(fields: [case_agreement], references: [id], map: "fk_case_agreement_tracking")
   user_cases_judgeTouser        user?                    @relation("cases_judgeTouser", fields: [judge], references: [id], map: "fk_judge")
   case_statuses                 case_statuses?           @relation(fields: [status], references: [id], onDelete: Cascade, map: "fk_cases_status")
@@ -87,7 +83,6 @@ model cases {
   user_cases_mediatorTouser     user?                    @relation("cases_mediatorTouser", fields: [mediator], references: [id], onUpdate: Restrict, map: "fk_mediator")
   events                        events[]
   signature_tracking            signature_tracking[]
-  transactions                  transactions[]
 
   @@index([mediator], map: "fk_mediator")
   @@index([first_party], map: "fk_first_party")
@@ -137,11 +132,6 @@ model otp_resets {
   @@unique([email, type], name: "unique_email_type", map: "unique_email_type")
 }
 
-model available_languages {
-  id       String @id @db.VarChar(20)
-  language String @db.VarChar(100)
-}
-
 model notes {
   id        String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   user_id   String    @db.Char(36)
@@ -153,118 +143,9 @@ model notes {
   @@index([user_id], map: "fk_user_id")
 }
 
-model transactions {
-  transaction_id   String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  payment_id       String    @db.VarChar(255)
-  client_id        String    @db.Char(36)
-  case_id          String    @db.Char(36)
-  success          Boolean
-  amount           Decimal   @db.Decimal(10, 2)
-  currency         String?   @default("USD") @db.VarChar(10)
-  reason           String?   @db.VarChar(255)
-  payment_method   String?   @db.VarChar(50)
-  reference_id     String?   @db.VarChar(255)
-  transaction_date DateTime? @default(now()) @db.DateTime(0)
-  created_at       DateTime? @default(now()) @db.DateTime(0)
-  updated_at       DateTime? @default(now()) @db.DateTime(0)
-  cases            cases     @relation(fields: [case_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_transactions_case_id")
-  user             user      @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_transactions_user_id")
-
-  @@index([case_id], map: "fk_transactions_case_id")
-  @@index([client_id], map: "fk_transactions_user_id")
-}
-
-model blog_categories {
-  blog_id     String     @db.Char(36)
-  category_id String     @db.Char(36)
-  blogs       blogs      @relation(fields: [blog_id], references: [id], onUpdate: Restrict, map: "blog_categories_ibfk_1")
-  categories  categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "blog_categories_ibfk_2")
-
-  @@id([blog_id, category_id])
-  @@index([category_id], map: "category_id")
-}
-
-model blog_tags {
-  blog_id String @db.Char(36)
-  tag_id  String @db.Char(36)
-  blogs   blogs  @relation(fields: [blog_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_1")
-  tags    tags   @relation(fields: [tag_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_2")
-
-  @@id([blog_id, tag_id])
-  @@index([tag_id], map: "tag_id")
-}
-
-model blogs {
-  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  title           String            @db.VarChar(255)
-  content         String            @db.Text
-  author_id       String            @db.Char(36)
-  created_at      DateTime?         @default(now()) @db.DateTime(0)
-  updated_at      DateTime?         @default(now()) @db.DateTime(0)
-  status          blogs_status      @default(Draft)
-  blog_categories blog_categories[]
-  blog_tags       blog_tags[]
-  user            user              @relation(fields: [author_id], references: [id], onUpdate: Restrict, map: "fk_author_id")
-
-  @@index([author_id], map: "fk_author_id")
-}
-
-model categories {
-  id              String            @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  name            String            @unique(map: "name") @db.VarChar(100)
-  blog_categories blog_categories[]
-}
-
-model tags {
-  id        String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  name      String      @unique(map: "name") @db.VarChar(50)
-  blog_tags blog_tags[]
-}
-
-model case_history {
-  id            String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  case_id       String      @db.Char(36)
-  created_at    DateTime?   @default(now()) @db.DateTime(0)
-  case_event_id String      @db.VarChar(36)
-  cases         cases       @relation(fields: [case_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_case_history_case")
-  case_events   case_events @relation(fields: [case_event_id], references: [id], onDelete: Cascade, map: "fk_case_history_event")
-
-  @@index([case_id], map: "fk_case_history_case")
-  @@index([case_event_id], map: "fk_case_history_event")
-}
-
-model notifications {
-  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  user_id     String    @db.Char(36)
-  title       String    @db.VarChar(255)
-  description String    @db.Text
-  created_at  DateTime? @default(now()) @db.DateTime(0)
-  is_read     Boolean?  @default(false)
-  user        user      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_notifications_user")
-
-  @@index([user_id], map: "fk_notifications_user")
-}
-
-model case_events {
-  id                String            @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
-  status_id         String            @db.VarChar(255)
-  sub_status_id     String            @db.VarChar(255)
-  title             String            @db.VarChar(255)
-  description       String            @db.Text
-  sequence          Int               @unique(map: "sequence")
-  created_at        DateTime?         @default(now()) @db.DateTime(0)
-  case_statuses     case_statuses     @relation(fields: [status_id], references: [id], onDelete: Cascade, map: "fk_case_events_status")
-  case_sub_statuses case_sub_statuses @relation(fields: [sub_status_id], references: [id], onDelete: Cascade, map: "fk_case_events_sub_status")
-  case_history      case_history[]
-
-  @@index([status_id], map: "fk_case_events_status")
-  @@index([sub_status_id], map: "fk_case_events_sub_status")
-}
-
 model case_statuses {
   id                String              @id @db.VarChar(255)
   name              String              @unique(map: "name") @db.VarChar(100)
-  case_events       case_events[]
   case_sub_statuses case_sub_statuses[]
   cases             cases[]
 }
@@ -273,7 +154,6 @@ model case_sub_statuses {
   id            String        @id @db.VarChar(255)
   status_id     String        @db.VarChar(255)
   name          String        @unique(map: "name") @db.VarChar(100)
-  case_events   case_events[]
   case_statuses case_statuses @relation(fields: [status_id], references: [id], onDelete: Cascade, map: "fk_case_sub_statuses_status")
   cases         cases[]
 
@@ -319,11 +199,6 @@ model case_agreement_tracking {
   mediation_agreement_link String?              @db.Text
   cases                    cases[]
   signature_tracking       signature_tracking[]
-}
-
-enum blogs_status {
-  Draft
-  Published
 }
 
 enum user_user_type {

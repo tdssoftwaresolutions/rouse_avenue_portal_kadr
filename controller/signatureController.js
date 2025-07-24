@@ -148,7 +148,6 @@ module.exports = {
           judge_document_url: true,
           nature_of_suit: true,
           stage: true,
-          case_type: true,
           status: true,
           sub_status: true,
           hearing_date: true,

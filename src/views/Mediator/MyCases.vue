@@ -160,6 +160,11 @@ export default {
           return date.toISOString().split('T')[0]
 
         case 'datetime-local': {
+          if (dateString.endsWith('Z')) {
+            const [datePart, timePart] = dateString.split('T')
+            const [hour, minute] = timePart.split(':')
+            return `${datePart}T${hour}:${minute}`
+          }
           const year = date.getFullYear()
           const month = pad(date.getMonth() + 1)
           const day = pad(date.getDate())
@@ -398,7 +403,6 @@ export default {
         { label: 'Suit No', key: 'suit_no', class: 'text-left', sortable: false },
         { label: 'Nature of Suit', key: 'nature_of_suit', class: 'text-left', sortable: false },
         { label: 'Stage', key: 'stage', class: 'text-left', sortable: false },
-        { label: 'Case Type', key: 'case_type', class: 'text-left', sortable: false },
         { label: 'Hearing Date', key: 'hearing_date', class: 'text-left', sortable: false },
         { label: 'Mediation Date', key: 'mediation_date_time', class: 'text-left', sortable: false },
         { label: 'Action', key: 'action', class: 'text-center' }
