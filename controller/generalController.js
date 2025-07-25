@@ -251,13 +251,42 @@ module.exports = {
   },
   getMyCases: async function (req, res, next) {
     try {
-      const [casesWithEvents, casesCount] = await Promise.all([
-        helper.getMediatorCases(prisma, req.user.id, req.query.page),
-        helper.getMediatorCasesCount(prisma, req.user.id)
-      ])
-      success(res, {
-        casesWithEvents, total: casesCount, page: 1, perPage: 10
-      })
+      const { id, type } = req.user
+      const { page } = req.query
+
+      if (!id || !type) throw createError(errorCodes.UNAUTHORIZED)
+
+      switch (type) {
+        case 'MEDIATOR':{
+          const [casesWithEvents, casesCount] = await Promise.all([
+            helper.getMediatorCases(prisma, id, page),
+            helper.getMediatorCasesCount(prisma, id)
+          ])
+          success(res, {
+            casesWithEvents, total: casesCount, page, perPage: 10
+          })
+          break
+        }
+        case 'JUDGE': {
+          const [casesWithEvents, casesCount] = await Promise.all([
+            helper.getJudgeCases(prisma, id, page),
+            helper.getJudgeCasesCount(prisma, id)
+          ])
+          success(res, {
+            casesWithEvents, total: casesCount, page, perPage: 10
+          })
+          break
+        }
+        case 'MC': {
+          const [casesWithEvents, casesCount] = await Promise.all([
+            helper.getMediationCenterCases(prisma, page),
+            helper.getMediationCenterCasesCount(prisma)
+          ])
+          success(res, {
+            casesWithEvents, total: casesCount, page, perPage: 10
+          })
+        }
+      }
     } catch (error) {
       next(error)
     }
