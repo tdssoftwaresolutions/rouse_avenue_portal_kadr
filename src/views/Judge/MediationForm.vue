@@ -29,13 +29,13 @@
       <div class="form-row">
         <label>Name of the Parties:</label>
         <div class="party-input-group">
-          <input v-model="form.party1" placeholder="Party 1" :disabled="viewMode" />
+          <input v-model="form.party1" placeholder="Party 1" :disabled="viewMode" style="margin-bottom: 0.5rem;"/>
           <br />
           <input v-model="form.party1Email" placeholder="Party 1 Email" :disabled="viewMode" />
         </div>
         <span>vs</span>
         <div class="party-input-group">
-          <input v-model="form.party2" placeholder="Party 2" :disabled="viewMode" />
+          <input v-model="form.party2" placeholder="Party 2" :disabled="viewMode" style="margin-bottom: 0.5rem;"/>
           <br />
           <input v-model="form.party2Email" placeholder="Party 2 Email" :disabled="viewMode" />
         </div>
@@ -67,7 +67,7 @@
         <p>
           The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
           New Delhi</strong> on
-          <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" :min="now" :disabled="viewMode" onkeydown="return false;"/>.
+          <input type="datetime-local" @change="validateTimeRange" v-model="form.mediationDateTime" class="inline-input"  :min="now" :disabled="viewMode" onkeydown="return false;"/>.
           If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
           date for mediation convenient to the parties.
         </p>
@@ -128,24 +128,36 @@
       <div class="form-row signature-section">
         <div>
           <h4>Plaintiff/Complainant</h4>
-          <label >Signature:</label>
-          <label v-if="form.plaintiffSignature">✅</label>
-          <label v-else></label>
-          <label>Phone No:</label>
-          <input type="tel" v-model="form.plaintiffPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
-          <label>Name of Advocate:</label>
-          <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
+          <div>
+            <label>Signature:</label>
+            <label v-if="form.plaintiffSignature">✅</label>
+            <label v-else></label>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label>Phone No:</label>
+            <input type="tel" v-model="form.plaintiffPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label>Name of Advocate:</label>
+            <input v-model="form.plaintiffAdvocate" :disabled="viewMode" />
+          </div>
         </div>
 
         <div>
-          <h4>Respondent/Accused</h4>
-          <label >Signature:</label>
-          <label v-if="form.respondentSignature">✅</label>
-          <label v-else></label>
-          <label>Phone No:</label>
-          <input type="tel" v-model="form.respondentPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
-          <label>Name of Advocate:</label>
-          <input v-model="form.respondentAdvocate" :disabled="viewMode" />
+          <div>
+            <h4>Respondent/Accused</h4>
+            <label >Signature:</label>
+            <label v-if="form.respondentSignature">✅</label>
+            <label v-else></label>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label>Phone No:</label>
+            <input type="tel" v-model="form.respondentPhone" placeholder="No +91, only 10 digits" minlength="10" maxlength="10" :disabled="viewMode" />
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label>Name of Advocate:</label>
+            <input v-model="form.respondentAdvocate" :disabled="viewMode" />
+          </div>
         </div>
       </div>
       <div class="form-row">
@@ -239,6 +251,34 @@ export default {
     }
   },
   methods: {
+    validateTimeRange () {
+      const dt = new Date(this.form.mediationDateTime)
+
+      if (dt.getDay() === 0) {
+        this.showAlert('Sundays are not allowed, please select another day.', 'danger')
+        this.form.mediationDateTime = ''
+        return
+      }
+
+      const hours = dt.getHours()
+      const minutes = dt.getMinutes()
+      const totalMinutes = hours * 60 + minutes
+      const minMinutes = 11 * 60
+      const maxMinutes = 16 * 60 + 30
+
+      if (totalMinutes < minMinutes || totalMinutes > maxMinutes) {
+        this.showAlert('Please select a time between 11:00 AM and 4:30 PM.', 'danger')
+        dt.setHours(0)
+        dt.setMinutes(0)
+        dt.setSeconds(0)
+        dt.setMilliseconds(0)
+
+        const year = dt.getFullYear()
+        const month = (`0${dt.getMonth() + 1}`).slice(-2)
+        const day = (`0${dt.getDate()}`).slice(-2)
+        this.form.mediationDateTime = `${year}-${month}-${day}T`
+      }
+    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -383,39 +423,51 @@ export default {
 
       const date = new Date(dateString)
 
-      const pad = (n) => (n < 10 ? '0' + n : n)
-
+      const userLocale = navigator.language || 'en-IN'
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       switch (type) {
-        case 'date':
-          return date.toISOString().split('T')[0]
-
-        case 'datetime-local': {
-          if (dateString.endsWith('Z')) {
-            const [datePart, timePart] = dateString.split('T')
-            const [hour, minute] = timePart.split(':')
-            return `${datePart}T${hour}:${minute}`
-          }
+        case 'date':{
           const year = date.getFullYear()
-          const month = pad(date.getMonth() + 1)
-          const day = pad(date.getDate())
-          const hours = pad(date.getHours())
-          const minutes = pad(date.getMinutes())
-          return `${year}-${month}-${day}T${hours}:${minutes}`
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+        case 'datetime-local': {
+          const year = date.getFullYear()
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          const hour = `${date.getHours()}`.padStart(2, '0')
+          const minute = `${date.getMinutes()}`.padStart(2, '0')
+          return `${year}-${month}-${day}T${hour}:${minute}`
         }
 
         case 'display':
         default: {
-          const { includeTime = false } = options
+          const { includeDate = true, includeTime = false } = options
+          const formatOptions = {}
+          if (includeDate) {
+            Object.assign(formatOptions, {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          }
 
-          return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            ...(includeTime && {
+          if (includeTime) {
+            Object.assign(formatOptions, {
               hour: 'numeric',
               minute: 'numeric',
               hour12: true
             })
+          }
+
+          let method = 'toLocaleString'
+          if (includeDate && !includeTime) method = 'toLocaleDateString'
+          else if (!includeDate && includeTime) method = 'toLocaleTimeString'
+
+          return date[method](userLocale, {
+            ...formatOptions,
+            timeZone: userTimeZone
           })
         }
       }

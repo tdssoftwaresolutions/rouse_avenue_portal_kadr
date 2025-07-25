@@ -137,10 +137,13 @@ export default {
   methods: {
     formatDate (dateString) {
       const date = new Date(dateString)
-      return date.toLocaleString('en-US', {
-        hour: 'numeric', // '6 PM'
-        minute: 'numeric', // '52'
-        hour12: true // 12-hour clock
+      const userLocale = navigator.language || 'en-IN'
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      return date.toLocaleString(userLocale, {
+        timeZone: userTimeZone,
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
       })
     },
     showAlert (message, type) {

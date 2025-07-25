@@ -642,8 +642,8 @@ class Helper {
       const event = {
         summary: title,
         description,
-        start: { dateTime: startDateTime, timeZone: 'Asia/Kolkata' },
-        end: { dateTime: endDateTime, timeZone: 'Asia/Kolkata' },
+        start: { dateTime: startDateTime },
+        end: { dateTime: endDateTime },
         attendees,
         conferenceData: {
           createRequest: {
@@ -827,6 +827,18 @@ class Helper {
     }
   }
 
+  static formatDateTimeToIST (datetime) {
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }).format(new Date(datetime))
+  }
+
   static generateMediationHTML (data) {
     const {
       caseId,
@@ -837,6 +849,8 @@ class Helper {
       mutualAgreement,
       firstPartySignatureImage,
       secondPartySignatureImage,
+      firstPartySignatureDateTime,
+      secondPartySignatureDateTime,
       mediatorSignatureImage,
       judgeName
     } = data
@@ -850,6 +864,9 @@ class Helper {
       const year = d.getFullYear()
       formattedCompletionDate = `${day}.${month}.${year}`
     }
+
+    const formattedFirstSignatureDateTime = this.formatDateTimeToIST(firstPartySignatureDateTime)
+    const formattedSecondSignatureDateTime = this.formatDateTimeToIST(secondPartySignatureDateTime)
 
     return `
     <html>
@@ -919,12 +936,14 @@ class Helper {
               <div class="signature-col">
                 <p><strong>${firstPartyName}</strong></p>
                 ${this.renderSignature(firstPartySignatureImage, 'First Party Signature')}
+                <p>${formattedFirstSignatureDateTime}</p>
               </div>
               <div class="signature-col">
                 <p><strong>${secondPartyName}</strong></p>
                 ${this.renderSignature(secondPartySignatureImage, 'Second Party Signature')}
+                <p>${formattedSecondSignatureDateTime}</p>
               </div>
-            </div>
+              </div>
           </div>
           <div class="section signature-block">
             <div class="signature-row">

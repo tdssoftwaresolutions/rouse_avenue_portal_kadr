@@ -117,46 +117,65 @@ export default {
 
       const date = new Date(dateString)
 
-      const pad = (n) => (n < 10 ? '0' + n : n)
-
+      const userLocale = navigator.language || 'en-IN'
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       switch (type) {
-        case 'date':
-          return date.toISOString().split('T')[0]
-
-        case 'datetime-local': {
-          if (dateString.endsWith('Z')) {
-            const [datePart, timePart] = dateString.split('T')
-            const [hour, minute] = timePart.split(':')
-            return `${datePart}T${hour}:${minute}`
-          }
+        case 'date':{
           const year = date.getFullYear()
-          const month = pad(date.getMonth() + 1)
-          const day = pad(date.getDate())
-          const hours = pad(date.getHours())
-          const minutes = pad(date.getMinutes())
-          return `${year}-${month}-${day}T${hours}:${minutes}`
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+        case 'datetime-local': {
+          const year = date.getFullYear()
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          const hour = `${date.getHours()}`.padStart(2, '0')
+          const minute = `${date.getMinutes()}`.padStart(2, '0')
+          return `${year}-${month}-${day}T${hour}:${minute}`
         }
 
         case 'display':
         default: {
-          const { includeTime = false } = options
+          const { includeDate = true, includeTime = false } = options
+          const formatOptions = {}
+          if (includeDate) {
+            Object.assign(formatOptions, {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          }
 
-          return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            ...(includeTime && {
+          if (includeTime) {
+            Object.assign(formatOptions, {
               hour: 'numeric',
               minute: 'numeric',
               hour12: true
             })
+          }
+
+          let method = 'toLocaleString'
+          if (includeDate && !includeTime) method = 'toLocaleDateString'
+          else if (!includeDate && includeTime) method = 'toLocaleTimeString'
+
+          return date[method](userLocale, {
+            ...formatOptions,
+            timeZone: userTimeZone
           })
         }
       }
     },
+    toUTCISOString (localDateTimeStr) {
+      if (!localDateTimeStr) return null
+      const localDate = new Date(localDateTimeStr)
+      return localDate.toISOString()
+    },
     async onCloseNewMediationForm (formData) {
       formData.judgeId = this.user.id
-
+      formData.mediationDateTime = this.toUTCISOString(formData.mediationDateTime)
+      formData.institutionDate = this.toUTCISOString(formData.institutionDate)
+      formData.hearingDate = this.toUTCISOString(formData.hearingDate)
       const response = await this.$store.dispatch('createNewCase', {
         caseData: formData
       })

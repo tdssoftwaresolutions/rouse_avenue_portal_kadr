@@ -39,8 +39,19 @@ module.exports = {
 
       const oauth2Client = await helper.getValidAccessToken(prisma, JSON.parse(mediator.google_token).credentials)
 
-      const title = 'First mediation meeting'
-      const description = `First mediation meeting for case ${caseDetails.caseId} between ${caseDetails.user_cases_first_partyTouser.name} and ${caseDetails.user_cases_second_partyTouser.name}.`
+      const title = `Mediation Meeting for Case ${caseDetails.caseId}`
+      const description = `Parties Involved: ${caseDetails.user_cases_first_partyTouser.name}, ${caseDetails.user_cases_second_partyTouser.name}
+
+This meeting has been scheduled to discuss the details of case ${caseDetails.caseId} between the involved parties.
+
+📌 Purpose:
+To review the case, facilitate open communication, and work towards a mutual resolution.
+
+📅 Please Note:
+1. Be prepared with all relevant documents and information.
+2. Join the meeting on time to ensure a smooth and productive session.
+
+Issued by: Rouse Avenue Mediation Court`
       const start = new Date(caseDetails.mediation_date_time)
       const end = new Date(start.getTime() + 30 * 60000)
       const attendees = [

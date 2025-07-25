@@ -277,10 +277,12 @@ module.exports = {
       const updateData = {}
       if (signatureTracking.user_id === caseRecord.first_party) {
         updateData.first_party_signature = signature
+        updateData.first_party_signature_datetime = new Date()
         sendRequestToSecondParty = true
         generateAgeement = false
       } else if (signatureTracking.user_id === caseRecord.second_party) {
         updateData.second_party_signature = signature
+        updateData.second_party_signature_datetime = new Date()
         generateAgeement = true
         sendRequestToSecondParty = false
       } else { throw createError(errorCodes.NO_RECORD_FOUND) }
@@ -330,7 +332,9 @@ module.exports = {
             agreed_terms: true,
             first_party_signature: true,
             second_party_signature: true,
-            signature_mediator: true
+            signature_mediator: true,
+            first_party_signature_datetime: true,
+            second_party_signature_datetime: true
           }
         })
 
@@ -343,6 +347,8 @@ module.exports = {
           secondPartyName: caseRecord.user_cases_second_partyTouser?.name || '',
           firstPartySignatureImage: agreement?.first_party_signature || '',
           secondPartySignatureImage: agreement?.second_party_signature || updateData.second_party_signature || '',
+          firstPartySignatureDateTime: agreement?.first_party_signature_datetime || '',
+          secondPartySignatureDateTime: agreement?.second_party_signature_datetime || updateData.second_party_signature_datetime || '',
           mediatorSignatureImage: agreement?.signature_mediator || '',
           judgeName: caseRecord.user_cases_judgeTouser?.name || ''
         }
@@ -476,6 +482,9 @@ module.exports = {
 
       const events = await prisma.events.findMany({
         where: { case_id: caseRecord.id },
+        orderBy: {
+          start_datetime: 'desc'
+        },
         select: {
           id: true,
           start_datetime: true

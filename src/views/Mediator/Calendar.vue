@@ -263,9 +263,28 @@ export default {
     sofbox.index()
     this.initCalendar(false)
   },
-  computed: {
+  watch: {
+    'newAppointment.start' (newVal, oldVal) {
+      return this.validateTimeRange(newVal)
+    }
   },
   methods: {
+    validateTimeRange (appointmentDateTime) {
+      const dt = new Date(appointmentDateTime)
+
+      if (dt.getDay() === 0) {
+        this.showAlert('Sundays are not allowed, please select another day.', 'danger')
+        this.newAppointment.start = ''
+        return
+      }
+
+      const totalMinutes = dt.getHours() * 60 + dt.getMinutes()
+
+      if (totalMinutes < (11 * 60) || totalMinutes > (16 * 60 + 30)) {
+        this.showAlert('Please select a time between 11:00 AM and 4:30 PM.', 'danger')
+        this.newAppointment.start = ''
+      }
+    },
     showAlert (message, type) {
       this.alert = {
         message,
@@ -275,8 +294,19 @@ export default {
     },
     onClickCase (id, index) {
       const lCase = this.dashboardContent.myCases.casesWithEvents[index]
-      this.newAppointment.title = `Meeting for Case ${lCase.caseId}`
-      this.newAppointment.description = `Case Details:\nCase ID: #${lCase.caseId}\n1st Party: ${lCase.user_cases_first_partyTouser?.name}\n2nd Party ${lCase.user_cases_second_partyTouser?.name}\n\nThis meeting has been scheduled to discuss the case details. Please ensure to join on time and have all necessary documents or information prepared for the discussion.`
+      this.newAppointment.title = `Mediation Meeting for Case ${lCase.caseId}`
+      this.newAppointment.description = `Parties Involved: ${lCase.user_cases_first_partyTouser?.name}, ${lCase.user_cases_second_partyTouser?.name}
+
+This meeting has been scheduled to discuss the details of case ${lCase.caseId} between the involved parties.
+    
+📌 Purpose:    
+To review the case, facilitate open communication, and work towards a mutual resolution.
+
+📅 Please Note:
+1. Be prepared with all relevant documents and information.
+2. Join the meeting on time to ensure a smooth and productive session.
+
+Issued by: Rouse Avenue Mediation Court`
       this.newAppointment.caseId = id
       this.newAppointment.caseNumber = lCase.caseId
     },
@@ -331,51 +361,52 @@ export default {
 
       const date = new Date(dateString)
 
-      const pad = (n) => (n < 10 ? '0' + n : n)
-
+      const userLocale = navigator.language || 'en-IN'
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       switch (type) {
-        case 'date':
-          return date.toISOString().split('T')[0]
-
-        case 'datetime-local': {
-          if (dateString.endsWith('Z')) {
-            const [datePart, timePart] = dateString.split('T')
-            const [hour, minute] = timePart.split(':')
-            return `${datePart}T${hour}:${minute}`
-          }
+        case 'date': {
           const year = date.getFullYear()
-          const month = pad(date.getMonth() + 1)
-          const day = pad(date.getDate())
-          const hours = pad(date.getHours())
-          const minutes = pad(date.getMinutes())
-          return `${year}-${month}-${day}T${hours}:${minutes}`
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+        case 'datetime-local': {
+          const year = date.getFullYear()
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          const hour = `${date.getHours()}`.padStart(2, '0')
+          const minute = `${date.getMinutes()}`.padStart(2, '0')
+          return `${year}-${month}-${day}T${hour}:${minute}`
         }
 
         case 'display':
         default: {
           const { includeDate = true, includeTime = false } = options
-          if (includeDate && includeTime) {
-            return date.toLocaleString('en-US', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })
-          } else if (includeDate) {
-            return date.toLocaleDateString('en-US', {
+          const formatOptions = {}
+          if (includeDate) {
+            Object.assign(formatOptions, {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit'
             })
-          } else if (includeTime) {
-            return date.toLocaleTimeString('en-US', {
+          }
+
+          if (includeTime) {
+            Object.assign(formatOptions, {
               hour: 'numeric',
               minute: 'numeric',
               hour12: true
             })
           }
+
+          let method = 'toLocaleString'
+          if (includeDate && !includeTime) method = 'toLocaleDateString'
+          else if (!includeDate && includeTime) method = 'toLocaleTimeString'
+
+          return date[method](userLocale, {
+            ...formatOptions,
+            timeZone: userTimeZone
+          })
         }
       }
     },
@@ -427,7 +458,14 @@ export default {
         })
       }
     },
+    toUTCISOString (localDateTimeStr) {
+      if (!localDateTimeStr) return null
+      const localDate = new Date(localDateTimeStr)
+      return localDate.toISOString()
+    },
     async storeNewEvent (event) {
+      event.start = this.toUTCISOString(event.start)
+      event.end = this.toUTCISOString(event.end)
       const response = await this.$store.dispatch('newCalendarEvent', { event })
       if (response.success) {
         event.meetingLink = response.data.meetLink

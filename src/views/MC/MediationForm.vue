@@ -9,140 +9,150 @@
 
     <b-tabs v-model="activeTab" class="mb-3">
       <b-tab title="Case Details">
-        <div class="form-row">
-          <label>CASE ID:</label>
-          <input disabled :value="form.caseId" />
-          <label>Next Date of Hearing in Referral Court:</label>
-          <input type="date" v-model="form.hearingDate" disabled/>
-        </div>
-
-        <div class="form-row">
-          <label>Name of the Referral Judge:</label>
-          <input :value="form.judgeName" disabled />
-        </div>
-
-        <div class="form-row">
-          <label>Suit No/Case No:</label>
-          <input v-model="form.suitNo" disabled />
-        </div>
-
-        <div class="form-row">
-          <label>Name of the Parties:</label>
-          <div class="party-input-group">
-            <input v-model="form.party1" placeholder="Party 1" disabled />
-            <br />
-            <input v-model="form.party1Email" placeholder="Party 1 Email" disabled />
+        <div class="form-section">
+          <div class="form-row">
+            <label>CASE ID:</label>
+            <input disabled :value="form.caseId" />
+            <label>Next Date of Hearing in Referral Court:</label>
+            <input type="date" v-model="form.hearingDate" disabled/>
           </div>
-          <span style="margin-left:1rem;margin-right: 1rem;">vs</span>
-          <div class="party-input-group">
-            <input v-model="form.party2" placeholder="Party 2" disabled />
-            <br />
-            <input v-model="form.party2Email" placeholder="Party 2 Email" disabled />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <label>Date of Institution of Case:</label>
-          <input type="date" v-model="form.institutionDate" disabled />
-          <label>Nature of Suit:</label>
-          <input v-model="form.natureOfSuit" disabled />
-        </div>
-
-        <div class="form-row">
-          <label>Stage of the Case at Time of Referral:</label>
-          <input v-model="form.stage" disabled />
-          <label>Number of Hearings at Time of Referral:</label>
-          <input type="number" v-model.number="form.hearingCount" min="0" disabled />
-        </div>
-
-        <!-- Mediation Referral Order Block -->
-        <div class="referral-section">
-          <h2>Mediation Referral Order</h2>
-          <p>
-            This Court, having conferred with the parties and having determined that this matter could benefit from
-            mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
-            provided by the court at no cost to the Parties.
-          </p>
-
-          <p>
-            The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
-            New Delhi</strong> on:
-            <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" disabled />.
-            If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
-            date for mediation convenient to the parties.
-          </p>
-
-          <p>
-            The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
-          </p>
-
-          <p>
-            If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
-            by the parties/their counsel and returned to this Court for further appropriate orders.
-          </p>
-
-          <p>
-            If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
-            anything that was discussed at the mediation.
-          </p>
 
           <div class="form-row">
-            <label>Signature of Referral Judge:</label>
+            <label>Name of the Referral Judge:</label>
+            <input :value="form.judgeName" disabled />
+          </div>
+
+          <div class="form-row">
+            <label>Suit No/Case No:</label>
+            <input v-model="form.suitNo" disabled />
+          </div>
+
+          <div class="form-row">
+            <label>Name of the Parties:</label>
+            <div class="party-input-group">
+              <input v-model="form.party1" placeholder="Party 1" disabled style="margin-bottom: 0.5rem;"/>
+              <br />
+              <input v-model="form.party1Email" placeholder="Party 1 Email" disabled />
+            </div>
+            <span style="margin-left:1rem;margin-right: 1rem;">vs</span>
+            <div class="party-input-group">
+              <input v-model="form.party2" placeholder="Party 2" disabled style="margin-bottom: 0.5rem;"/>
+              <br />
+              <input v-model="form.party2Email" placeholder="Party 2 Email" disabled />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Date of Institution of Case:</label>
+            <input type="date" v-model="form.institutionDate" disabled />
+            <label>Nature of Suit:</label>
+            <input v-model="form.natureOfSuit" disabled />
+          </div>
+
+          <div class="form-row">
+            <label>Stage of the Case at Time of Referral:</label>
+            <input v-model="form.stage" disabled />
+            <label>Number of Hearings at Time of Referral:</label>
+            <input type="number" v-model.number="form.hearingCount" min="0" disabled />
+          </div>
+
+          <!-- Mediation Referral Order Block -->
+          <div class="referral-section">
+            <h2>Mediation Referral Order</h2>
+            <p>
+              This Court, having conferred with the parties and having determined that this matter could benefit from
+              mediation, and pursuant to Section 89 of the CPC, Orders that the following persons shall attend mediation as
+              provided by the court at no cost to the Parties.
+            </p>
+
+            <p>
+              The above parties and advocates will report at <strong>Mediation Centre, Rouse Avenue Courts Complex,
+              New Delhi</strong> on:
+              <input type="datetime-local" v-model="form.mediationDateTime" class="inline-input" disabled />.
+              If it is not possible to mediate this case on the date fixed, the Mediation Centre will arrange a future
+              date for mediation convenient to the parties.
+            </p>
+
+            <p>
+              The Mediation will be conducted by a specially trained <strong>Mediator</strong>.
+            </p>
+
+            <p>
+              If a settlement agreeable to the parties is reached, the terms shall be recorded by the mediator and signed
+              by the parties/their counsel and returned to this Court for further appropriate orders.
+            </p>
+
+            <p>
+              If no settlement is reached, neither the parties, the advocates, nor the mediator may disclose to this court
+              anything that was discussed at the mediation.
+            </p>
+
+            <div class="form-row">
+              <label>Signature of Referral Judge:</label>
+              <div>
+                <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
+                  <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
+                </div>
+                <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                  <span class="cursive-signature">{{ form.referralJudgeSignature }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Signatures Section -->
+          <div class="form-row signature-section">
             <div>
-              <div v-if="form.referralJudgeSignature.startsWith('data:image/')">
-                <img :src="form.referralJudgeSignature" alt="Referral Judge Signature" style="max-width: 300px; border: 1px solid #ccc;" />
+              <h4>Plaintiff/Complainant</h4>
+              <div class="form-row">
+                <label >Signature:</label>
+                <div style="margin-bottom: 0.5rem;">
+                  <div v-if="form.plaintiffSignature.startsWith('data:image/')">
+                    <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
+                  </div>
+                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                    <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
+                  </div>
+                </div>
               </div>
-              <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                <span class="cursive-signature">{{ form.referralJudgeSignature }}</span>
+              <div style="margin-bottom: 0.5rem;">
+                <label>Phone No:</label>
+                <input v-model="form.plaintiffPhone" disabled/>
+              </div>
+              <div style="margin-bottom: 0.5rem;">
+                <label>Name of Advocate:</label>
+                <input v-model="form.plaintiffAdvocate" disabled />
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Signatures Section -->
-        <div class="form-row signature-section">
-          <div>
-            <h4>Plaintiff/Complainant</h4>
-            <div class="form-row">
-              <label >Signature:</label>
-              <div>
-                <div v-if="form.plaintiffSignature.startsWith('data:image/')">
-                  <img :src="form.plaintiffSignature" alt="Plaintiff Signature" style="max-width: 250px; height:70px; border: 1px solid #ccc;" />
-                </div>
-                <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                  <span class="cursive-signature">{{ form.plaintiffSignature }}</span>
-                </div>
-              </div>
-            </div>
-            <label>Phone No:</label>
-            <input v-model="form.plaintiffPhone" disabled />
-            <label>Name of Advocate:</label>
-            <input v-model="form.plaintiffAdvocate" disabled />
-          </div>
-
-          <div>
-            <h4>Respondent/Accused</h4>
-            <div class="form-row">
-              <label >Signature:</label>
-              <div>
-                <div v-if="form.respondentSignature.startsWith('data:image/')">
-                  <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
-                </div>
-                <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
-                  <span class="cursive-signature">{{ form.respondentSignature }}</span>
+            <div>
+              <h4>Respondent/Accused</h4>
+              <div class="form-row">
+                <label >Signature:</label>
+                <div style="margin-bottom: 0.5rem;">
+                  <div v-if="form.respondentSignature.startsWith('data:image/')">
+                    <img :src="form.respondentSignature" alt="Plaintiff Signature" style="max-width: 250px; height: 70px; border: 1px solid #ccc;" />
+                  </div>
+                  <div v-else-if="signatureType === 'digital'" class="digital-signature-box">
+                    <span class="cursive-signature">{{ form.respondentSignature }}</span>
+                  </div>
                 </div>
               </div>
+              <div style="margin-bottom: 0.5rem;">
+                <label>Phone No:</label>
+                <input v-model="form.respondentPhone" disabled/>
+              </div>
+              <div style="margin-bottom: 0.5rem;">
+                <label>Name of Advocate:</label>
+                <input v-model="form.respondentAdvocate" disabled style="margin-bottom: 0.5rem;"/>
+              </div>
             </div>
-            <label>Phone No:</label>
-            <input v-model="form.respondentPhone" disabled />
-            <label>Name of Advocate:</label>
-            <input v-model="form.respondentAdvocate" disabled />
           </div>
-        </div>
-        <div class="form-row">
-          <label>Additional Document:</label>
-          <div>
-            <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
+          <div class="form-row">
+            <label>Additional Document:</label>
+            <div>
+              <a v-if="form.document" :href="form.document" target="_blank">Click here to view the document</a>
+            </div>
           </div>
         </div>
       </b-tab>
@@ -354,39 +364,51 @@ export default {
 
       const date = new Date(dateString)
 
-      const pad = (n) => (n < 10 ? '0' + n : n)
-
+      const userLocale = navigator.language || 'en-IN'
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       switch (type) {
-        case 'date':
-          return date.toISOString().split('T')[0]
-
-        case 'datetime-local': {
-          if (dateString.endsWith('Z')) {
-            const [datePart, timePart] = dateString.split('T')
-            const [hour, minute] = timePart.split(':')
-            return `${datePart}T${hour}:${minute}`
-          }
+        case 'date': {
           const year = date.getFullYear()
-          const month = pad(date.getMonth() + 1)
-          const day = pad(date.getDate())
-          const hours = pad(date.getHours())
-          const minutes = pad(date.getMinutes())
-          return `${year}-${month}-${day}T${hours}:${minutes}`
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+        case 'datetime-local': {
+          const year = date.getFullYear()
+          const month = `${date.getMonth() + 1}`.padStart(2, '0')
+          const day = `${date.getDate()}`.padStart(2, '0')
+          const hour = `${date.getHours()}`.padStart(2, '0')
+          const minute = `${date.getMinutes()}`.padStart(2, '0')
+          return `${year}-${month}-${day}T${hour}:${minute}`
         }
 
         case 'display':
         default: {
-          const { includeTime = false } = options
+          const { includeDate = true, includeTime = false } = options
+          const formatOptions = {}
+          if (includeDate) {
+            Object.assign(formatOptions, {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          }
 
-          return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            ...(includeTime && {
+          if (includeTime) {
+            Object.assign(formatOptions, {
               hour: 'numeric',
               minute: 'numeric',
               hour12: true
             })
+          }
+
+          let method = 'toLocaleString'
+          if (includeDate && !includeTime) method = 'toLocaleDateString'
+          else if (!includeDate && includeTime) method = 'toLocaleTimeString'
+
+          return date[method](userLocale, {
+            ...formatOptions,
+            timeZone: userTimeZone
           })
         }
       }

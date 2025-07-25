@@ -189,16 +189,18 @@ model event_feedback {
 }
 
 model case_agreement_tracking {
-  id                       String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  agreed_terms             String?              @db.Text
-  signature_mediator       String?              @db.LongText
-  first_party_signature    String?              @db.LongText
-  second_party_signature   String?              @db.LongText
-  created_at               DateTime             @default(now()) @db.Timestamp(0)
-  updated_at               DateTime             @default(now()) @db.Timestamp(0)
-  mediation_agreement_link String?              @db.Text
-  cases                    cases[]
-  signature_tracking       signature_tracking[]
+  id                              String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  agreed_terms                    String?              @db.Text
+  signature_mediator              String?              @db.LongText
+  first_party_signature           String?              @db.LongText
+  second_party_signature          String?              @db.LongText
+  created_at                      DateTime             @default(now()) @db.Timestamp(0)
+  updated_at                      DateTime             @default(now()) @db.Timestamp(0)
+  mediation_agreement_link        String?              @db.Text
+  first_party_signature_datetime  DateTime?            @db.DateTime(0)
+  second_party_signature_datetime DateTime?            @db.DateTime(0)
+  cases                           cases[]
+  signature_tracking              signature_tracking[]
 }
 
 enum user_user_type {
